@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.0.0-draft-1544118406
+# version: 1.0.0-draft-1544124850
 # name: release
 # license: MIT
 import sys
@@ -19,10 +19,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 from modules.json_config.json_config import Json_config
 import modules.message.message as msg
+import modules.prompt.prompt as prompt
+import modules.shell_helpers.shell_helpers as shell
 del sys.path[0:2]
-
-msg.success("Here")
-sys.exit()
 
 preset_ignore=dict(
     names=[
@@ -43,12 +42,17 @@ preset_ignore=dict(
 def get_direpa_root():
     return subprocess.check_output(shlex.split("git rev-parse --show-toplevel")).decode('utf-8').rstrip()
 
+def append_path_to_ignore_paths(preset, direpa_root):
+    for i, path in enumerate(preset["paths"]):
+        if not os.path.isabs(path):
+            preset["paths"][i]=os.path.join(direpa_root, path)
+
 class Bump_version(object):
     def __init__(self):
         self.check_args_num()
         self.version=sys.argv[1]
         self.direpa_root = get_direpa_root()
-        self.preset_ignore=preset_ignore
+        self.preset_ignore=deepcopy(preset_ignore)
         self.preset_ignore["paths"].extend([
                 "license.txt",
                 "modules"
@@ -56,7 +60,7 @@ class Bump_version(object):
         self.preset_ignore["exts"].extend([
                 ".json",
             ])
-        self.append_path_to_ignore_paths()
+        append_path_to_ignore_paths(self.preset_ignore, self.direpa_root)
         
     def append_path_to_ignore_paths(self):
         for i, path in enumerate(self.preset_ignore["paths"]):
@@ -67,6 +71,8 @@ class Bump_version(object):
         self.update_config_version()
         self.update_files()
         self.update_modules_json()
+
+        return self
 
     def update_config_version(self):
         filenpa_config=os.path.join(
@@ -166,7 +172,6 @@ class Bump_version(object):
 def set_bump_version_file():
     # needs to add prompt here
 
-    # export PYTHONPATH="${PYTHONPATH}:/data/lib"
     data=re.sub(r"\n\s+","\n","""
         #!/usr/bin/env python3
         from release.release import Bump_version
@@ -199,26 +204,20 @@ class Deploy(object):
         self.bin_release_types=[]
         self.lib_release_types=[]
         
-        self.preset_ignore=preset_ignore
+        self.preset_ignore=deepcopy(preset_ignore)
         self.preset_ignore.update( release_type="" )
         self.preset_ignore["paths"].extend([
                 "hotfix-history.json",
                 os.path.join("config", "private_config.json")
             ])
-        self.append_path_to_ignore_paths()
+
+        append_path_to_ignore_paths(self.preset_ignore, self.direpa_root)
 
         self.set_bin=False
         self.set_lib=False
         
         self.data={}
         self.init_data()
-
-  
-        
-    def append_path_to_ignore_paths(self):
-        for i, path in enumerate(self.preset_ignore["paths"]):
-            if not os.path.isabs(path):
-                self.preset_ignore["paths"][i]=os.path.join(self.direpa_root, path)
 
     def get_release_types(self, release_types):
         if not release_types:
@@ -237,6 +236,7 @@ class Deploy(object):
             sys.exit(1)
         self.set_bin=True
         self.bin_release_types=self.get_release_types(release_types)
+        append_path_to_ignore_paths(preset_ignore, self.direpa_root)
         return self
 
     def lib(self, release_types=[]):
@@ -245,6 +245,7 @@ class Deploy(object):
             sys.exit(1)
         self.set_lib=True
         self.lib_release_types=self.get_release_types(release_types)
+        append_path_to_ignore_paths(preset_ignore, self.direpa_root)
         return self
 
     def init_data(self):
@@ -278,20 +279,22 @@ class Deploy(object):
             self.push_origin("mgt")
             self.push_origin("doc")
 
+        return self
+
     def push_origin(self, diren):
         direpa_previous=os.getcwd()
         direpa=os.path.join(os.path.dirname(self.direpa_root), diren)
         os.chdir(direpa)
-        # files_to_commit=shell.cmd_get_value("git status --porcelain")
-        # if files_to_commit:
-        #     print("__untracked files present__")
-        #     for f in files_to_commit.splitlines():
-        #         print("  "+str(f))
+        files_to_commit=shell.cmd_get_value("git status --porcelain")
+        if files_to_commit:
+            print("__untracked files present__")
+            for f in files_to_commit.splitlines():
+                print("  "+str(f))
 
-        #     user_str=prompt("Type Commit Message")
-        #     shell.cmd_prompt("git add .")
-        #     shell.cmd_prompt("git commit -am \""+user_str+"\"")
-        # os.system("git push --all origin")
+            user_str=prompt("Type Commit Message")
+            shell.cmd_prompt("git add .")
+            shell.cmd_prompt("git commit -am \""+user_str+"\"")
+        os.system("git push --all origin")
         os.chdir(direpa_previous)
 
     def ignore(self, user_ignore, release_types=[]):
@@ -326,12 +329,31 @@ class Deploy(object):
                         ignore["paths"].append(path)
         return self
 
+    def copy_modules(self, direpa_modules_root, direpa_modules_bin_app):
+        direpa_dst=os.path.join(
+            direpa_modules_bin_app,
+            direpa_modules_root.replace(os.path.join(self.direpa_root,"modules")+os.sep, "")
+        )
+
+        for elem_name in os.listdir(direpa_modules_root):
+            elem_path=os.path.join(direpa_modules_root, elem_name)
+            if not elem_path in preset_ignore["paths"]:
+                if not elem_name in preset_ignore["names"]:
+                    if os.path.isdir(elem_path):
+                        direpa_dst_elem=os.path.join(direpa_dst, elem_name)
+                        os.makedirs(direpa_dst_elem, exist_ok=True)
+                        self.copy_modules(elem_path, direpa_modules_bin_app)
+                    else:
+                        if not os.path.splitext(elem_name)[1] in preset_ignore["exts"]:
+                            shutil.copy2(elem_path, direpa_dst)
+
     def set_bin_export(self, release_types=[]):
         if self.set_bin:
             if self.release_type in self.bin_release_types:
                 direpa_bin_app=os.path.join(self.direpa_bin, self.filer_exec+"_data", self.release_name)
                             
                 copy_tree(self.direpa_dst_release, direpa_bin_app)
+                self.init_copy_modules(direpa_bin_app)
 
                 filenpa_exec=os.path.join(direpa_bin_app, self.filen_exec)
                 filenpa_symlink_dst=os.path.join(self.direpa_bin, self.filer_exec)
@@ -343,6 +365,13 @@ class Deploy(object):
                     filenpa_exec,
                     filenpa_symlink_dst
                 )
+    def init_copy_modules(self, direpa_dst):
+        direpa_modules_dst=os.path.join(direpa_dst, "modules")
+        direpa_modules_root=os.path.join(self.direpa_root, "modules")
+        if not os.path.exists(direpa_modules_dst):
+            if os.path.exists(direpa_modules_root):
+                os.makedirs(direpa_modules_dst, exist_ok=True)
+                self.copy_modules(direpa_modules_root, direpa_modules_dst)
 
     def set_lib_export(self):
         if self.set_lib:
@@ -352,6 +381,8 @@ class Deploy(object):
                     shutil.rmtree(direpa_lib_app)
 
                 copy_tree(self.direpa_dst_release, direpa_lib_app)
+
+                self.init_copy_modules(direpa_lib_app)
 
     def copy_to_dst_release(self, direpa=""):
         if not direpa:
