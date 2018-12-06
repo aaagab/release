@@ -265,7 +265,7 @@ class Deploy(object):
         if self.release_type in ["early_release", "release"]:
             os.system("git checkout "+previous_branch)
             os.chdir(direpa_previous)
-
+            print("here")
             self.push_origin("mgt")
             self.push_origin("doc")
 
@@ -273,9 +273,17 @@ class Deploy(object):
         direpa_previous=os.getcwd()
         direpa=os.path.join(os.path.dirname(self.direpa_root), diren)
         os.chdir(direpa)
-        os.system("git push --all origin")
-        os.chdir(direpa_previous)
+        # files_to_commit=shell.cmd_get_value("git status --porcelain")
+        # if files_to_commit:
+        #     print("__untracked files present__")
+        #     for f in files_to_commit.splitlines():
+        #         print("  "+str(f))
 
+        #     user_str=prompt("Type Commit Message")
+        #     shell.cmd_prompt("git add .")
+        #     shell.cmd_prompt("git commit -am \""+user_str+"\"")
+        # os.system("git push --all origin")
+        os.chdir(direpa_previous)
 
     def ignore(self, user_ignore, release_types=[]):
         for release_type in self.get_release_types(release_types):
