@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.0.0-beta-1544133793
+# version: 1.0.0-draft-1544135666
 # name: release
 # license: MIT
 import sys
@@ -333,11 +333,15 @@ class Deploy(object):
                         ignore["paths"].append(path)
         return self
 
-    def copy_modules(self, direpa_modules_root, direpa_modules_bin_app):
-        direpa_dst=os.path.join(
-            direpa_modules_bin_app,
-            direpa_modules_root.replace(os.path.join(self.direpa_root,"modules")+os.sep, "")
-        )
+    def copy_modules(self, direpa_modules_root, direpa_modules_dst):
+        direpa_relative=direpa_modules_root.replace(os.path.join(self.direpa_root,"modules")+os.sep, "")
+        if direpa_relative==direpa_modules_root:
+            direpa_relative=""
+
+        direpa_dst=os.path.normpath(os.path.join(
+            direpa_modules_dst,
+            direpa_relative
+        ))
 
         for elem_name in os.listdir(direpa_modules_root):
             elem_path=os.path.join(direpa_modules_root, elem_name)
@@ -346,9 +350,10 @@ class Deploy(object):
                     if os.path.isdir(elem_path):
                         direpa_dst_elem=os.path.join(direpa_dst, elem_name)
                         os.makedirs(direpa_dst_elem, exist_ok=True)
-                        self.copy_modules(elem_path, direpa_modules_bin_app)
+                        self.copy_modules(elem_path, direpa_modules_dst)
                     else:
                         if not os.path.splitext(elem_name)[1] in preset_ignore["exts"]:
+                            pass
                             shutil.copy2(elem_path, direpa_dst)
 
     def set_bin_export(self, release_types=[]):
