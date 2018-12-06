@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.0.0-beta-1544131871
+# version: 1.0.0-beta-1544133018
 # name: release
 # license: MIT
 import sys
