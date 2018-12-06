@@ -293,7 +293,7 @@ class Deploy(object):
 
             # user_str=prompt("Type Commit Message")
             shell.cmd_prompt("git add .")
-            shell.cmd_prompt("git commit -am \"update for v"+self.release_version+"\"")
+            shell.cmd_prompt("git commit -am \"update for v"+self.release_name+"\"")
         os.system("git push --all origin")
         os.chdir(direpa_previous)
 
