@@ -291,9 +291,9 @@ class Deploy(object):
             for f in files_to_commit.splitlines():
                 print("  "+str(f))
 
-            user_str=prompt("Type Commit Message")
+            # user_str=prompt("Type Commit Message")
             shell.cmd_prompt("git add .")
-            shell.cmd_prompt("git commit -am \""+user_str+"\"")
+            shell.cmd_prompt("git commit -am \"update for v"+self.release_version+"\"")
         os.system("git push --all origin")
         os.chdir(direpa_previous)
 
