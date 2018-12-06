@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 1.0.0-alpha-1544118382
+# version: 1.0.0-draft-1544118406
 # name: release
 # license: MIT
 import sys
@@ -13,6 +13,16 @@ import shutil
 import re
 import contextlib
 from pprint import pprint
+
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+from modules.json_config.json_config import Json_config
+import modules.message.message as msg
+del sys.path[0:2]
+
+msg.success("Here")
+sys.exit()
 
 preset_ignore=dict(
     names=[
@@ -265,7 +275,6 @@ class Deploy(object):
         if self.release_type in ["early_release", "release"]:
             os.system("git checkout "+previous_branch)
             os.chdir(direpa_previous)
-            print("here")
             self.push_origin("mgt")
             self.push_origin("doc")
 
