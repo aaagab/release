@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 from modules.json_config.json_config import Json_config
 import modules.message.message as msg
-import modules.prompt.prompt as prompt
+from modules.prompt.prompt import *
 import modules.shell_helpers.shell_helpers as shell
 del sys.path[0:2]
 
