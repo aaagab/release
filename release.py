@@ -50,7 +50,7 @@ def append_path_to_ignore_paths(preset, direpa_root):
 class Bump_version(object):
     def __init__(self):
         self.check_args_num()
-        self.version=sys.argv[1]
+        self.release_name=sys.argv[1]
         self.direpa_root = get_direpa_root()
         self.preset_ignore=deepcopy(preset_ignore)
         self.preset_ignore["paths"].extend([
@@ -71,7 +71,7 @@ class Bump_version(object):
         self.update_config_version()
         self.update_files()
         self.update_modules_json()
-
+        msg.success("Bumped version v{}".format(self.release_name))
         return self
 
     def update_config_version(self):
@@ -87,7 +87,7 @@ class Bump_version(object):
             with open(filenpa_config, 'r') as f:
                 data=json.load(f)
 
-            data["version"]=self.version
+            data["version"]=self.release_name
 
             with open(filenpa_config, 'w') as outfile:
                 outfile.write(json.dumps(data,sort_keys=True, indent=4))
@@ -151,7 +151,7 @@ class Bump_version(object):
                     text=re.match(r"^# version:.*$", line)
                     if text:
                         version_found=True
-                        data+="# version: {}\n".format(self.version)
+                        data+="# version: {}\n".format(self.release_name)
                         continue
 
                 data+=line+"\n"
@@ -163,10 +163,12 @@ class Bump_version(object):
 
     def check_args_num(self):
         if len(sys.argv) != 2:
-            print("  Error: You need to provide the release_version.")
-            print("  Examples:")
-            print("  bump_version.py 1.0.0")
-            print("  bump_version.py 1.0.0-beta-1541014157")
+            msg.user_error(
+                "You need to provide the release_version.",
+                "Examples:",
+                "bump_version.py 1.0.0",
+                "bump_version.py 1.0.0-beta-1541014157"
+            )
             sys.exit(1)
 
 def set_bump_version_file():
@@ -232,7 +234,7 @@ class Deploy(object):
         
     def bin(self, release_types=[]):
         if not self.filen_exec:
-            print("Error: main executable name needs to be set.")
+            msg.user_error("main executable name needs to be set.")
             sys.exit(1)
         self.set_bin=True
         self.bin_release_types=self.get_release_types(release_types)
@@ -241,7 +243,7 @@ class Deploy(object):
 
     def lib(self, release_types=[]):
         if not self.filen_exec:
-            print("Error: main executable name needs to be set.")
+            msg.user_error("main executable name needs to be set.")
             sys.exit(1)
         self.set_lib=True
         self.lib_release_types=self.get_release_types(release_types)
@@ -278,6 +280,8 @@ class Deploy(object):
             os.chdir(direpa_previous)
             self.push_origin("mgt")
             self.push_origin("doc")
+
+        msg.success("Deployed v{}".format(self.release_name))
 
         return self
 
@@ -431,12 +435,13 @@ class Deploy(object):
 
     def check_args_num(self):
         if len(sys.argv) != 3:
-            print("  Error You need to provide the release_name and release_type (early_release or release).")
-            print("  Examples:")
-            print("  deploy.py 1.0.0 release")
-            print("  deploy.py v1.0.0 release")
-            print("  deploy.py 1.0.0-beta-1541014157 early_release")
-            print("  deploy.py v1.0.0-beta-1541014157 early_release")
+            msg.user_error(
+                "You need to provide the release_name and release_type (early_release or release).",
+                "Examples:",
+                "deploy.py 1.0.0 release",
+                "deploy.py v1.0.0 release",
+                "deploy.py 1.0.0-beta-1541014157 early_release",
+                "deploy.py v1.0.0-beta-1541014157 early_release")
             sys.exit(1)
 
 def set_deploy_file():
