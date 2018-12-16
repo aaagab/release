@@ -142,24 +142,27 @@ class Bump_version(object):
     def update_file_version(self, file):
         version_found=False
         data=""
-        with open(file, "r") as f:
-            line_num=1
-            for line in f.read().splitlines():
-                # version: 1.0.0-draft-1544111083
-                if line_num <= 15:
+        try:
+            with open(file, "r") as f:
+                line_num=1
+                for line in f.read().splitlines():
+                    # version: 1.0.0-draft-1544111083
+                    if line_num <= 15:
 
-                    text=re.match(r"^# version:.*$", line)
-                    if text:
-                        version_found=True
-                        data+="# version: {}\n".format(self.release_name)
-                        continue
+                        text=re.match(r"^# version:.*$", line)
+                        if text:
+                            version_found=True
+                            data+="# version: {}\n".format(self.release_name)
+                            continue
 
-                data+=line+"\n"
-                line_num+=1
+                    data+=line+"\n"
+                    line_num+=1
 
-        if version_found:
-            with open(file, "w") as f:
-                f.writelines(data)
+            if version_found:
+                with open(file, "w") as f:
+                    f.writelines(data)
+        except:
+            msg.warning("file '{}' is not readable.")
 
     def check_args_num(self):
         if len(sys.argv) != 2:
