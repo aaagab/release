@@ -162,7 +162,7 @@ class Bump_version(object):
                 with open(file, "w") as f:
                     f.writelines(data)
         except:
-            msg.warning("file '{}' is not readable.")
+            msg.warning("file '{}' is not readable.".format(file))
 
     def check_args_num(self):
         if len(sys.argv) != 2:
