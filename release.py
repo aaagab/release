@@ -35,7 +35,8 @@ preset_ignore=dict(
         ".gitignore",
     ],
     exts=[
-        ".pyc"
+        ".pyc",
+        ".db"
     ]
 )
 
