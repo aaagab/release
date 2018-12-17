@@ -96,31 +96,32 @@ class Bump_version(object):
     def update_modules_json(self):
         direpa_modules=os.path.join(self.direpa_root, "modules")
         modules={}
-        for elem in os.listdir(direpa_modules):
-            path_elem=os.path.join(direpa_modules, elem)
-            if elem not in ["__pycache__"]:
-                if os.path.isdir(path_elem):
-                    filenpa_version=os.path.join(path_elem, "version.txt")
-                    tmp_elem={}
-                    if os.path.exists(filenpa_version):
-                        with open(filenpa_version, "r") as f:
-                            version=f.read().rstrip()
+        if os.path.exists(direpa_modules):
+            for elem in os.listdir(direpa_modules):
+                path_elem=os.path.join(direpa_modules, elem)
+                if elem not in ["__pycache__"]:
+                    if os.path.isdir(path_elem):
+                        filenpa_version=os.path.join(path_elem, "version.txt")
+                        tmp_elem={}
+                        if os.path.exists(filenpa_version):
+                            with open(filenpa_version, "r") as f:
+                                version=f.read().rstrip()
+                            
+                            tmp_elem=dict({
+                                elem:{
+                                    "version":version
+                                }
+                            })
+                        else:
+                            tmp_elem=dict({
+                                elem:{
+                                    "version":""
+                                }
+                            })
                         
-                        tmp_elem=dict({
-                            elem:{
-                                "version":version
-                            }
-                        })
-                    else:
-                        tmp_elem=dict({
-                            elem:{
-                                "version":""
-                            }
-                        })
-                    
-                    modules.update(
-                        tmp_elem
-                    )
+                        modules.update(
+                            tmp_elem
+                        )
 
         filenpa_module=os.path.join(self.direpa_root, "modules.json")
         with open(filenpa_module, 'w') as outfile:
