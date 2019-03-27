@@ -236,7 +236,7 @@ def set_deploy_file():
             f.writelines(data+"\n")
 
 
-def Deploy(app_name, version, added_refine_rules=[]):
+def deploy(app_name, version, added_refine_rules=[]):
     from dev.refine import get_paths_to_copy, copy_to_destination
     
     direpa_root=get_direpa_root()
