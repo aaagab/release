@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 2.0.0
+# version: 2.1.0
 # name: release
 # license: MIT
 import sys
@@ -21,6 +21,7 @@ from modules.json_config.json_config import Json_config
 import modules.message.message as msg
 from modules.prompt.prompt import prompt_boolean, prompt
 import modules.shell_helpers.shell_helpers as shell
+from dev.refine import get_paths_to_copy, copy_to_destination
 del sys.path[0:2]
 
 preset_ignore=dict(
@@ -236,9 +237,7 @@ def set_deploy_file():
             f.writelines(data+"\n")
 
 
-def deploy(app_name, version, added_refine_rules=[]):
-    from dev.refine import get_paths_to_copy, copy_to_destination
-    
+def deploy(app_name, version, added_refine_rules=[]):  
     direpa_root=get_direpa_root()
     paths=get_paths_to_copy(direpa_root, added_refine_rules)
 
