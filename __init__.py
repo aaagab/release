@@ -14,9 +14,10 @@ from modules.json_config.json_config import Json_config
 
 
 if __name__ == "__main__":
-    conf=Json_config()
     filenpa_script=os.path.realpath(__file__)
     direpa_script=os.path.dirname(filenpa_script)
+    filenpa_gpm_json=os.path.join(direpa_script, "gpm.json")
+    conf=Json_config(filenpa_gpm_json)
 
     args, this_help=ops.get_args(sys.argv, conf.data)
 
@@ -32,8 +33,11 @@ if __name__ == "__main__":
     # if args.import_rel:
         # sys.exit(0)
 
-    # if args.switch_bin
- 
+    if args.switch_bin:
+        from dev.switch_bin import switch_bin
+        switch_bin(conf.data, vars(args))
+        sys.exit(0)
+
     if args.export_bin:
         from dev.export import export
         export(conf.data, vars(args))
