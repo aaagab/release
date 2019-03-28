@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.1.0
+# version: 3.1.1
 # name: release
 # license: MIT
 
@@ -14,12 +14,16 @@ from modules.json_config.json_config import Json_config
 
 
 if __name__ == "__main__":
+    conf_options=Json_config()
+    
     filenpa_script=os.path.realpath(__file__)
     direpa_script=os.path.dirname(filenpa_script)
     filenpa_gpm_json=os.path.join(direpa_script, "gpm.json")
     conf=Json_config(filenpa_gpm_json)
 
-    args, this_help=ops.get_args(sys.argv, conf.data)
+    conf_options.data.update(description=conf.data["description"])
+    args, this_help=ops.get_args(sys.argv, conf_options.data)
+
 
     if args.help:
         print(this_help)
