@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.0.0
+# version: 3.1.0
 # name: release
 # license: MIT
 import os, shlex, sys

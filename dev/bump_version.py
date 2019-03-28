@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.0.0
+# version: 3.1.0
 # name: release
 # license: MIT
 import os, sys
@@ -18,10 +18,12 @@ def bump_version(version):
     paths=get_paths_to_copy(direpa_root, [
         ".refine",
         "/modules/",
+        "/.pkgs/",
+        "*.db"
     ])
     for path in paths:
         if os.path.isfile(path):
-            if os.path.basename(path) in ["config.json", "gpm.json", "modules.json"]:
+            if os.path.basename(path) in ["config.json", "gpm.json", "modules.json", "upacks.json"]:
                 conf=Json_config(path)
                 if "version" in conf.data:
                     conf.data["version"]=version

@@ -1,15 +1,4 @@
 {
-    "authors": [
-        "Gabriel Auger"
-    ],
-    "description": "Finalise gitframe project with the following actions: bump version, export release, export to bin",
-    "diren_rel": "rel",
-    "direpa_bin": "/data/bin",
-    "filen_main": "__init__.py",
-    "licenses": [
-        "MIT"
-    ],
-    "name": "release",
     "options": [
         {
             "help": {
@@ -73,12 +62,12 @@
             }
         },
         {
-            "modules": {
+            "add_deps": {
                 "action": "store_true",
                 "args": [
-                    "--modules"
+                    "--add-deps"
                 ],
-                "info": "Add modules for export-bin or export-rel.",
+                "info": "Add dependencies for export-rel.",
                 "required": false,
                 "show": true
             }
@@ -112,7 +101,22 @@
                 "required": false,
                 "show": true
             }
+        },
+        {
+            "switch_bin": {
+                "action": "store_true",
+                "args": [
+                    "--switch-bin"
+                ],
+                "info": "Given an application name and a version, then current executable in the path is switched to that version.",
+                "nargs": 2,
+                "params_required": [
+                    "NAME",
+                    "VERSION"
+                ],
+                "required": false,
+                "show": true
+            }
         }
-    ],
-    "version": "3.0.0"
+    ]
 }
