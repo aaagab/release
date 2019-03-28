@@ -47,7 +47,6 @@ def set_rules(rules, filenpa_rules):
 						rules.append(sline)
 
 def get_paths_to_copy(direpa_src, added_rules=[]):
-	print(direpa_src)
 	rules=[]
 	excluded_paths=set()
 

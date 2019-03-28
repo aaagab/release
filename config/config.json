@@ -1,0 +1,118 @@
+{
+    "authors": [
+        "Gabriel Auger"
+    ],
+    "direpa_bin": "/data/bin",
+    "diren_rel": "rel",
+    "description": "Finalise gitframe project with the following actions: bump version, export release, export to bin",
+    "filen_main": "__init__.py",
+    "licenses": [
+        "MIT"
+    ],
+    "name": "release",
+    "options": [
+        {
+            "help": {
+                "action": "store_true",
+                "args": [
+                    "-h",
+                    "--help"
+                ],
+                "info": "Show Help and exits.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "version": {
+                "action": "store_true",
+                "args": [
+                    "-v",
+                    "--version"
+                ],
+                "info": "Get application version.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "bump_version": {
+                "action": "store_true",
+                "args": [
+                    "--bump-version"
+                ],
+                "info": "Send refined project 'selected version' to /$project_path/rel or path.",
+                "nargs": 1,
+                "params_required": [
+                    "VERSION"
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "export_bin": {
+                "action": "store_true",
+                "args": [
+                    "--export-bin"
+                ],
+                "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "export_rel": {
+                "action": "store_true",
+                "args": [
+                    "--export-rel"
+                ],
+                "info": "Send refined project 'selected version' to /$project_path/rel or path.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "modules": {
+                "action": "store_true",
+                "args": [
+                    "--modules"
+                ],
+                "info": "Add modules for export-bin or export-rel.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "path": {
+                "action": "store_true",
+                "args": [
+                    "--path"
+                ],
+                "info": "Select path for export_bin or export_rel.",
+                "nargs": 1,
+                "params_required": [
+                    "PATH"
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "release_version": {
+                "action": "store_true",
+                "args": [
+                    "--rversion"
+                ],
+                "info": "Select 'release version' for export_bin or export_rel.",
+                "nargs": 1,
+                "params_required": [
+                    "VERSION"
+                ],
+                "required": false,
+                "show": true
+            }
+        }
+    ],
+    "version": "2.1.0"
+}
