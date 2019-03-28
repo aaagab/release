@@ -1,0 +1,19 @@
+{
+    "authors": [
+        "Gabriel Auger"
+    ],
+    "deps": [],
+    "diren_release": "rel",
+    "direpa_bin": "/data/bin",
+    "direpa_release": "/data/rel",
+    "description": "This is a small package manager that is developped on the side for my current needs until I finish coding the 'Generic Package Manager'",
+    "filen_main": "__init__.py",
+    "gpm_version": "0.2.0",
+    "installer": "gpm",
+    "licenses": [
+        "MIT"
+    ],
+    "name": "release",
+    "uuid4": "76dda070-6616-4716-808e-52921203da9d",
+    "version": "3.0.0"
+}

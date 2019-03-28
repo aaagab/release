@@ -20,7 +20,9 @@ from modules.prompt.prompt import prompt_boolean
 from modules.json_config.json_config import Json_config
 import modules.shell_helpers.shell_helpers as shell
 
-def export(dy_rel, args):
+def switch_bin(dy_rel, args):
+    print("Ready to switch")
+    sys.exit()
     direpa_root=get_direpa_root()
 
     os.chdir(direpa_root)
@@ -38,27 +40,27 @@ def export(dy_rel, args):
 
         version=args["release_version"][0]
         if args["path"] is None:
-            added_refine_rules=["/modules/", "/.pkgs/"]
+            added_refine_rules=["/modules/"]
             if args["add_deps"] is True:
                 msg.warning(
                     "--add-deps is not an option for export to release, when path is not provided.",
                     "dependencies are not included in this context."
                 )
 
-            direpa_dst=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
+            direpa_dst=os.path.join(dy_app["direpa_release"], dy_app["name"], version, dy_app["name"])
             prompt_for_replace(direpa_dst)
             
             previous_branch=checkout_version(version, direpa_root)
         else:
             if args["add_deps"] is False:
-                added_refine_rules=["/modules/", "/.pkgs/"]
+                added_refine_rules=["/modules/"]
 
             direpa_dst_root=args["path"][0]
             direpa_dst=os.path.join(direpa_dst_root, dy_app["name"])
             prompt_for_replace(direpa_dst)
 
             # check if release is already in rel
-            direpa_rel_version=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
+            direpa_rel_version=os.path.join(dy_app["direpa_release"], dy_app["name"], version, dy_app["name"])
             if os.path.exists(direpa_rel_version): # if exists copy existing 
                 direpa_root=direpa_rel_version
             else: # else checkout a new one
@@ -134,7 +136,7 @@ def get_app_meta_data(direpa_root):
             all_key_found=True
             for key in keys:
                 if not key in data:
-                    # msg.warning("Missing '{}' in '{}'".format(key, filen_conf))
+                    msg.warning("Missing '{}' in '{}'".format(key, filen_conf))
                     all_key_found=False
                     break
 
@@ -150,6 +152,7 @@ def get_app_meta_data(direpa_root):
     sys.exit(1)
 
 def checkout_version(version, direpa_root):
+    print("in there")
     git_tag_data=shell.cmd_get_value("git tag").strip()
     existing_versions=[]
     if git_tag_data:
