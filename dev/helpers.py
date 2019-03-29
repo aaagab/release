@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.1.1
+# version: 3.2.0
 # name: release
 # license: MIT
 import os, shlex, sys
 import subprocess
 import modules.shell_helpers.shell_helpers as shell
 import modules.message.message as msg
+from modules.json_config.json_config import Json_config
+
 
 def get_direpa_root():
     if is_pkg_git():
@@ -59,3 +61,27 @@ def to_be_coded(text=""):
     else:
         msg.app_error("To be coded: '{}'".format(text))
     sys.exit(1)
+
+def get_app_meta_data(direpa_root):
+    keys=["name", "filen_main", "version"]
+    filenpa_conf=os.path.join(direpa_root, "gpm.json")
+    if os.path.exists(filenpa_conf):
+        data=Json_config(filenpa_conf).data
+        all_key_found=True
+        for key in keys:
+            if not key in data:
+                msg.warning("Missing '{}' in '{}'".format(key, filenpa_conf))
+                all_key_found=False
+
+        if all_key_found:
+            if "options" in data:
+                del data["options"]
+            return data
+        else:
+            sys.exit(1)
+
+    else:
+        msg.user_error(
+            "'{}' not found".format(filenpa_conf),
+            "Run 'gpm --init --no-db'")
+        sys.exit(1)   
