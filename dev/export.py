@@ -11,7 +11,7 @@ import subprocess
 import shlex
 from pprint import pprint
 
-from dev.helpers import get_direpa_root, to_be_coded
+from dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data
 from dev.refine import get_paths_to_copy, copy_to_destination
 import dev.regex_obj as ro
 
@@ -38,7 +38,7 @@ def export(dy_rel, args):
 
         version=args["release_version"][0]
         if args["path"] is None:
-            added_refine_rules=["/modules/", "/.pkgs/"]
+            added_refine_rules=["/modules/", "/.pkgs/", "/upacks/"]
             if args["add_deps"] is True:
                 msg.warning(
                     "--add-deps is not an option for export to release, when path is not provided.",
@@ -51,7 +51,7 @@ def export(dy_rel, args):
             previous_branch=checkout_version(version, direpa_root)
         else:
             if args["add_deps"] is False:
-                added_refine_rules=["/modules/", "/.pkgs/"]
+                added_refine_rules=["/modules/", "/.pkgs/", "/upacks/"]
 
             direpa_dst_root=args["path"][0]
             direpa_dst=os.path.join(direpa_dst_root, dy_app["name"])
@@ -103,13 +103,14 @@ def export(dy_rel, args):
     copy_to_destination(paths, direpa_root, direpa_dst)
 
     if direpa_bin:
-        filenpa_exec=os.path.join(direpa_dst, dy_app["filen_main"])
-        filenpa_symlink=os.path.join(direpa_bin, dy_app["name"])
+        if args["no_symlink"] is False:
+            filenpa_exec=os.path.join(direpa_dst, dy_app["filen_main"])
+            filenpa_symlink=os.path.join(direpa_bin, dy_app["name"])
 
-        with contextlib.suppress(FileNotFoundError):
-            os.remove(filenpa_symlink)
+            with contextlib.suppress(FileNotFoundError):
+                os.remove(filenpa_symlink)
 
-        os.symlink( filenpa_exec, filenpa_symlink)
+            os.symlink( filenpa_exec, filenpa_symlink)
 
     if previous_branch:
         shell.cmd_prompt("git checkout "+previous_branch)
@@ -123,31 +124,6 @@ def prompt_for_replace(direpa_dst):
         else:
             msg.warning("Operation Cancelled.")
             sys.exit(1)
-
-def get_app_meta_data(direpa_root):
-    confs=["gpm.json", "config/config.json", "modules.json", "upacks.json"]
-    keys=["name", "filen_main", "version"]
-    for filen_conf in confs:
-        filenpa_conf=os.path.join(direpa_root, filen_conf)
-        if os.path.exists(filenpa_conf):
-            data=Json_config(filenpa_conf).data
-            all_key_found=True
-            for key in keys:
-                if not key in data:
-                    # msg.warning("Missing '{}' in '{}'".format(key, filen_conf))
-                    all_key_found=False
-                    break
-
-            if all_key_found:
-                if "options" in data:
-                    del data["options"]
-                return data
-        
-    msg.user_error("keys ['{}'] in at least one conf file from ['{}'']".format(
-        "', '".join(keys),
-        "', '".join(confs)
-    ))
-    sys.exit(1)
 
 def checkout_version(version, direpa_root):
     git_tag_data=shell.cmd_get_value("git tag").strip()
