@@ -25,6 +25,17 @@
             }
         },
         {
+            "add_deps": {
+                "action": "store_true",
+                "args": [
+                    "--add-deps"
+                ],
+                "info": "Add dependencies for export-rel.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
             "bump_version": {
                 "action": "store_true",
                 "args": [
@@ -62,12 +73,12 @@
             }
         },
         {
-            "add_deps": {
+            "no_symlink": {
                 "action": "store_true",
                 "args": [
-                    "--add-deps"
+                    "--no-symlink"
                 ],
-                "info": "Add dependencies for export-rel.",
+                "info": "Prevent symlink creation on --export-bin.",
                 "required": false,
                 "show": true
             }
@@ -98,6 +109,17 @@
                 "params_required": [
                     "VERSION"
                 ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "set_bump_deploy": {
+                "action": "store_true",
+                "args": [
+                    "--set-bump-deploy"
+                ],
+                "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken.",
                 "required": false,
                 "show": true
             }

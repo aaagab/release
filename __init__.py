@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.1.1
+# version: 3.2.0
 # name: release
 # license: MIT
 
@@ -9,9 +9,7 @@ from pprint import pprint
 
 import modules.message.message as msg
 import modules.options.options as ops
-from modules.message.format_text import Format_text as ft
 from modules.json_config.json_config import Json_config
-
 
 if __name__ == "__main__":
     conf_options=Json_config()
@@ -24,6 +22,7 @@ if __name__ == "__main__":
     conf_options.data.update(description=conf.data["description"])
     args, this_help=ops.get_args(sys.argv, conf_options.data)
 
+    conf.data["args"]=vars(args)
 
     if args.help:
         print(this_help)
@@ -36,6 +35,12 @@ if __name__ == "__main__":
 
     # if args.import_rel:
         # sys.exit(0)
+
+    if args.set_bump_deploy:
+        from dev.set_bump_deploy import set_bump_deploy
+        set_bump_deploy(conf.data)
+        sys.exit(0)
+
 
     if args.switch_bin:
         from dev.switch_bin import switch_bin
@@ -53,10 +58,11 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.version is True:
+        from modules.message.format_text import Format_text as ft
         lspace="  "
         print(lspace+ft.bold("Name: ")+conf.data["name"])
-        print(lspace+ft.bold("Author: ")+conf.data["authors"][0])
-        print(lspace+ft.bold("License: ")+conf.data["licenses"][0])
+        print(lspace+ft.bold("Author(s): ")+", ".join(conf.data["authors"]))
+        print(lspace+ft.bold("License(s): ")+", ".join(conf.data["licenses"]))
         print(lspace+ft.bold("Version: ")+conf.data["version"])
         sys.exit(0)
 
