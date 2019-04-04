@@ -36,6 +36,17 @@ if __name__ == "__main__":
     # if args.import_rel:
         # sys.exit(0)
 
+    if args.generate_db:
+        from dev.generate_db import generate_db
+        generate_db(conf.data)
+        sys.exit(0)
+
+
+    if args.ls_repo:
+        from dev.ls_repo import ls_repo
+        ls_repo(conf.data)
+        sys.exit(0)
+        
     if args.set_bump_deploy:
         from dev.set_bump_deploy import set_bump_deploy
         set_bump_deploy(conf.data)
@@ -45,6 +56,11 @@ if __name__ == "__main__":
     if args.switch_bin:
         from dev.switch_bin import switch_bin
         switch_bin(conf.data, vars(args))
+        sys.exit(0)
+
+    if args.steps:
+        from dev.steps import steps
+        steps()
         sys.exit(0)
 
     if args.export_bin:

@@ -10,12 +10,25 @@ import modules.message.message as msg
 from modules.json_config.json_config import Json_config
 
 
-def get_direpa_root():
-    if is_pkg_git():
-        return subprocess.check_output(shlex.split("git rev-parse --show-toplevel")).decode('utf-8').rstrip()
+def get_direpa_root(path=""):
+    if is_pkg_git(path):
+        direpa_current=""
+        if path:
+            direpa_current=os.getcwd()
+            os.chdir(path)
+
+        direpa_root=subprocess.check_output(shlex.split("git rev-parse --show-toplevel")).decode('utf-8').rstrip()
+        if path:
+            os.chdir(direpa_current)
+
+        return direpa_root
     else:
-        direpa_current=os.getcwd()
-        direpa_src=os.path.join(direpa_current, "src")
+        direpa_current==os.getcwd()
+
+        if not path:
+            path=direpa_current
+
+        direpa_src=os.path.join(path, "src")
         if os.path.exists(direpa_src):
             if is_pkg_git(direpa_src):
                 os.chdir(direpa_src)

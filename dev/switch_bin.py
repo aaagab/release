@@ -44,6 +44,3 @@ def switch_bin(dy_rel, args):
     else:
         msg.user_error("Not found '{}'".format(filenpa_pkg_json))
         sys.exit(1)
-    
-
-    

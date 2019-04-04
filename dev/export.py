@@ -21,7 +21,11 @@ from modules.json_config.json_config import Json_config
 import modules.shell_helpers.shell_helpers as shell
 
 def export(dy_rel, args):
-    direpa_root=get_direpa_root()
+    direpa_root=""
+    if args["path_src"]:
+        direpa_root=get_direpa_root(args["path_src"][0])
+    else:
+        direpa_root=get_direpa_root()
 
     os.chdir(direpa_root)
 
@@ -30,39 +34,49 @@ def export(dy_rel, args):
     direpa_dst=""
     previous_branch=""
     direpa_bin=""
+    insert_db=False
 
     if args["export_rel"] is True:
-        if args["release_version"] is None:
-            msg.user_error("You need to provide a release version with --rversion for export release")
-            sys.exit(1)
+        
+        if args["release_version"]:
+            version=args["release_version"][0]
 
-        version=args["release_version"][0]
+        if args["add_deps"] is False:
+            added_refine_rules=["/modules/", "/.pkgs/", "/upacks/", "/gpkgs/"]
+
         if args["path"] is None:
-            added_refine_rules=["/modules/", "/.pkgs/", "/upacks/"]
-            if args["add_deps"] is True:
-                msg.warning(
-                    "--add-deps is not an option for export to release, when path is not provided.",
-                    "dependencies are not included in this context."
-                )
+            if args["release_version"] is None:
+                msg.user_error("You need to provide a release version with --rversion for export release")
+                sys.exit(1)
+
+            # if args["add_deps"] is True:
+            #     msg.warning(
+            #         "--add-deps is not an option for export to release, when path is not provided.",
+            #         "dependencies are not included in this context."
+            #     )
 
             direpa_dst=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
             prompt_for_replace(direpa_dst)
-            
+
+        
             previous_branch=checkout_version(version, direpa_root)
+            insert_db=True
+
         else:
-            if args["add_deps"] is False:
-                added_refine_rules=["/modules/", "/.pkgs/", "/upacks/"]
+            # if args["add_deps"] is False:
+                # added_refine_rules=["/modules/", "/.pkgs/", "/upacks/"]
 
             direpa_dst_root=args["path"][0]
             direpa_dst=os.path.join(direpa_dst_root, dy_app["name"])
             prompt_for_replace(direpa_dst)
 
-            # check if release is already in rel
-            direpa_rel_version=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
-            if os.path.exists(direpa_rel_version): # if exists copy existing 
-                direpa_root=direpa_rel_version
-            else: # else checkout a new one
-                previous_branch=checkout_version(version, direpa_root)
+            if args["release_version"]:
+                # check if release is already in rel
+                direpa_rel_version=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
+                if os.path.exists(direpa_rel_version): # if exists copy existing 
+                    direpa_root=direpa_rel_version
+                else: # else checkout a new one
+                    previous_branch=checkout_version(version, direpa_root)
 
     elif args["export_bin"] is True:
         if args["add_deps"] is True:
@@ -102,6 +116,21 @@ def export(dy_rel, args):
     paths=get_paths_to_copy(direpa_root, added_refine_rules)
     copy_to_destination(paths, direpa_root, direpa_dst)
 
+    if insert_db:
+        conf_db=Json_config(os.path.join(dy_rel["direpa_release"], "db.json"))
+        filenpa_gpm_json=os.path.join(direpa_root, "gpm.json")
+        if not os.path.exists(filenpa_gpm_json):
+            shell.cmd_prompt("git checkout "+previous_branch)
+            msg.user_error("'{}' not found".format(filenpa_gpm_json))
+            sys.exit(1)
+        else:
+            dy_app_src=Json_config(filenpa_gpm_json).data
+            conf_db.data.update({
+                "{}|{}|{}".format(dy_app_src["uuid4"], dy_app_src["name"], dy_app_src["version"]
+                    ): dy_app_src["deps"]
+            })
+            conf_db.set_file_with_data()
+
     if direpa_bin:
         if args["no_symlink"] is False:
             filenpa_exec=os.path.join(direpa_dst, dy_app["filen_main"])
@@ -118,7 +147,7 @@ def export(dy_rel, args):
 def prompt_for_replace(direpa_dst):
     if os.path.exists(direpa_dst):
         msg.warning("'{}' already exists.".format(direpa_dst))
-        if prompt_boolean("Do you want to replace it", "N"):
+        if prompt_boolean("Do you want to replace it", "Y"):
             shutil.rmtree(direpa_dst)
             os.makedirs(direpa_dst, exist_ok=True)
         else:
