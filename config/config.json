@@ -73,6 +73,51 @@
             }
         },
         {
+            "generate_db": {
+                "action": "store_true",
+                "args": [
+                    "-g",
+                    "--gen",
+                    "--gd",
+                    "--generate-db"
+                ],
+                "info": "list all folders in repository and generate the db.json.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "import": {
+                "action": "store_true",
+                "args": [
+                    "--import"
+                ],
+                "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "ls_repo": {
+                "action": "store_true",
+                "args": [
+                    "-l",
+                    "--ls",
+                    "--ls-repo"
+                ],
+                "info": "List all packages in the repo. You can add name(s) to filter by names.",
+                "nargs": [
+                    0
+                ],
+                "params_optional": [
+                    "NAME",
+                    "..."
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
             "no_symlink": {
                 "action": "store_true",
                 "args": [
@@ -90,6 +135,21 @@
                     "--path"
                 ],
                 "info": "Select path for export_bin or export_rel.",
+                "nargs": 1,
+                "params_required": [
+                    "PATH"
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "path_src": {
+                "action": "store_true",
+                "args": [
+                    "--path-src"
+                ],
+                "info": "Select source path for export_bin or export_rel. When this path is selected the application move to this directory before starting processing the command.",
                 "nargs": 1,
                 "params_required": [
                     "PATH"
@@ -120,6 +180,17 @@
                     "--set-bump-deploy"
                 ],
                 "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken.",
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "steps": {
+                "action": "store_true",
+                "args": [
+                    "--steps"
+                ],
+                "info": "Give the main steps to create an application.",
                 "required": false,
                 "show": true
             }
