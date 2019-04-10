@@ -19,6 +19,7 @@ def bump_version(version):
         ".refine",
         "/modules/",
         "/.pkgs/",
+        "/gpkgs/",
         "*.db"
     ])
     for path in paths:
@@ -29,23 +30,34 @@ def bump_version(version):
                     conf.data["version"]=version
                     conf.set_file_with_data()
             else:
-                version_found=False
+                header_version_found=False
+                init_version_found=False
                 data=""
                 try:
                     with open(path, "r") as f:
                         line_num=1
                         for line in f.read().splitlines():
-                            if line_num <= 15:
-                                text=re.match(r"^# version:.*$", line)
-                                if text:
-                                    version_found=True
-                                    data+="# version: {}\n".format(version)
-                                    continue
+                            
+                            if header_version_found is False:
+                                if line_num <= 15:
+                                    text=re.match(r"^# version:.*$", line)
+                                    if text:
+                                        header_version_found=True
+                                        data+="# version: {}\n".format(version)
+                                        continue
+
+                            if init_version_found is False:
+                                if os.path.basename(path) == "__init__.py":
+                                    text=re.match(r"^__version__ =.*$", line)
+                                    if text:
+                                        init_version_found=True
+                                        data+="__version__ = \"{}\"\n".format(version)
+                                        continue
 
                             data+=line+"\n"
                             line_num+=1
 
-                    if version_found:
+                    if header_version_found is True or init_version_found is True:
                         with open(path, "w") as f:
                             f.writelines(data)
                 except:

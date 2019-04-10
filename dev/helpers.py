@@ -98,3 +98,6 @@ def get_app_meta_data(direpa_root):
             "'{}' not found".format(filenpa_conf),
             "Run 'gpm --init --no-db'")
         sys.exit(1)   
+
+def get_pkg_id(dy_pkg):
+    return "{}|{}|{}".format(dy_pkg["uuid4"], dy_pkg["name"], dy_pkg["version"])

@@ -33,8 +33,10 @@ if __name__ == "__main__":
         bump_version(args.bump_version[0])
         sys.exit(0)
 
-    # if args.import_rel:
-        # sys.exit(0)
+    if args.import_pkgs:
+        from dev.import_pkgs import import_pkgs
+        import_pkgs(conf.data)
+        sys.exit(0)
 
     if args.generate_db:
         from dev.generate_db import generate_db
