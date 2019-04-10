@@ -177,6 +177,58 @@ class Uuid4_regex(Regex_obj):
 
         return self
 
+    def print_error(self):
+        msg.user_error("'{}' does not follow uuid4 regex '{}'".format(self.text, self.string))
+
+class Version_filter_regex(Regex_obj):
+    def __init__(self, txt=""):
+        Regex_obj.__init__(self, r"(^)([\d+|A|a|L|l])(\.)([\d+|A|a|L|l])(\.)([\d+|A|a|L|l])($)")
+        self.type="filter_version"
+        self.set_text(txt)
+        self.description="Filter to search accurately a version. L means last, A means any."
+
+    def set_text(self, txt):
+        if txt != "":
+            self.text=txt
+            self.matching_obj=re.match(self.group_string, txt)
+            if self.matching_obj:
+                self.match=True
+                self.major=self.matching_obj.group(2)
+                self.minor=self.matching_obj.group(4)
+                self.patch=self.matching_obj.group(6)
+                self.major_minor=self.major+"."+self.minor
+                self.major_minor_patch=self.major_minor+"."+self.patch
+                # print(self.major, isinstance(self.minor, int))
+                # if isinstance(self.major, int) and isinstance(self.minor, int) and isinstance(self.patch, int):
+                    # print("mike")
+                if self.major.isdigit() and self.minor.isdigit() and self.patch.isdigit():
+                    self.pattern="numbers"
+                elif self.major in ["L", "l"] and self.minor in ["L", "l"] and self.patch in ["L", "l"]:
+                    self.pattern="last"
+                elif self.major in ["A", "a"] and self.minor in ["A", "a"] and self.patch in ["A", "a"]:
+                    self.pattern="all"
+                else:
+                    self.pattern="mixed"
+            else:
+                self.match=False
+                self.major=""
+                self.minor=""
+                self.patch=""
+                self.major_minor=""
+                self.major_minor_patch=""
+                self.pattern=""
+        
+        return self
+
+    def equals(self, dct_reg_pkgs):
+        if dct_reg_pkgs["reg_version"].major_minor_patch == self.major_minor_patch:
+            return True
+        else:
+            return False
+
+    def print_error(self):
+        msg.user_error("'{}' does not follow regex '{}'".format(self.text, self.string))
+
 class Diren_index_regex(Regex_obj):
     def __init__(self, txt=""):
         Regex_obj.__init__(self, r"^([_lg])([0-9a-fA-F]+)$")

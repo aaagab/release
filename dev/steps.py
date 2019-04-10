@@ -14,7 +14,7 @@ def steps():
 	steps= """
 		create folder
 		gf --anp
-			user@domain:/data/apps/f/{app_name}/_1/{app_name}/
+			user@domain:/apps/f/{app_name}/_1/{app_name}/
 		release --set-bump-deploy
 		sj --so {app_name}
 
@@ -30,7 +30,7 @@ __pycache__/
 .vscode
 *.pyc
 modules/
-pkgs/
+gpkgs/
 			
 			.refine
 __pycache__/
@@ -57,6 +57,15 @@ try:
 except:
     from format_text import ft
 del sys.path[0]
+
+touch .gitignore
+touch .refine
+mkdir dev
+touch __init__.py
+chmod +x __init__.py
+touch test.py
+chmod +x test.py
+mkdir gpkgs
 
 		gf --pr
 

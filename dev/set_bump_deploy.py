@@ -15,7 +15,7 @@ import modules.shell_helpers.shell_helpers as shell
 from modules.json_config.json_config import Json_config
 from modules.prompt.prompt import prompt_boolean, prompt
 
-def set_bump_deploy(dy_rel):
+def set_bump_deploy(dy_app):
     filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
     direpa_current=os.getcwd()
     direpa_src=os.path.join(direpa_current, "src")

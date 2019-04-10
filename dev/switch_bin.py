@@ -13,22 +13,17 @@ from pprint import pprint
 
 from dev.helpers import get_direpa_root, to_be_coded
 from dev.refine import get_paths_to_copy, copy_to_destination
-import dev.regex_obj as ro
 
 import modules.message.message as msg
 from modules.prompt.prompt import prompt_boolean
 from modules.json_config.json_config import Json_config
 import modules.shell_helpers.shell_helpers as shell
 
-# mockpackage 0.2.2
-# mockpackage 0.2.3
-# mockpackage beta
-
-def switch_bin(dy_rel, args):
+def switch_bin(dy_app, args):
     pkg_name=args["switch_bin"][0]
     pkg_version=args["switch_bin"][1]
     
-    direpa_bin=dy_rel["direpa_bin"]
+    direpa_bin=dy_app["direpa_bin"]
     filenpa_pkg_json=os.path.join(direpa_bin, pkg_name+"_data", pkg_version, pkg_name, "gpm.json")
     if os.path.exists(filenpa_pkg_json):
         dy_pkg=Json_config(filenpa_pkg_json).data
