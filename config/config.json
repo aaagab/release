@@ -87,14 +87,23 @@
             }
         },
         {
-            "import": {
+            "import_pkgs": {
                 "action": "store_true",
                 "args": [
+                    "-i",
                     "--import"
                 ],
-                "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path.",
+                "info": "import packages in a git project with a folder gpkgs. Packages are identified with the following syntax uuid4,name,version,pkg_bound . Generally you just select the name, but you can also use the uuid4, and the version. To import a package you have to name the packages. if only name, latest version of the package is selected and package bound is going to be gpm. if name,version then version is a filter and several options are possible: major.minor.patch each element can be a number, the letter L for latest or the letter A for any . It allows advanced filters to display and select packages.",
                 "required": false,
-                "show": true
+                "show": true,
+                "nargs": [
+                    1,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
             }
         },
         {
@@ -174,6 +183,26 @@
             }
         },
         {
+            "remove": {
+                "action": "store_true",
+                "args": [
+                    "-r",
+                    "--remove"
+                ],
+                "info": "to edit",
+                "required": false,
+                "show": true,
+                "nargs": [
+                    0,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
+            }
+        },
+        {
             "set_bump_deploy": {
                 "action": "store_true",
                 "args": [
@@ -209,6 +238,46 @@
                 ],
                 "required": false,
                 "show": true
+            }
+        },
+        {
+            "update": {
+                "action": "store_true",
+                "args": [
+                    "-u",
+                    "--update"
+                ],
+                "info": "to edit",
+                "required": false,
+                "show": true,
+                "nargs": [
+                    0,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
+            }
+        },
+        {
+            "upgrade": {
+                "action": "store_true",
+                "args": [
+                    "--ug",
+                    "--upgrade"
+                ],
+                "info": "to edit",
+                "required": false,
+                "show": true,
+                "nargs": [
+                    0,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
             }
         }
     ]

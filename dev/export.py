@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 3.4.0
+# version: 4.0.0
 # name: release
 # license: MIT
 import os, sys
@@ -11,16 +11,16 @@ import subprocess
 import shlex
 from pprint import pprint
 
-from dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data
-from dev.refine import get_paths_to_copy, copy_to_destination
-import dev.regex_obj as ro
+from ..dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data
+from ..dev.refine import get_paths_to_copy, copy_to_destination
+from ..dev import regex_obj as ro
 
-import modules.message.message as msg
-from modules.prompt.prompt import prompt_boolean
-from modules.json_config.json_config import Json_config
-import modules.shell_helpers.shell_helpers as shell
+from ..modules.message import message as msg
+from ..modules.prompt.prompt import prompt_boolean
+from ..modules.json_config.json_config import Json_config
+from ..modules.shell_helpers import shell_helpers as shell
 
-def export(dy_rel, args):
+def export(dy_app, args):
     direpa_root=""
     if args["path_src"]:
         direpa_root=get_direpa_root(args["path_src"][0])
@@ -29,7 +29,7 @@ def export(dy_rel, args):
 
     os.chdir(direpa_root)
 
-    dy_app=get_app_meta_data(direpa_root)
+    dy_pkg=get_app_meta_data(direpa_root)
     added_refine_rules=[]
     direpa_dst=""
     previous_branch=""
@@ -49,13 +49,7 @@ def export(dy_rel, args):
                 msg.user_error("You need to provide a release version with --rversion for export release")
                 sys.exit(1)
 
-            # if args["add_deps"] is True:
-            #     msg.warning(
-            #         "--add-deps is not an option for export to release, when path is not provided.",
-            #         "dependencies are not included in this context."
-            #     )
-
-            direpa_dst=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
+            direpa_dst=os.path.join(dy_app["direpa_release"], dy_pkg["name"], version, dy_pkg["name"])
             prompt_for_replace(direpa_dst)
 
         
@@ -63,16 +57,12 @@ def export(dy_rel, args):
             insert_db=True
 
         else:
-            # if args["add_deps"] is False:
-                # added_refine_rules=["/modules/", "/.pkgs/", "/upacks/"]
-
             direpa_dst_root=args["path"][0]
-            direpa_dst=os.path.join(direpa_dst_root, dy_app["name"])
+            direpa_dst=os.path.join(direpa_dst_root, dy_pkg["name"])
             prompt_for_replace(direpa_dst)
 
             if args["release_version"]:
-                # check if release is already in rel
-                direpa_rel_version=os.path.join(dy_rel["direpa_release"], dy_app["name"], version, dy_app["name"])
+                direpa_rel_version=os.path.join(dy_app["direpa_release"], dy_pkg["name"], version, dy_pkg["name"])
                 if os.path.exists(direpa_rel_version): # if exists copy existing 
                     direpa_root=direpa_rel_version
                 else: # else checkout a new one
@@ -87,16 +77,16 @@ def export(dy_rel, args):
 
         added_refine_rules=[]
         if args["path"] is None:
-            direpa_bin=dy_rel["direpa_bin"]
+            direpa_bin=dy_app["direpa_bin"]
         else:
             direpa_bin=args["path"][0]
 
         if args["release_version"] is None: # get current repository state
             direpa_dst=os.path.join(
                 direpa_bin, 
-                "{}_data".format(dy_app["name"]),
+                "{}_data".format(dy_pkg["name"]),
                 "beta", 
-                dy_app["name"])
+                dy_pkg["name"])
             if os.path.exists(direpa_dst):
                 shutil.rmtree(direpa_dst)
             os.makedirs(direpa_dst, exist_ok=True)
@@ -105,36 +95,49 @@ def export(dy_rel, args):
             version=args["release_version"][0]
             direpa_dst=os.path.join(
                 direpa_bin, 
-                "{}_data".format(dy_app["name"]),
+                "{}_data".format(dy_pkg["name"]),
                 version, 
-                dy_app["name"])
+                dy_pkg["name"])
 
             prompt_for_replace(direpa_dst)
 
             previous_branch=checkout_version(version, direpa_root)
 
-    paths=get_paths_to_copy(direpa_root, added_refine_rules)
-    copy_to_destination(paths, direpa_root, direpa_dst)
-
     if insert_db:
-        conf_db=Json_config(os.path.join(dy_rel["direpa_release"], "db.json"))
+        conf_db=Json_config(os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"]))
         filenpa_gpm_json=os.path.join(direpa_root, "gpm.json")
         if not os.path.exists(filenpa_gpm_json):
             shell.cmd_prompt("git checkout "+previous_branch)
             msg.user_error("'{}' not found".format(filenpa_gpm_json))
             sys.exit(1)
         else:
-            dy_app_src=Json_config(filenpa_gpm_json).data
-            conf_db.data.update({
-                "{}|{}|{}".format(dy_app_src["uuid4"], dy_app_src["name"], dy_app_src["version"]
-                    ): dy_app_src["deps"]
+            dy_pkg_src=Json_config(filenpa_gpm_json).data
+            if dy_pkg_src["uuid4"] in conf_db.data["uuid4s"]:
+                if dy_pkg_src["name"] != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
+                    shell.cmd_prompt("git checkout "+previous_branch)
+                    msg.user_error("Failed Insert '{}' with uuid4 '{}' ".format(
+                        dy_pkg_src["name"], dy_pkg_src["uuid4"]),
+                        "In db[uuid4s] same uuid4 has name '{}'".format(conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]),
+                        "You can't have same uuid for different names.")
+                    sys.exit(1)
+            else:
+                conf_db.data["uuid4s"].update({dy_pkg_src["uuid4"]: dy_pkg_src["name"]})
+            
+            conf_db.data["pkgs"].update({
+                "{}|{}|{}".format(dy_pkg_src["uuid4"], dy_pkg_src["name"], dy_pkg_src["version"]
+                    ): dy_pkg_src["deps"]
             })
-            conf_db.set_file_with_data()
+
+    paths=get_paths_to_copy(direpa_root, added_refine_rules)
+    copy_to_destination(paths, direpa_root, direpa_dst)
+
+    if insert_db:
+        conf_db.set_file_with_data()
 
     if direpa_bin:
         if args["no_symlink"] is False:
-            filenpa_exec=os.path.join(direpa_dst, dy_app["filen_main"])
-            filenpa_symlink=os.path.join(direpa_bin, dy_app["name"])
+            filenpa_exec=os.path.join(direpa_dst, dy_pkg["filen_main"])
+            filenpa_symlink=os.path.join(direpa_bin, dy_pkg["name"])
 
             with contextlib.suppress(FileNotFoundError):
                 os.remove(filenpa_symlink)
