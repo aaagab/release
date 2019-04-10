@@ -11,13 +11,13 @@ import subprocess
 import shlex
 from pprint import pprint
 
-from dev.helpers import get_direpa_root, to_be_coded
-from dev.refine import get_paths_to_copy, copy_to_destination
+from ..dev.helpers import get_direpa_root, to_be_coded
+from ..dev.refine import get_paths_to_copy, copy_to_destination
 
-import modules.message.message as msg
-from modules.prompt.prompt import prompt_boolean
-from modules.json_config.json_config import Json_config
-import modules.shell_helpers.shell_helpers as shell
+from ..modules.message import message as msg
+from ..modules.prompt.prompt import prompt_boolean
+from ..modules.json_config.json_config import Json_config
+from ..modules.shell_helpers import shell_helpers as shell
 
 def switch_bin(dy_app, args):
     pkg_name=args["switch_bin"][0]

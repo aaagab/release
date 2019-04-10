@@ -5,9 +5,11 @@
 # license: MIT
 import os, shlex, sys
 import subprocess
-import modules.shell_helpers.shell_helpers as shell
-import modules.message.message as msg
-from modules.json_config.json_config import Json_config
+from ..modules.shell_helpers import shell_helpers as shell
+# from modules.message import message as msg
+from ..modules.message import message as msg
+# from import 
+from ..modules.json_config.json_config import Json_config
 
 
 def get_direpa_root(path=""):
@@ -99,5 +101,8 @@ def get_app_meta_data(direpa_root):
             "Run 'gpm --init --no-db'")
         sys.exit(1)   
 
-def get_pkg_id(dy_pkg):
+def get_pkg_id(dy_pkg, **added):
+    if added:
+        dy_pkg.update(added)
+
     return "{}|{}|{}".format(dy_pkg["uuid4"], dy_pkg["name"], dy_pkg["version"])

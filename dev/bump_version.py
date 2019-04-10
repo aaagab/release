@@ -7,19 +7,19 @@ import os, sys
 import re
 from pprint import pprint
 
-from dev.helpers import get_direpa_root, is_pkg_git
-from dev.refine import get_paths_to_copy, copy_to_destination
-import modules.message.message as msg
-from modules.json_config.json_config import Json_config
+from ..dev.helpers import get_direpa_root, is_pkg_git
+from ..dev.refine import get_paths_to_copy, copy_to_destination
+from ..modules.message import message as msg
+from ..modules.json_config.json_config import Json_config
 
 def bump_version(version):
     direpa_root=get_direpa_root()
     
     paths=get_paths_to_copy(direpa_root, [
         ".refine",
-        "/modules/",
-        "/.pkgs/",
-        "/gpkgs/",
+        "modules/",
+        ".pkgs/",
+        "gpkgs/",
         "*.db"
     ])
     for path in paths:

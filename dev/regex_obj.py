@@ -1,6 +1,6 @@
 import re
 # import git_helpers.git_utils as git
-import modules.message.message as msg
+from ..modules.message import message as msg
 import sys
 import textwrap
 
@@ -44,6 +44,24 @@ class Version_regex(Regex_obj):
             return True
         else:
             return False
+
+    def compare(self, reg_pkg):
+        if self.major < reg_pkg.major:
+            return "smaller"
+        elif self.major == reg_pkg.major:
+            if self.minor < reg_pkg.minor:
+                return "smaller"
+            elif self.minor == reg_pkg.minor:
+                if self.patch < reg_pkg.patch:
+                    return "smaller"
+                elif self.patch == reg_pkg.patch:
+                    return "equals"
+                elif self.patch > reg_pkg.patch:
+                    return "bigger"
+            elif self.minor > reg_pkg.minor:
+                return "bigger"
+        elif self.major > reg_pkg.major:
+            return "bigger"
 
     def print_error(self):
         msg.user_error("'{}' does not follow regex '{}'".format(self.text, self.string))
@@ -220,11 +238,11 @@ class Version_filter_regex(Regex_obj):
         
         return self
 
-    def equals(self, dct_reg_pkgs):
-        if dct_reg_pkgs["reg_version"].major_minor_patch == self.major_minor_patch:
+    def equals(self, reg_pkg):
+        if reg_pkg.major_minor_patch == self.major_minor_patch:
             return True
         else:
-            return False
+            return False     
 
     def print_error(self):
         msg.user_error("'{}' does not follow regex '{}'".format(self.text, self.string))

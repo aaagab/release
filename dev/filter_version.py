@@ -9,12 +9,12 @@ from pprint import pprint
 import inspect
 import json
 
-import modules.message.message as msg
-from modules.prompt.prompt import prompt_boolean
-from modules.json_config.json_config import Json_config
-import modules.shell_helpers.shell_helpers as shell
+from ..modules.message import message as msg
+from ..modules.prompt.prompt import prompt_boolean
+from ..modules.json_config.json_config import Json_config
+from ..modules.shell_helpers import shell_helpers as shell
 from . import regex_obj as ro
-from gpkgs.sort_separated import sort_separated
+from ..gpkgs.sort_separated import sort_separated
 
 def get_preselected(reg_versions, version_component, reg_version_ftr ):
     if version_component == "major":

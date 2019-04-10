@@ -7,16 +7,16 @@ import os, sys
 from pprint import pprint
 import shutil
 
-from modules.json_config.json_config import Json_config
-from modules.prompt.prompt import prompt_multiple
-import modules.message.message as msg
-from modules.prompt.prompt import prompt_boolean
+from ..modules.json_config.json_config import Json_config
+from ..modules.prompt.prompt import prompt_multiple
+from ..modules.message import message as msg
+from ..modules.prompt.prompt import prompt_boolean
 
 from .search import search
 from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
 from .refine import get_paths_to_copy, copy_to_destination
 from .check_pkg_integrity import check_pkg_integrity
-
+from ..gpkgs.sort_separated import sort_separated
 
 # ./__init__.py -i message,a.a.a prompt
 
@@ -26,8 +26,8 @@ def import_pkgs(dy_app):
         db=Json_config(filenpa_json_repo).data
 
         direpa_root=get_direpa_root()
-        direpa_pkgs=os.path.join(direpa_root, dy_app["diren_pkgs"])
-        os.makedirs(direpa_pkgs, exist_ok=True)
+        # direpa_pkgs=os.path.join(direpa_root, dy_app["diren_pkgs"])
+        # os.makedirs(direpa_pkgs, exist_ok=True)
         pkg_filters=dy_app["args"]["import_pkgs"]
         for pkg_filter in pkg_filters:
 
@@ -42,7 +42,7 @@ def import_pkgs(dy_app):
 
             tmp_filter="n:{}".format(name)
             if version:
-                tmp_filter+=",v:{}".format(version[0])
+                tmp_filter+=",v:{}".format(version)
             else:
                 tmp_filter+=",v:L.L.L"
 
@@ -104,6 +104,16 @@ def import_pkgs(dy_app):
                         "version": chosen_version
                     }
                     
+            if bound:
+                bounds=["gpm", "sys"]
+                if bound not in bounds:
+                    msg.user_error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, bound, "', '".join(bounds)))
+                    sys.exit(1)
+            else:
+                bound="gpm"
+
+            chosen_pkg.update(dict(bound=bound))
+
             direpa_src=os.path.join(dy_app["direpa_release"], chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
             direpa_dst=os.path.join(direpa_root, dy_app["diren_pkgs"], chosen_pkg["name"])
             filenpa_dst_root=os.path.join(direpa_root, dy_app["filen_json_app"])
@@ -116,117 +126,44 @@ def import_pkgs(dy_app):
             if os.path.exists(direpa_dst):
                 check_pkg_integrity(dy_app, direpa_dst)
 
-
- 
-
-            # first check if existing related package in db and in gpkgs
-            # check db
-
-            save_conf=False
-            delete_existing=False 
             conf_app=Json_config(filenpa_dst_root)
 
-            existing_pkg=""
+            to_install=True
             delete_index=""
+
             for d, dep in enumerate(conf_app.data["deps"]):
-                if "{}|{}".format(chosen_pkg["uuid4"], chosen_pkg["name"]) in dep:
-                    ex_uuid4, ex_name, ex_version, ex_bound = dep.split("|")
-                    
+                ex_uuid4, ex_name, ex_version, ex_bound = dep.split("|")
+
+                if chosen_pkg["name"] == ex_name:
                     msg.warning("'{}' already exists in destination '{}'.".format(chosen_pkg["name"], dy_app["filen_json_app"]),
-                        "- existing 'v{}' with bound '{}'".format(ex_version, ex_bound),
-                        "-   import 'v{}' with bound '{}'".format(chosen_pkg["version"], chosen_pkg["bound"]))
+                        "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
+                        "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
 
                     if prompt_boolean("Do you want to replace it", "Y"):
                         delete_index=d
                         break
-            
-            if delete_index != "":
-                del conf_app.data["deps"][delete_index]
-                save_conf=True
-                delete_existing=True
+                    else:
+                        to_install=False
+                        break
 
-            if os.path.exists(direpa_dst):
-                if delete_existing is True:
+            if to_install is False:
+                continue
+            else:
+                if delete_index != "":
+                    del conf_app.data["deps"][delete_index]
                     shutil.rmtree(direpa_dst)
 
-            sys.exit()
-            # check folder
-
-
-
-            if bound:
-                bounds=["gpm", "sys"]
-                if bound not in bounds:
-                    msg.user_error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, bound, "', '".join(bounds)))
-                    sys.exit(1)
-            else:
-                bound="gpm"
-
-            insert_db=""
-            copy_folder=""
-
-            if bound == "sys":
-                insert_db=True
-                copy_folder=False
-                # remove if existing similar.
-
-            elif bound == "gpm":
-                copy_folder=True
-                if os.path.exists(direpa_dst):
-                    pass
-                    # copy_folder=False
-                    
-                    #     os.makedirs(direpa_dst, exist_ok=True)
-                    #     copy_folder=True
-                    # else:
-                    #     msg.warning("'{} v{}' not imported.".format(chosen_pkg["name"], chosen_pkg["version"]))
-
-            if insert_db is True:
-                conf_app=Json_config(filenpa_dst_root)
                 dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), bound)
-                print(dep_to_insert)
-                # conf_app.data["deps"].append()
+                conf_app.data["deps"].append(dep_to_insert)
+                conf_app.data["deps"]=sort_separated(conf_app.data["deps"], sort_order=[1,0,2,3], keep_sort_order=False, separator="|")
+                conf_app.set_file_with_data()
 
-                # check if existing related entry
-                # for dep in conf_app.data["deps"]:
-                    # if 
+                if bound == "gpm":
+                    paths=get_paths_to_copy(direpa_src)
+                    copy_to_destination(paths, direpa_src, direpa_dst)
 
-
-            if copy_folder is True:
-                paths=get_paths_to_copy(direpa_src)
-                copy_to_destination(paths, direpa_src, direpa_dst)
-
-            
-
-                # pprint(conf_app.data)
-                # print(get_pkg_id(chosen_pkg))
-
-
-
+                msg.success("Package '{}' installed in '{}'".format(chosen_pkg["name"], os.path.dirname(direpa_dst)))
     else:
         msg.user_error("'{}' is not a git repository".format(os.getcwd()))
         sys.exit(1)
     
-
-
-
-
-    # pkg_filters=dy_app["args"]["ls_repo"]
-    # filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
-    # pkg_name_and_versions=[]
-    # name_uuids={}
-    # db=Json_config(filenpa_json_repo).data
-
-    # selected_pkgs=[]
-    # if pkg_filters is True:
-    #     selected_pkgs=search(db["pkgs"], [])
-    # else:
-    #     for ftr in pkg_filters:
-    #         selected_pkgs=search(db["pkgs"], ftr)
-
-    # for pkg in selected_pkgs:
-    #     print(pkg["id"])
-    #     if dy_app["args"]["add_deps"] is True:
-    #         deps=db["pkgs"][pkg["id"]]
-    #         for dep in deps:
-    #             print("\t", dep)

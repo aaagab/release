@@ -8,12 +8,12 @@ import re
 from pprint import pprint
 import json
 
-from dev.helpers import get_direpa_root, is_pkg_git
-from dev.refine import get_paths_to_copy, copy_to_destination
-import modules.message.message as msg
-import modules.shell_helpers.shell_helpers as shell
-from modules.json_config.json_config import Json_config
-from modules.prompt.prompt import prompt_boolean, prompt
+from ..dev.helpers import get_direpa_root, is_pkg_git
+from ..dev.refine import get_paths_to_copy, copy_to_destination
+from ..modules.message import message as msg
+from ..modules.shell_helpers import shell_helpers as shell
+from ..modules.json_config.json_config import Json_config
+from ..modules.prompt.prompt import prompt_boolean, prompt
 
 def set_bump_deploy(dy_app):
     filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
