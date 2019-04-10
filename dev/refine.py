@@ -10,8 +10,8 @@ import re
 import glob
 import shutil
 
-import dev.glob as my_glob
-from dev.helpers import is_pkg_git
+from ..dev import glob as my_glob
+from ..dev.helpers import is_pkg_git
 
 def copy_to_destination(paths, direpa_src, direpa_dst):
 	os.makedirs(direpa_dst, exist_ok=True)

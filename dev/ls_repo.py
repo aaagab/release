@@ -6,7 +6,7 @@
 import os, sys
 from pprint import pprint
 
-from modules.json_config.json_config import Json_config
+from ..modules.json_config.json_config import Json_config
 from .search import search
 
 def ls_repo(dy_app):

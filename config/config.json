@@ -183,6 +183,26 @@
             }
         },
         {
+            "remove": {
+                "action": "store_true",
+                "args": [
+                    "-r",
+                    "--remove"
+                ],
+                "info": "to edit",
+                "required": false,
+                "show": true,
+                "nargs": [
+                    0,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
+            }
+        },
+        {
             "set_bump_deploy": {
                 "action": "store_true",
                 "args": [
@@ -218,6 +238,46 @@
                 ],
                 "required": false,
                 "show": true
+            }
+        },
+        {
+            "update": {
+                "action": "store_true",
+                "args": [
+                    "-u",
+                    "--update"
+                ],
+                "info": "to edit",
+                "required": false,
+                "show": true,
+                "nargs": [
+                    0,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
+            }
+        },
+        {
+            "upgrade": {
+                "action": "store_true",
+                "args": [
+                    "--ug",
+                    "--upgrade"
+                ],
+                "info": "to edit",
+                "required": false,
+                "show": true,
+                "nargs": [
+                    0,
+                    2
+                ],
+                "params_required": [
+                    "PKG",
+                    "..."
+                ]
             }
         }
     ]
