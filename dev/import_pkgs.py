@@ -48,7 +48,10 @@ def import_pkgs(dy_app):
 
             selected_pkgs=search(db["pkgs"], tmp_filter)
             chosen_pkg={}
-            if len(selected_pkgs) == 1:
+            if not selected_pkgs:
+                msg.warning("No package found with filter '{}' in  db.json from repository".format(pkg_filter))
+                continue
+            elif len(selected_pkgs) == 1:
                 chosen_pkg={
                     "name": name,
                     "uuid4": selected_pkgs[0]["uuid4"],
