@@ -55,7 +55,6 @@ def export(dy_app, args):
         
             previous_branch=checkout_version(version, direpa_root)
             insert_db=True
-
         else:
             direpa_dst_root=args["path"][0]
             direpa_dst=os.path.join(direpa_dst_root, dy_pkg["name"])
