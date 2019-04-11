@@ -4,58 +4,14 @@
 # name: release
 # license: MIT
 
-# import sys, os
-# from pprint import pprint
-
-
-# import importlib
-# importlib.reload(sys)
-
 if __name__ == "__main__":
     import sys, os
     import importlib
     direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
-    # import importlib.util
-    # spec = importlib.util.spec_from_file_location(module_name, direpa_script_parent)
-    # foo = importlib.util.module_from_spec(spec)
-    # spec.loader.exec_module(foo)
     sys.path.insert(0, direpa_script_parent)
     pkg = importlib.import_module(module_name)
     del sys.path[0]
-    # import app as pkg
-    
-    # from pprint import pprint
-
-    # from ..gpkgs import message as msg
-    # from modules.options import options as ops
-    # from ..modules.json_config.json_config import Json_config
-    # from ..dev.bump_version import bump_version
-    # from ..dev.import_pkgs import import_pkgs
-    # from ..dev.generate_db import generate_db
-    # from ..dev.ls_repo import ls_repo
-    # from ..dev.set_bump_deploy import set_bump_deploy
-    # from ..dev.switch_bin import switch_bin
-    # from ..dev.steps import steps
-    # from ..dev.export import export
-    # from ..dev.export import export
-    # from ..dev.remove import remove
-    # from ..dev.update_upgrade import update_upgrade
-    # from ..dev.update_upgrade import update_upgrade
-
-    # direpa_pkg=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-    # sys.path.insert(0, direpa_pkg)
-    # try:
-    #     import src as pkg
-    # except Exception as e:
-    #     print(e)
-    # #     if hasattr(e, 'message'):
-    # #         print(e.message)
-    # #     else:
-    # #         print(e.__traceback__)
-    #     import release as pkg
-    # del sys.path[0]
-
     
     filenpa_script=os.path.realpath(__file__)
     direpa_script=os.path.dirname(filenpa_script)
