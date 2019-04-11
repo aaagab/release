@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.0.0
+# version: 4.0.1
 # name: release
 # license: MIT
 import os, sys
@@ -55,7 +55,6 @@ def export(dy_app, args):
         
             previous_branch=checkout_version(version, direpa_root)
             insert_db=True
-
         else:
             direpa_dst_root=args["path"][0]
             direpa_dst=os.path.join(direpa_dst_root, dy_pkg["name"])

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.0.0
+# version: 4.0.1
 # name: release
 # license: MIT
 import os, sys
@@ -116,49 +116,52 @@ def search(pkgs, pkg_filter):
                 versions=[pkg["version"] for pkg in pre_pkgs if pkg["uuid4"] == uuid4]
                 selected_versions=filter_version(versions, dy_filter["version_ftr"])
                 selected_pkgs.extend([pkg for pkg in pre_selected_pkgs if pkg["version"] in selected_versions])
-        
-    # sort by name, uuid, and version (reg and non reg)
-    package_ids=[pkg["id"] for pkg in selected_pkgs]
-    # pprint(package_ids)
-    presort_ids=sort_separated(package_ids, separator="|", sort_order=[1,0,2], keep_sort_order=False)
-    # print()
-    # pprint(presort_ids)
-    presort_packages=[]
-    uuid4s=[]
-    for presort_id in presort_ids:
-        pkg=[pkg for pkg in selected_pkgs if pkg["id"] == presort_id][0]
-        if pkg["uuid4"] not in uuid4s:
-            uuid4s.append(pkg["uuid4"])
-        presort_packages.append(pkg)
+    
+    if selected_pkgs:
+        # sort by name, uuid, and version (reg and non reg)
+        package_ids=[pkg["id"] for pkg in selected_pkgs]
+        # pprint(package_ids)
+        presort_ids=sort_separated(package_ids, separator="|", sort_order=[1,0,2], keep_sort_order=False)
+        # print()
+        # pprint(presort_ids)
+        presort_packages=[]
+        uuid4s=[]
+        for presort_id in presort_ids:
+            pkg=[pkg for pkg in selected_pkgs if pkg["id"] == presort_id][0]
+            if pkg["uuid4"] not in uuid4s:
+                uuid4s.append(pkg["uuid4"])
+            presort_packages.append(pkg)
 
-    # print()
-    sorted_pkgs=[]
-    for uuid4 in uuid4s:
-        # print(uuid4)
-        reg_version_pkgs=[]
-        non_reg_version_pkgs=[]
-        uuid4_pkgs=[pkg for pkg in presort_packages if pkg["uuid4"] == uuid4]
-        for pkg in uuid4_pkgs:
-            if ro.Version_regex(pkg["version"]).match:
-                reg_version_pkgs.append(pkg)
-            else:
-                non_reg_version_pkgs.append(pkg)
+        # print()
+        sorted_pkgs=[]
+        for uuid4 in uuid4s:
+            # print(uuid4)
+            reg_version_pkgs=[]
+            non_reg_version_pkgs=[]
+            uuid4_pkgs=[pkg for pkg in presort_packages if pkg["uuid4"] == uuid4]
+            for pkg in uuid4_pkgs:
+                if ro.Version_regex(pkg["version"]).match:
+                    reg_version_pkgs.append(pkg)
+                else:
+                    non_reg_version_pkgs.append(pkg)
 
-        if reg_version_pkgs:
-            sorted_indexes=sort_separated([pkg["version"] for pkg in reg_version_pkgs], get_index=True)
-            for index in sorted_indexes:
-                sorted_pkgs.append(reg_version_pkgs[index])
+            if reg_version_pkgs:
+                sorted_indexes=sort_separated([pkg["version"] for pkg in reg_version_pkgs], get_index=True)
+                for index in sorted_indexes:
+                    sorted_pkgs.append(reg_version_pkgs[index])
 
-        if non_reg_version_pkgs:
-            sorted_indexes=[index for index in sorted(range(len(non_reg_version_pkgs)), key=lambda k: non_reg_version_pkgs[k])]
-            for index in sorted_indexes:
-                sorted_pkgs.append(non_reg_version_pkgs[index])
+            if non_reg_version_pkgs:
+                sorted_indexes=[index for index in sorted(range(len(non_reg_version_pkgs)), key=lambda k: non_reg_version_pkgs[k])]
+                for index in sorted_indexes:
+                    sorted_pkgs.append(non_reg_version_pkgs[index])
 
     # print()
     # for pkg in sorted_pkgs:
         # print(pkg["id"])
 
-    return sorted_pkgs
+        return sorted_pkgs
+    else:
+        return []
 
 def get_dy_filter_part(ftr_component):
     identifiers=["b", "n", "u", "v"]
