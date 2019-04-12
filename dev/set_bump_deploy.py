@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.1.1
+# version: 4.1.2
 # name: release
 # license: MIT
 import os, sys
@@ -14,6 +14,13 @@ from ..modules.message import message as msg
 from ..modules.shell_helpers import shell_helpers as shell
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_boolean, prompt
+
+def create_symlink(filenpa_src, filenpa_dst):
+    os.symlink(
+        filenpa_src,
+        filenpa_dst
+    )
+    msg.success("symlink '{}' set.".format(os.path.basename(filenpa_src)))
 
 def set_bump_deploy(dy_app):
     filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
@@ -50,18 +57,19 @@ def set_bump_deploy(dy_app):
             with open(filenpa_original, "w") as f:
                 msg.success("'{}' created.".format(filenpa_original))
 
+        newly_created=False
+        if not os.path.exists(filenpa_symlink):
+            create_symlink(filenpa_original, filenpa_symlink)
+            newly_created=True
+        
         if os.path.islink(filenpa_symlink):
-            # repair link
-            os.remove(filenpa_symlink)
-            os.symlink(
-                filenpa_original,
-                filenpa_symlink
-            )
-            msg.success("link '{}' checked.".format(filen))
+            if newly_created is False:
+                os.remove(filenpa_symlink)
+                create_symlink(filenpa_original, filenpa_symlink)
 
-            msg.warning("'{}' already exists.".format(filen))
-            if not prompt_boolean("Do you want to overwrite it with default values"):
-                continue
+                msg.warning("'{}' already exists.".format(filen))
+                if not prompt_boolean("Do you want to overwrite it with default values"):
+                    continue
                     
             if filen == "bump_version.py":
                 data=get_default_bump_version_file()
