@@ -26,6 +26,8 @@ if __name__ == "__main__":
 
     conf.data["args"]=vars(args)
 
+    pkg.check_repo(conf.data)
+
     if args.help:
         print(this_help)
         sys.exit(0)
