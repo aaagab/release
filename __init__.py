@@ -4,6 +4,8 @@
 # name: release
 # license: MIT
 
+__version__ = "4.1.0"
+
 from .gpkgs import message as msg
 from .modules.options import options as ops
 from .modules.json_config.json_config import Json_config
@@ -15,7 +17,7 @@ from .dev.set_bump_deploy import set_bump_deploy
 from .dev.switch_bin import switch_bin
 from .dev.steps import steps
 from .dev.export import export
-from .dev.export import export
+from .dev.check_repo import check_repo
 from .dev.remove import remove
 from .dev.update_upgrade import update_upgrade
 from .dev.update_upgrade import update_upgrade
