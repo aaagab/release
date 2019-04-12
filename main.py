@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.1.0
+# version: 4.1.1
 # name: release
 # license: MIT
 
@@ -25,6 +25,8 @@ if __name__ == "__main__":
     args, this_help=pkg.ops.get_args(sys.argv, conf_options.data)
 
     conf.data["args"]=vars(args)
+
+    pkg.check_repo(conf.data)
 
     if args.help:
         print(this_help)
