@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.2
+# version: 4.4.3
 # name: release
 # license: MIT
 import os, shlex, sys
@@ -80,7 +80,8 @@ def to_be_coded(text=""):
 
 def create_symlink(platform, filenpa_exec, filenpa_symlink ):
     if platform == "Windows":
-        filenpa_symlink=filenpa_symlink+".py"
+        if os.path.splitext(filenpa_symlink)[1] == "":
+            filenpa_symlink=filenpa_symlink+".py"
         
     with contextlib.suppress(FileNotFoundError):
         os.remove(filenpa_symlink)
