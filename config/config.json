@@ -138,6 +138,25 @@
             }
         },
         {
+            "packages": {
+                "action": "store_true",
+                "args": [
+                    "--pkgs",
+                    "--packages"
+                ],
+                "info": "get packages to be used as filter for search, import, ...",
+                "nargs": [
+                    1
+                ],
+                "params_optional": [
+                    "NAME",
+                    "..."
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
             "path": {
                 "action": "store_true",
                 "args": [
@@ -159,6 +178,21 @@
                     "--path-src"
                 ],
                 "info": "Select source path for export_bin or export_rel. When this path is selected the application move to this directory before starting processing the command.",
+                "nargs": 1,
+                "params_required": [
+                    "PATH"
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "to_repo": {
+                "action": "store_true",
+                "args": [
+                    "--to-repo"
+                ],
+                "info": "Send Package from repo to another",
                 "nargs": 1,
                 "params_required": [
                     "PATH"
