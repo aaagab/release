@@ -79,6 +79,9 @@ def to_be_coded(text=""):
     sys.exit(1)
 
 def create_symlink(platform, filenpa_exec, filenpa_symlink ):
+    if platform == "Windows":
+        filenpa_symlink=filenpa_symlink+".py"
+        
     with contextlib.suppress(FileNotFoundError):
         os.remove(filenpa_symlink)
     
