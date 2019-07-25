@@ -39,7 +39,7 @@ def set_bump_deploy(dy_app):
             "This is not a gitframe project structure.")
         sys.exit(1)
 
-    username=shell.cmd_get_value("git config user.name")
+    username=shell.cmd_get_value("git config --local user.name")
     if not username:
         msg.user_error("username has not been set for git folder '{}'.".format(direpa_src))
         sys.exit(1)
