@@ -29,10 +29,10 @@ if __name__ == "__main__":
     args, this_help=pkg.ops.get_args(sys.argv, conf_options.data)
 
     conf.data["args"]=vars(args)
-
-    if platform.system() == "Linux":
+    cond.data["platform"]=platform.system()
+    if conf.data["platform"] == "Linux":
         pass
-    elif platform.system() == "Windows":
+    elif conf.data["platform"] == "Windows":
         conf.data["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
         conf.data["direpa_release"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
 

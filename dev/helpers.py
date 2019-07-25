@@ -4,6 +4,7 @@
 # name: release
 # license: MIT
 import os, shlex, sys
+import contextlib
 import subprocess
 from ..modules.shell_helpers import shell_helpers as shell
 # from modules.message import message as msg
@@ -76,6 +77,21 @@ def to_be_coded(text=""):
     else:
         msg.app_error("To be coded: '{}'".format(text))
     sys.exit(1)
+
+def create_symlink(platform, filenpa_exec, filenpa_symlink )
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filenpa_symlink)
+    
+    if platform == "Linux":
+        os.symlink( filenpa_exec, filenpa_symlink)
+    elif platform == "Windows":
+        cmd='mklink "{}" "{}"'.format(filenpa_symlink, filenpa_exec)
+        if os.system(cmd) != 0:
+            print("Error When creating link '{}'".format(filenpa_symlink))
+            sys.exit(1)
+    
+    msg.success("symlink '{}' set.".format(filenpa_symlink))
+
 
 def get_app_meta_data(direpa_root):
     keys=["name", "filen_main", "version"]
