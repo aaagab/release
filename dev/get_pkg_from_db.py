@@ -20,10 +20,7 @@ from ..gpkgs.sort_separated import sort_separated
 
 # ./__init__.py -i message,a.a.a prompt
 
-def choose_pkg_cli(dy_app, action, pkg_filter):
-    filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
-    db=Json_config(filenpa_json_repo).data
-    
+def get_pkg_from_db(db, dy_app, pkg_filter):
     components=pkg_filter.split(",")
     name=components[0]
     version=""
@@ -41,7 +38,10 @@ def choose_pkg_cli(dy_app, action, pkg_filter):
 
     selected_pkgs=search(db["pkgs"], tmp_filter)
     chosen_pkg={}
-    if len(selected_pkgs) == 1:
+    if not selected_pkgs:
+        msg.warning("No package found with filter '{}' in  db.json from repository".format(pkg_filter))
+        return None
+    elif len(selected_pkgs) == 1:
         chosen_pkg={
             "name": name,
             "uuid4": selected_pkgs[0]["uuid4"],
@@ -106,5 +106,4 @@ def choose_pkg_cli(dy_app, action, pkg_filter):
         bound="gpm"
 
     chosen_pkg.update(dict(bound=bound))
-
     return chosen_pkg

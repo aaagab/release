@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.1.2
+# version: 4.2.0
 # name: release
 # license: MIT
 
-__version__ = "4.1.2"
+__version__ = "4.2.0"
 
 from .gpkgs import message as msg
 from .modules.options import options as ops
@@ -16,6 +16,7 @@ from .dev.ls_repo import ls_repo
 from .dev.set_bump_deploy import set_bump_deploy
 from .dev.switch_bin import switch_bin
 from .dev.steps import steps
+from .dev.to_repo import to_repo
 from .dev.export import export
 from .dev.check_repo import check_repo
 from .dev.remove import remove

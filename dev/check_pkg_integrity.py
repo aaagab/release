@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.1.2
+# version: 4.2.0
 # name: release
 # license: MIT
 import os, sys
+import logging
 from pprint import pprint
 import shutil
 
@@ -110,11 +111,19 @@ def check_pkg_integrity(dy_app, direpa_pkg):
 
 
 def get_json_data(filenpa_json):
+    logger = logging.Logger('catch_all')
+
     if not os.path.exists(filenpa_json):
         msg.user_error("'{}' not found.".format(filenpa_json))
         sys.exit(1)
 
-    data=Json_config(filenpa_json).data
+    try:
+        print(filenpa_json)
+        data=Json_config(filenpa_json).data
+    except BaseException as e:
+        msg.user_error("There is a syntax error in '{}'".format(filenpa_json))
+        logger.error(e, exc_info=True)
+        sys.exit(1)
 
     for field in ["name", "version", "uuid4", "deps"]:
         if not field in data:
