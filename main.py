@@ -4,9 +4,13 @@
 # name: release
 # license: MIT
 
+from pprint import pprint
+
 if __name__ == "__main__":
     import sys, os
     import importlib
+    import getpass  
+    import platform
     direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
     sys.path.insert(0, direpa_script_parent)
@@ -25,6 +29,13 @@ if __name__ == "__main__":
     args, this_help=pkg.ops.get_args(sys.argv, conf_options.data)
 
     conf.data["args"]=vars(args)
+
+    pprint(conf.data)
+    if platform.system() == "Linux":
+        pass
+    elif platform.system() == "Windows":
+        conf.data["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
+        conf.data["direpa_release"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
 
     pkg.check_repo(conf.data)
 
@@ -70,6 +81,11 @@ if __name__ == "__main__":
 
     if args.remove:
         pkg.remove(conf.data)
+        sys.exit(0)
+
+    if args.to_repo:
+        # print("New start")
+        pkg.to_repo(conf.data, vars(args))
         sys.exit(0)
 
     if args.update:

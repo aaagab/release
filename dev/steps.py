@@ -14,7 +14,7 @@ def steps():
 	steps= """
 		create folder
 		gf --anp
-			user@domain:/apps/f/{app_name}/_1/{app_name}/
+			user@domain:/apps/{first_app_name_char}/{app_name}/1
 		release --set-bump-deploy
 		sj --so {app_name}
 
@@ -31,6 +31,41 @@ __pycache__/
 *.pyc
 modules/
 gpkgs/
+
+		if existing folder:
+			git checkout develop
+			git merge release-1.0.0
+			git branch --delete release-1.0.0
+			git push origin --delete release-1.0.0
+			gf -o # features branch 'at work'
+
+			for gitignore:
+				git rm -r --cached . 
+				git add .
+
+			create __init__.py:
+#!/usr/bin/env python3
+# author: {author}
+# version: {version}
+# name: {app_name}
+# license: {licence}
+__version__ = "{version}"
+
+			create main.py, or test.py
+#!/usr/bin/env python3
+# author: {author}
+# version: {version}
+# name: {app_name}
+# license: {licence}
+
+if __name__ == "__main__":
+    import sys, os
+    import importlib
+    direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.insert(0, direpa_script_parent)
+    pkg = importlib.import_module(module_name)
+    del sys.path[0]
 			
 			.refine
 __pycache__/
@@ -44,19 +79,10 @@ __pycache__/
 
 		add headers to them
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 0.1.0
+# author: {author}
+# version: {version}
 # name: {app_name}
-# license: MIT
-
-		create a test.py
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-try:
-    from src import ft
-except:
-    from format_text import ft
-del sys.path[0]
+# license: {licence}
 
 touch .gitignore
 touch .refine

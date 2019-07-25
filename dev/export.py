@@ -11,6 +11,8 @@ import subprocess
 import shlex
 from pprint import pprint
 
+from .check_repo import check_repo
+
 from ..dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data
 from ..dev.refine import get_paths_to_copy, copy_to_destination
 from ..dev import regex_obj as ro
@@ -20,16 +22,16 @@ from ..modules.prompt.prompt import prompt_boolean
 from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
 
-def export(dy_app, args):
+def export(dy_app, args, dy_pkg=None, direpa_rel=None):
     direpa_root=""
+
     if args["path_src"]:
         direpa_root=get_direpa_root(args["path_src"][0])
     else:
         direpa_root=get_direpa_root()
 
     os.chdir(direpa_root)
-
-    dy_pkg=get_app_meta_data(direpa_root)
+    # dy_pkg=None
     added_refine_rules=[]
     direpa_dst=""
     previous_branch=""
@@ -37,7 +39,7 @@ def export(dy_app, args):
     insert_db=False
 
     if args["export_rel"] is True:
-        
+        dy_pkg=get_app_meta_data(direpa_root)
         if args["release_version"]:
             version=args["release_version"][0]
 
@@ -68,6 +70,8 @@ def export(dy_app, args):
                     previous_branch=checkout_version(version, direpa_root)
 
     elif args["export_bin"] is True:
+        dy_pkg=get_app_meta_data(direpa_root)
+
         if args["add_deps"] is True:
             msg.warning(
                 "--add-deps is not an option for export to bin",
@@ -101,19 +105,32 @@ def export(dy_app, args):
             prompt_for_replace(direpa_dst)
 
             previous_branch=checkout_version(version, direpa_root)
+    elif direpa_rel is not None:
+        direpa_root=os.path.join(dy_app["direpa_release"], dy_pkg["name"], dy_pkg["version"], dy_pkg["name"])
+        direpa_dst=os.path.join(direpa_rel, dy_pkg["name"], dy_pkg["version"], dy_pkg["name"])
+        prompt_for_replace(direpa_dst)
+        insert_db=True
 
     if insert_db:
-        conf_db=Json_config(os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"]))
+        conf_db=None
+        if direpa_rel is not None:
+            check_repo(dy_app, direpa_rel)
+            conf_db=Json_config(os.path.join(direpa_rel, dy_app["filen_json_repo"]))
+        else:
+            conf_db=Json_config(os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"]))
+        
         filenpa_gpm_json=os.path.join(direpa_root, "gpm.json")
         if not os.path.exists(filenpa_gpm_json):
-            shell.cmd_prompt("git checkout "+previous_branch)
+            if previous_branch:
+                shell.cmd_prompt("git checkout "+previous_branch)
             msg.user_error("'{}' not found".format(filenpa_gpm_json))
             sys.exit(1)
         else:
             dy_pkg_src=Json_config(filenpa_gpm_json).data
             if dy_pkg_src["uuid4"] in conf_db.data["uuid4s"]:
                 if dy_pkg_src["name"] != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
-                    shell.cmd_prompt("git checkout "+previous_branch)
+                    if previous_branch:
+                        shell.cmd_prompt("git checkout "+previous_branch)
                     msg.user_error("Failed Insert '{}' with uuid4 '{}' ".format(
                         dy_pkg_src["name"], dy_pkg_src["uuid4"]),
                         "In db[uuid4s] same uuid4 has name '{}'".format(conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]),
