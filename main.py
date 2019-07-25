@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.3.2
+# version: 4.3.3
 # name: release
 # license: MIT
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     args, this_help=pkg.ops.get_args(sys.argv, conf_options.data)
 
     conf.data["args"]=vars(args)
-    cond.data["platform"]=platform.system()
+    conf.data["platform"]=platform.system()
     if conf.data["platform"] == "Linux":
         pass
     elif conf.data["platform"] == "Windows":
