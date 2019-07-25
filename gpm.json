@@ -4,8 +4,7 @@
     ],
     "deps": [
         "cf09346e-b436-4259-b6dd-e56516b508a5|message|2.0.3|gpm",
-        "2bc6fae5-9e7a-4181-9b6a-3ae35409f8e2|sort_separated|0.1.0|gpm",
-        "08915897-3988-465e-b898-4fc3c791d421|tail|1.0.0|gpm"
+        "2bc6fae5-9e7a-4181-9b6a-3ae35409f8e2|sort_separated|0.1.0|gpm"
     ],
     "description": "This is a small package manager that is developped on the side for my current needs until I finish coding the 'Generic Package Manager'",
     "diren_pkgs": "gpkgs",
@@ -22,5 +21,5 @@
     ],
     "name": "release",
     "uuid4": "76dda070-6616-4716-808e-52921203da9d",
-    "version": "4.2.0"
+    "version": "4.2.1"
 }
