@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.2.1
+# version: 4.3.0
 # name: release
 # license: MIT
 import os, sys
@@ -13,7 +13,7 @@ from pprint import pprint
 
 from .check_repo import check_repo
 
-from ..dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data
+from ..dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data, create_symlink
 from ..dev.refine import get_paths_to_copy, copy_to_destination
 from ..dev import regex_obj as ro
 
@@ -155,10 +155,8 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
             filenpa_exec=os.path.join(direpa_dst, dy_pkg["filen_main"])
             filenpa_symlink=os.path.join(direpa_bin, dy_pkg["name"])
 
-            with contextlib.suppress(FileNotFoundError):
-                os.remove(filenpa_symlink)
+            create_symlink(dy_app["platform"], filenpa_exec, filenpa_symlink )
 
-            os.symlink( filenpa_exec, filenpa_symlink)
 
     if previous_branch:
         shell.cmd_prompt("git checkout "+previous_branch)
