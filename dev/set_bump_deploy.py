@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.1
+# version: 4.4.2
 # name: release
 # license: MIT
 import os, sys
@@ -32,6 +32,7 @@ def set_bump_deploy(dy_app):
         sys.exit(1)
 
     os.chdir(direpa_src)
+    username=shell.cmd_get_value("git config --local user.name")
     os.chdir(direpa_current)
     direpa_mgt=os.path.join(direpa_current, "mgt")
     if not os.path.exists(direpa_mgt):
@@ -39,7 +40,6 @@ def set_bump_deploy(dy_app):
             "This is not a gitframe project structure.")
         sys.exit(1)
 
-    username=shell.cmd_get_value("git config --local user.name")
     if not username:
         msg.user_error("username has not been set for git folder '{}'.".format(direpa_src))
         sys.exit(1)
