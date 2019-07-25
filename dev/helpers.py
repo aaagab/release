@@ -78,7 +78,7 @@ def to_be_coded(text=""):
         msg.app_error("To be coded: '{}'".format(text))
     sys.exit(1)
 
-def create_symlink(platform, filenpa_exec, filenpa_symlink )
+def create_symlink(platform, filenpa_exec, filenpa_symlink ):
     with contextlib.suppress(FileNotFoundError):
         os.remove(filenpa_symlink)
     
