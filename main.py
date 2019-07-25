@@ -30,7 +30,6 @@ if __name__ == "__main__":
 
     conf.data["args"]=vars(args)
 
-    pprint(conf.data)
     if platform.system() == "Linux":
         pass
     elif platform.system() == "Windows":
