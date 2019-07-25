@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.2.1
+# version: 4.3.0
 # name: release
 # license: MIT
 import os, sys
@@ -8,19 +8,12 @@ import re
 from pprint import pprint
 import json
 
-from ..dev.helpers import get_direpa_root, is_pkg_git
+from ..dev.helpers import get_direpa_root, is_pkg_git, create_symlink
 from ..dev.refine import get_paths_to_copy, copy_to_destination
 from ..modules.message import message as msg
 from ..modules.shell_helpers import shell_helpers as shell
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_boolean, prompt
-
-def create_symlink(filenpa_src, filenpa_dst):
-    os.symlink(
-        filenpa_src,
-        filenpa_dst
-    )
-    msg.success("symlink '{}' set.".format(os.path.basename(filenpa_src)))
 
 def set_bump_deploy(dy_app):
     filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
@@ -59,13 +52,13 @@ def set_bump_deploy(dy_app):
 
         newly_created=False
         if not os.path.exists(filenpa_symlink):
-            create_symlink(filenpa_original, filenpa_symlink)
+            create_symlink(dy_app["platform"], filenpa_original, filenpa_symlink )
             newly_created=True
         
         if os.path.islink(filenpa_symlink):
             if newly_created is False:
                 os.remove(filenpa_symlink)
-                create_symlink(filenpa_original, filenpa_symlink)
+                create_symlink(dy_app["platform"], filenpa_original, filenpa_symlink )
 
                 msg.warning("'{}' already exists.".format(filen))
                 if not prompt_boolean("Do you want to overwrite it with default values"):
