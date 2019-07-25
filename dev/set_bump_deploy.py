@@ -17,6 +17,9 @@ from ..modules.prompt.prompt import prompt_boolean, prompt
 
 def set_bump_deploy(dy_app):
     filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
+    if dy_app["platform"] == "Windows":
+        filens=["bump_version.py", "deploy.py", "launch.pyw"]
+
     direpa_current=os.getcwd()
     direpa_src=os.path.join(direpa_current, "src")
     if not os.path.exists(direpa_src):
@@ -29,22 +32,25 @@ def set_bump_deploy(dy_app):
         sys.exit(1)
 
     os.chdir(direpa_src)
-    username=shell.cmd_get_value("git config user.name")
     os.chdir(direpa_current)
-
-    if not username:
-        msg.user_error("username has not been set for git folder '{}'.".format(direpa_src))
-        sys.exit(1)
-
-    direpa_mgt=os.path.join(direpa_current, "mgt", username)
+    direpa_mgt=os.path.join(direpa_current, "mgt")
     if not os.path.exists(direpa_mgt):
         msg.user_error("'{}' not found".format(direpa_mgt),
             "This is not a gitframe project structure.")
         sys.exit(1)
 
+    username=shell.cmd_get_value("git config user.name")
+    if not username:
+        msg.user_error("username has not been set for git folder '{}'.".format(direpa_src))
+        sys.exit(1)
+
+    direpa_mgt_username=os.path.join(direpa_mgt, username)
+    if os.path.exists(direpa_mgt_username):
+        direpa_mgt=direpa_mgt_username
+
     for filen in filens:
         filenpa_symlink=os.path.join(direpa_current, filen)
-        filenpa_original=os.path.join(direpa_current, "mgt", username, filen)
+        filenpa_original=os.path.join(direpa_mgt, filen)
 
         if not os.path.exists(filenpa_original):
             with open(filenpa_original, "w") as f:
@@ -70,6 +76,8 @@ def set_bump_deploy(dy_app):
                 data=get_default_deploy_file()
             elif filen == "scriptjob_save.json":
                 data=get_default_scriptjob_save_json_file(direpa_current)
+            elif filen == "launch.pyw":
+                data=get_default_launch_pyw()            
 
             data=re.sub(r"\n\s+","\n", data)[1:-1]
             with open(filenpa_original, "w") as f:
@@ -95,6 +103,24 @@ def get_default_deploy_file():
         version=sys.argv[1]
         os.system("release --export-rel --rversion {} --add-deps".format(version))
         # os.system("release --export-bin --rversion {}".format(version))
+    """
+
+def get_default_launch_pyw():
+    return """
+        #/usr/bin/env python3
+        import os
+        import shlex
+        import subprocess
+        import sys
+
+        filenpa_start_script=os.path.realpath(__file__)
+        direpa_project=os.path.dirname(os.path.dirname(filenpa_start_script))
+        direpa_project_src=os.path.join(direpa_project,"src")
+        app_name=os.path.basename(direpa_project)
+
+        os.system('start cmd.exe /K "prompt $G$S & title {} & cd {}"'.format(app_name, direpa_project_src))
+        subprocess.call('code "{}"'.format(direpa_project), shell=True)
+        # subprocess.call('firefox https://lclwapps.edu/t/timeclock/1/', shell=True)
     """
 
 def get_default_scriptjob_save_json_file(direpa_app):
