@@ -13,7 +13,7 @@ from pprint import pprint
 
 from ..dev.helpers import get_direpa_root, to_be_coded, create_symlink
 
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
@@ -33,5 +33,5 @@ def switch_bin(dy_app, args):
         create_symlink(dy_app["platform"], filenpa_exec, filenpa_symlink )
         msg.success("Bin '{}' switched to '{}'".format(pkg_name, pkg_version))
     else:
-        msg.user_error("Not found '{}'".format(filenpa_pkg_json))
+        msg.error("Not found '{}'".format(filenpa_pkg_json))
         sys.exit(1)

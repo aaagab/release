@@ -9,7 +9,7 @@ import shutil
 
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_multiple
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 
 from .get_pkg_from_db import get_pkg_from_db
@@ -84,6 +84,6 @@ def import_pkgs(dy_app):
 
                 msg.success("Package '{}' installed in '{}'".format(chosen_pkg["name"], os.path.dirname(direpa_dst)))
     else:
-        msg.user_error("'{}' is not a git repository".format(os.getcwd()))
+        msg.error("'{}' is not a git repository".format(os.getcwd()))
         sys.exit(1)
     

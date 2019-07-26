@@ -7,8 +7,7 @@ import os, shlex, sys
 import contextlib
 import subprocess
 from ..modules.shell_helpers import shell_helpers as shell
-# from modules.message import message as msg
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 # from import 
 from ..modules.json_config.json_config import Json_config
 
@@ -39,9 +38,9 @@ def get_direpa_root(path=""):
                 os.chdir(direpa_current)
                 return direpa_root
             else:
-                msg.user_error("In '{}' src exists however".format(os.getcwd()))
+                msg.error("In '{}' src exists however".format(os.getcwd()))
 
-        msg.app_error("'{}' is not a git repository".format(os.getcwd()))
+        msg.error("'{}' is not a git repository".format(os.getcwd()))
         sys.exit(1)
 
 def append_path_to_ignore_paths(preset, direpa_root):
@@ -73,9 +72,9 @@ def is_pkg_git(path=""):
 
 def to_be_coded(text=""):
     if not text:
-        msg.app_error("To be coded")
+        msg.error("To be coded")
     else:
-        msg.app_error("To be coded: '{}'".format(text))
+        msg.error("To be coded: '{}'".format(text))
     sys.exit(1)
 
 def create_symlink(platform, filenpa_exec, filenpa_symlink ):
@@ -116,7 +115,7 @@ def get_app_meta_data(direpa_root):
             sys.exit(1)
 
     else:
-        msg.user_error(
+        msg.error(
             "'{}' not found".format(filenpa_conf),
             "Run 'gpm --init --no-db'")
         sys.exit(1)   

@@ -9,7 +9,7 @@ from pprint import pprint
 
 from ..dev.helpers import get_direpa_root, is_pkg_git
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.json_config.json_config import Json_config
 
 def bump_version(version):

@@ -1,6 +1,6 @@
 import re
 # import git_helpers.git_utils as git
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 import sys
 import textwrap
 
@@ -64,7 +64,7 @@ class Version_regex(Regex_obj):
             return "bigger"
 
     def print_error(self):
-        msg.user_error("'{}' does not follow regex '{}'".format(self.text, self.string))
+        msg.error("'{}' does not follow regex '{}'".format(self.text, self.string))
 
 class Version_major_regex(Regex_obj):
     def __init__(self, txt=""):
@@ -196,7 +196,7 @@ class Uuid4_regex(Regex_obj):
         return self
 
     def print_error(self):
-        msg.user_error("'{}' does not follow uuid4 regex '{}'".format(self.text, self.string))
+        msg.error("'{}' does not follow uuid4 regex '{}'".format(self.text, self.string))
 
 class Version_filter_regex(Regex_obj):
     def __init__(self, txt=""):
@@ -245,7 +245,7 @@ class Version_filter_regex(Regex_obj):
             return False     
 
     def print_error(self):
-        msg.user_error("'{}' does not follow regex '{}'".format(self.text, self.string))
+        msg.error("'{}' does not follow regex '{}'".format(self.text, self.string))
 
 class Diren_index_regex(Regex_obj):
     def __init__(self, txt=""):
@@ -295,7 +295,7 @@ def get_obj_version_type_regex(text):
     #         "\n".join(textwrap.wrap(reg.description, initial_indent=prefix+"- ", subsequent_indent=prefix))
     #         )
 
-    # msg.user_error(
+    # msg.error(
     #     "Version type '"+regexes[0].text+"' unknown.",
     #     "Authorized Version types are :\n"+txt_regexes,
     # )

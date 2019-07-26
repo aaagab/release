@@ -9,7 +9,7 @@ import shutil
 
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_multiple
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 
 from .search import search
@@ -99,7 +99,7 @@ def choose_pkg_cli(dy_app, action, pkg_filter):
     if bound:
         bounds=["gpm", "sys"]
         if bound not in bounds:
-            msg.user_error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, bound, "', '".join(bounds)))
+            msg.error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, bound, "', '".join(bounds)))
             sys.exit(1)
     else:
         bound="gpm"
