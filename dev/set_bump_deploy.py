@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.11
+# version: 4.4.12
 # name: release
 # license: MIT
 import os, sys
@@ -91,12 +91,8 @@ def set_bump_deploy(dy_app):
                             cmd=reg.group(2)
                             if indent is None:
                                 indent=tmp_indent
-                                print("'{}'".format(indent))
-                                print(len(indent))
-                            print(line[len(indent):])
                             f.write(line[len(indent):]+"\n")
                         else:
-                            print(line)
                             f.write(line+"\n")
         else:
             print("'{}' not a link.".format(filenpa_symlink))
