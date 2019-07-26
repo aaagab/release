@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.3
+# version: 4.4.4
 # name: release
 # license: MIT
 
-__version__ = "4.4.3"
+__version__ = "4.4.4"
 
 from .gpkgs import message as msg
 from .modules.options import options as ops

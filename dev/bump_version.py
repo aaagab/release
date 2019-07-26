@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.3
+# version: 4.4.4
 # name: release
 # license: MIT
 import os, sys
@@ -8,7 +8,7 @@ import re
 from pprint import pprint
 
 from ..dev.helpers import get_direpa_root, is_pkg_git
-from ..dev.refine import get_paths_to_copy, copy_to_destination
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..modules.message import message as msg
 from ..modules.json_config.json_config import Json_config
 
