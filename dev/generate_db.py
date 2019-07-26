@@ -12,7 +12,6 @@ import shlex
 from pprint import pprint
 
 from ..dev.helpers import get_direpa_root, to_be_coded
-from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 
 from ..modules.message import message as msg
 from ..modules.prompt.prompt import prompt_boolean
