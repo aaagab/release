@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.4
+# version: 4.4.7
 # name: release
 # license: MIT
 import os, sys
@@ -15,13 +15,14 @@ from ..modules.json_config.json_config import Json_config
 def bump_version(version):
     direpa_root=get_direpa_root()
     
-    paths=get_paths_to_copy(direpa_root, dict(added_rules=[
+    paths=get_paths_to_copy(direpa_root, added_rules=[
         ".refine",
         "modules/",
         ".pkgs/",
         "gpkgs/",
         "*.db"
-    ]))
+    ])
+
     for path in paths:
         if os.path.isfile(path):
             if os.path.basename(path) in ["config.json", "gpm.json", "modules.json", "upacks.json"]:
