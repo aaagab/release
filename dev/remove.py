@@ -9,7 +9,7 @@ import shutil
 
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_multiple
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 
 from .search import search
@@ -63,5 +63,5 @@ def remove(dy_app):
                 conf_app.set_file_with_data()
                 msg.success("Package '{}' removed from '{}'".format(pkg_name, os.path.dirname(direpa_dep)))
     else:
-        msg.user_error("'{}' is not a git repository".format(os.getcwd()))
+        msg.error("'{}' is not a git repository".format(os.getcwd()))
         sys.exit(1)

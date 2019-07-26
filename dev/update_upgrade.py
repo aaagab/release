@@ -9,7 +9,7 @@ import shutil
 
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_multiple
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 
 from .search import search
@@ -108,5 +108,5 @@ def update_upgrade(dy_app, action):
 
                 msg.success("Package '{}' {}d from '{}' to '{}' in '{}'".format(chosen_pkg["name"], action, reg_version_dep.text, reg_version_chosen_pkg.text, os.path.dirname(direpa_dep)))
     else:
-        msg.user_error("'{}' is not a git repository".format(os.getcwd()))
+        msg.error("'{}' is not a git repository".format(os.getcwd()))
         sys.exit(1)

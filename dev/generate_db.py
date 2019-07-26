@@ -13,7 +13,7 @@ from pprint import pprint
 
 from ..dev.helpers import get_direpa_root, to_be_coded
 
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
@@ -35,7 +35,7 @@ def generate_db(dy_app):
                     dy_pkg=Json_config(filenpa_gpm).data
                     if dy_pkg["uuid4"] in uuid4s:
                         if dy_pkg["name"] != uuid4s[dy_pkg["uuid4"]]:
-                            msg.app_error("Failed Insert '{}' with uuid4 '{}' ".format(
+                            msg.error("Failed Insert '{}' with uuid4 '{}' ".format(
                                 dy_pkg["name"], dy_pkg["uuid4"]),
                                 "In db[uuid4s] same uuid4 has name '{}'".format(uuid4s[dy_pkg["uuid4"]]),
                                 "You can't have same uuid for different names.")
