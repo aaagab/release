@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.8
+# version: 4.4.9
 # name: release
 # license: MIT
 import os, sys
@@ -114,6 +114,8 @@ def get_default_launch_pyw():
 
         filenpa_start_script=os.path.realpath(__file__)
         direpa_project=os.path.dirname(os.path.dirname(filenpa_start_script))
+        if os.path.basename(direpa_project) == "mgt":
+            direpa_project=os.path.dirname(direpa_project)
         direpa_project_src=os.path.join(direpa_project,"src")
         app_name=os.path.basename(direpa_project)
 
