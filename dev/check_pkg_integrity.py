@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.7
+# version: 4.4.8
 # name: release
 # license: MIT
 import os, sys
@@ -10,7 +10,7 @@ import shutil
 
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_multiple
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 
 from .search import search
@@ -36,7 +36,7 @@ def check_pkg_integrity(dy_app, direpa_pkg):
                 }
             })
         else:
-            msg.user_error("'{}' tmp_id exists at least two times in deps from '{}'".format(filenpa_json_root), "Correct issue manually")
+            msg.error("'{}' tmp_id exists at least two times in deps from '{}'".format(filenpa_json_root), "Correct issue manually")
             sys.exit(1)
 
     # check that for each folder in gpkgs, an entry matches in its root gpm.json
@@ -51,7 +51,7 @@ def check_pkg_integrity(dy_app, direpa_pkg):
                 data_dep=get_json_data(filenpa_json_dep)
 
                 if not data_dep["name"] in db_pkgs:
-                    msg.user_error(
+                    msg.error(
                         "At location '{}' for package '{}'".format(direpa_pkg, data_dep["name"]), 
                         "Package id '{}'".format(get_pkg_id(data_dep)),
                         "found in '{}' but not found in '{}'".format(dy_app["diren_pkgs"], dy_app["filen_json_app"])
@@ -60,7 +60,7 @@ def check_pkg_integrity(dy_app, direpa_pkg):
 
                 for field in ["uuid4", "version"]:
                     if data_dep[field] != db_pkgs[data_dep["name"]][field]:
-                        msg.user_error(
+                        msg.error(
                             "At location '{}' for package '{}'".format(direpa_pkg, data_dep["name"]), 
                             "Non matching values for field '{}'".format(field),
                             "Value = '{}' in '{}'".format(data_dep[field], os.path.join(
@@ -72,7 +72,7 @@ def check_pkg_integrity(dy_app, direpa_pkg):
                         sys.exit(1)
 
                 if db_pkgs[data_dep["name"]]["bound"] == "sys":
-                    msg.user_error(
+                    msg.error(
                         "At location '{}' for package '{}'".format(direpa_pkg, data_dep["name"]),
                         "Package is present in '{}'".format(dy_app["diren_pkgs"]),
                         "However it has a 'sys' bound in '{}'".format(dy_app["filen_json_app"]),
@@ -89,7 +89,7 @@ def check_pkg_integrity(dy_app, direpa_pkg):
                 })
 
             else:
-                msg.user_error("'{}' not allowed.".format(direpa_dep),
+                msg.error("'{}' not allowed.".format(direpa_dep),
                     "Only folders are allowed in '{}' folder".format(dy_app["diren_pkgs"]))
                 sys.exit(1)
     
@@ -100,7 +100,7 @@ def check_pkg_integrity(dy_app, direpa_pkg):
 
     for name in remaining_names:
         if db_pkgs[name]["bound"] == "gpm":
-            msg.user_error(
+            msg.error(
                 "At location '{}' for package '{}'".format(direpa_pkg, name),
                 "Package id = '{}'".format(get_pkg_id(db_pkgs[name], name=name)),
                 "Package is present in '{}' with bound 'gpm'".format(dy_app["filen_json_app"]),
@@ -113,25 +113,25 @@ def get_json_data(filenpa_json):
     logger = logging.Logger('catch_all')
 
     if not os.path.exists(filenpa_json):
-        msg.user_error("'{}' not found.".format(filenpa_json))
+        msg.error("'{}' not found.".format(filenpa_json))
         sys.exit(1)
 
     try:
         print(filenpa_json)
         data=Json_config(filenpa_json).data
     except BaseException as e:
-        msg.user_error("There is a syntax error in '{}'".format(filenpa_json))
+        msg.error("There is a syntax error in '{}'".format(filenpa_json))
         logger.error(e, exc_info=True)
         sys.exit(1)
 
     for field in ["name", "version", "uuid4", "deps"]:
         if not field in data:
-            msg.user_error("Field '{}' not found in '{}'".format(field, filenpa_json))
+            msg.error("Field '{}' not found in '{}'".format(field, filenpa_json))
             sys.exit(1)
 
         if field != "deps":
             if not field:
-                msg.user_error("Field '{}' is empty in '{}'".format(field, filenpa_json))
+                msg.error("Field '{}' is empty in '{}'".format(field, filenpa_json))
                 sys.exit(1)
 
     return data

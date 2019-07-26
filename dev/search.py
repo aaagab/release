@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.7
+# version: 4.4.8
 # name: release
 # license: MIT
 import os, sys
@@ -8,7 +8,7 @@ import re
 from pprint import pprint
 import json
 
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
@@ -61,18 +61,19 @@ def search(pkgs, pkg_filter):
             ftr_component=ftr_split[0]
             dy_filter=get_dy_filter_part(ftr_component)
             if not "name" in dy_filter and not "uuid4" in dy_filter:
-                msg.user_error("Search Filter incomplete for '{}'".format(ftr_component),
+                msg.error("Search Filter incomplete for '{}'".format(ftr_component),
                     "Please provide at least a name or a uuid4.")
                 sys.exit(1)
         elif len(ftr_split) < 5:
             for ftr_component in ftr_split:
                 filter_part=get_dy_filter_part(ftr_component)
                 if next(iter(filter_part)) in dy_filter:
-                    msg.app_error("for '{}' key '{}' already in '{}'".format(json.dumps(filter_part), next(iter(filter_part)), json.dumps(dy_filter) ))
+                    msg.error("for '{}' key '{}' already in '{}'".format(json.dumps(filter_part), next(iter(filter_part)), json.dumps(dy_filter) ))
+                    sys.exit(1)
                 else:
                     dy_filter.update(filter_part)
         else:
-            msg.user_error("search filter '{}' has too many elements.".format(ftr))
+            msg.error("search filter '{}' has too many elements.".format(ftr))
             sys.exit(1)
 
         pre_selected_pkgs=[]
@@ -173,7 +174,7 @@ def get_dy_filter_part(ftr_component):
         if id_letter == "b":
             bounds=["gpm", "sys"]
             if not search_elem in bounds:
-                msg.user_error("In '{}' dependency bound must be in '['{}']'".format(ftr_component, "', '".join(bounds)))
+                msg.error("In '{}' dependency bound must be in '['{}']'".format(ftr_component, "', '".join(bounds)))
                 sys.exit(1)
             else:
                 return dict(bound=search_elem)
@@ -188,11 +189,11 @@ def get_dy_filter_part(ftr_component):
             if reg_uuid4.match:
                 return dict(uuid4=search_elem)
             else:
-                msg.user_error("In '{}'".format(ftr_component))
+                msg.error("In '{}'".format(ftr_component))
                 reg_uuid4.print_error()
                 sys.exit(1)
         elif id_letter == "v":
             return dict(version_ftr=search_elem)
     else:
-        msg.app_error("'{}' has not identifier".format(ftr_component))
+        msg.error("'{}' has not identifier".format(ftr_component))
         sys.exit(1)

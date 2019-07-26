@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.7
+# version: 4.4.8
 # name: release
 # license: MIT
 import os, sys
@@ -8,7 +8,7 @@ import re
 from pprint import pprint
 import json
 
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
