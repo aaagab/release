@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.9
+# version: 4.4.10
 # name: release
 # license: MIT
 import os, sys
@@ -78,12 +78,25 @@ def set_bump_deploy(dy_app):
             elif filen == "launch.pyw":
                 data=get_default_launch_pyw()            
 
-            data=re.sub(r"\n\s+","\n", data)[1:-1]
             with open(filenpa_original, "w") as f:
                 if filen == "scriptjob_save.json":
+                    data=re.sub(r"\n\s+","\n", data)[1:-1]
                     f.write(json.dumps(json.loads(data),sort_keys=True, indent=4))
                 else:
-                    f.writelines(data+"\n")
+                    for line in data.splitlines()[1:-1]:
+                        if line.strip():
+                            reg=re.match(r"^( +)(.+)", line)
+                            tmp_indent=reg.group(1)
+                            cmd=reg.group(2)
+                            if indent is None:
+                                indent=tmp_indent
+                                print("'{}'".format(indent))
+                                print(len(indent))
+                            print(line[len(indent):])
+                            f.write(line[len(indent):]+"\n")
+                        else:
+                            print(line)
+                            f.write(line+"\n")
         else:
             print("'{}' not a link.".format(filenpa_symlink))
 
