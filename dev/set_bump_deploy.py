@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.7
+# version: 4.4.8
 # name: release
 # license: MIT
 import os, sys
@@ -9,7 +9,7 @@ from pprint import pprint
 import json
 
 from ..dev.helpers import get_direpa_root, is_pkg_git, create_symlink
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.shell_helpers import shell_helpers as shell
 from ..modules.json_config.json_config import Json_config
 from ..modules.prompt.prompt import prompt_boolean, prompt
@@ -22,12 +22,12 @@ def set_bump_deploy(dy_app):
     direpa_current=os.getcwd()
     direpa_src=os.path.join(direpa_current, "src")
     if not os.path.exists(direpa_src):
-        msg.user_error("'{}' not found.".format(direpa_src),
+        msg.error("'{}' not found.".format(direpa_src),
             "This is not a gitframe project structure.")
         sys.exit(1)
 
     if not is_pkg_git(direpa_src):
-        msg.user_error("'{}' is not a git folder.".format(direpa_src))
+        msg.error("'{}' is not a git folder.".format(direpa_src))
         sys.exit(1)
 
     os.chdir(direpa_src)
@@ -35,12 +35,12 @@ def set_bump_deploy(dy_app):
     os.chdir(direpa_current)
     direpa_mgt=os.path.join(direpa_current, "mgt")
     if not os.path.exists(direpa_mgt):
-        msg.user_error("'{}' not found".format(direpa_mgt),
+        msg.error("'{}' not found".format(direpa_mgt),
             "This is not a gitframe project structure.")
         sys.exit(1)
 
     if not username:
-        msg.user_error("username has not been set for git folder '{}'.".format(direpa_src))
+        msg.error("username has not been set for git folder '{}'.".format(direpa_src))
         sys.exit(1)
 
     direpa_mgt_username=os.path.join(direpa_mgt, username)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.7
+# version: 4.4.8
 # name: release
 # license: MIT
 import os, sys
@@ -17,7 +17,7 @@ from ..dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data, creat
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..dev import regex_obj as ro
 
-from ..modules.message import message as msg
+from ..gpkgs import message as msg
 from ..modules.prompt.prompt import prompt_boolean
 from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
@@ -48,7 +48,7 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
 
         if args["path"] is None:
             if args["release_version"] is None:
-                msg.user_error("You need to provide a release version with --rversion for export release")
+                msg.error("You need to provide a release version with --rversion for export release")
                 sys.exit(1)
 
             direpa_dst=os.path.join(dy_app["direpa_release"], dy_pkg["name"], version, dy_pkg["name"])
@@ -123,7 +123,7 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
         if not os.path.exists(filenpa_gpm_json):
             if previous_branch:
                 shell.cmd_prompt("git checkout "+previous_branch)
-            msg.user_error("'{}' not found".format(filenpa_gpm_json))
+            msg.error("'{}' not found".format(filenpa_gpm_json))
             sys.exit(1)
         else:
             dy_pkg_src=Json_config(filenpa_gpm_json).data
@@ -131,7 +131,7 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
                 if dy_pkg_src["name"] != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
                     if previous_branch:
                         shell.cmd_prompt("git checkout "+previous_branch)
-                    msg.user_error("Failed Insert '{}' with uuid4 '{}' ".format(
+                    msg.error("Failed Insert '{}' with uuid4 '{}' ".format(
                         dy_pkg_src["name"], dy_pkg_src["uuid4"]),
                         "In db[uuid4s] same uuid4 has name '{}'".format(conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]),
                         "You can't have same uuid for different names.")
@@ -184,7 +184,7 @@ def checkout_version(version, direpa_root):
                     existing_versions.append(reg_version.text)
 
     if not version in existing_versions:
-        msg.user_error("Version '{}' does not exist at path '{}'".format(
+        msg.error("Version '{}' does not exist at path '{}'".format(
             version,
             direpa_root
         ))
