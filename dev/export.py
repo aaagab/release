@@ -144,7 +144,7 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
                     ): dy_pkg_src["deps"]
             })
 
-    paths=get_paths_to_copy(direpa_root, dict(added_rules=added_refine_rules))
+    paths=get_paths_to_copy(direpa_root, added_rules=added_refine_rules)
     copy_to_destination(paths, direpa_root, direpa_dst)
 
     if insert_db:
