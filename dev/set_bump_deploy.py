@@ -91,12 +91,8 @@ def set_bump_deploy(dy_app):
                             cmd=reg.group(2)
                             if indent is None:
                                 indent=tmp_indent
-                                print("'{}'".format(indent))
-                                print(len(indent))
-                            print(line[len(indent):])
                             f.write(line[len(indent):]+"\n")
                         else:
-                            print(line)
                             f.write(line+"\n")
         else:
             print("'{}' not a link.".format(filenpa_symlink))
