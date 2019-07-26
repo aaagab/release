@@ -14,7 +14,7 @@ from ..modules.prompt.prompt import prompt_boolean
 
 from .search import search
 from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
-from .refine import get_paths_to_copy, copy_to_destination
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from .check_pkg_integrity import check_pkg_integrity
 from .choose_pkg_cli import choose_pkg_cli
 from . import regex_obj as ro

@@ -14,7 +14,7 @@ from pprint import pprint
 from .check_repo import check_repo
 
 from ..dev.helpers import get_direpa_root, to_be_coded, get_app_meta_data, create_symlink
-from ..dev.refine import get_paths_to_copy, copy_to_destination
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..dev import regex_obj as ro
 
 from ..modules.message import message as msg

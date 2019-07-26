@@ -9,7 +9,7 @@ from pprint import pprint
 import json
 
 from ..dev.helpers import get_direpa_root, is_pkg_git, create_symlink
-from ..dev.refine import get_paths_to_copy, copy_to_destination
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..modules.message import message as msg
 from ..modules.shell_helpers import shell_helpers as shell
 from ..modules.json_config.json_config import Json_config
