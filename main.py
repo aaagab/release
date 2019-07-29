@@ -47,7 +47,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.import_pkgs:
-        pkg.import_pkgs(conf.data, dy_app["args"]["import_pkgs"])
+        pkg.import_pkgs(conf.data, conf.data["args"]["import_pkgs"])
         sys.exit(0)
 
     if args.generate_db:
