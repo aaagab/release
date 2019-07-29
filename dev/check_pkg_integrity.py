@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.6.0
+# version: 4.6.1
 # name: release
 # license: MIT
 import os, sys
@@ -61,16 +61,17 @@ def check_pkg_integrity(dy_app, direpa_pkg, action=None):
 
                 for field in ["uuid4", "version"]:
                     if data_dep[field] != db_pkgs[data_dep["name"]][field]:
-                        msg.error(
-                            "At location '{}' for package '{}'".format(direpa_pkg, data_dep["name"]), 
-                            "Non matching values for field '{}'".format(field),
-                            "Value = '{}' in '{}'".format(data_dep[field], os.path.join(
-                                dy_app["diren_pkgs"],
-                                data_dep["name"],
-                                dy_app["filen_json_app"]
-                                )),
-                            "Value = '{}' in '{}' deps".format(db_pkgs[data_dep["name"]][field], dy_app["filen_json_app"]))
-                        sys.exit(1)
+                            if action != "restore":
+                                msg.error(
+                                    "At location '{}' for package '{}'".format(direpa_pkg, data_dep["name"]), 
+                                    "Non matching values for field '{}'".format(field),
+                                    "Value = '{}' in '{}'".format(data_dep[field], os.path.join(
+                                        dy_app["diren_pkgs"],
+                                        data_dep["name"],
+                                        dy_app["filen_json_app"]
+                                        )),
+                                    "Value = '{}' in '{}' deps".format(db_pkgs[data_dep["name"]][field], dy_app["filen_json_app"]))
+                                sys.exit(1)
 
                 if db_pkgs[data_dep["name"]]["bound"] == "sys":
                     msg.error(
