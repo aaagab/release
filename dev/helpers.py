@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.12
+# version: 4.5.0
 # name: release
 # license: MIT
 import os, shlex, sys
@@ -10,7 +10,6 @@ from ..modules.shell_helpers import shell_helpers as shell
 from ..gpkgs import message as msg
 # from import 
 from ..modules.json_config.json_config import Json_config
-
 
 def get_direpa_root(path=""):
     if is_pkg_git(path):

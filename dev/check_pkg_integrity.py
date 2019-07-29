@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.4.12
+# version: 4.5.0
 # name: release
 # license: MIT
 import os, sys
@@ -18,7 +18,8 @@ from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
 
 # ./__init__.py -i message,a.a.a prompt
 
-def check_pkg_integrity(dy_app, direpa_pkg):
+def check_pkg_integrity(dy_app, direpa_pkg, action=None):
+    print
     filenpa_json_root=os.path.join(direpa_pkg, dy_app["filen_json_app"])
     data_root=get_json_data(filenpa_json_root)
 
@@ -98,15 +99,19 @@ def check_pkg_integrity(dy_app, direpa_pkg):
     db_names=set([ name for name in db_pkgs])
     remaining_names=db_names - dir_names
 
+
+
     for name in remaining_names:
         if db_pkgs[name]["bound"] == "gpm":
-            msg.error(
-                "At location '{}' for package '{}'".format(direpa_pkg, name),
-                "Package id = '{}'".format(get_pkg_id(db_pkgs[name], name=name)),
-                "Package is present in '{}' with bound 'gpm'".format(dy_app["filen_json_app"]),
-                "However package is not present in '{}'".format(dy_app["diren_pkgs"])
-            )
-            sys.exit(1)
+            pkg_id=get_pkg_id(db_pkgs[name], name=name)
+            if action != "restore":
+                msg.error(
+                    "At location '{}' for package '{}'".format(direpa_pkg, name),
+                    "Package id = '{}'".format(pkg_id),
+                    "Package is present in '{}' with bound 'gpm'".format(dy_app["filen_json_app"]),
+                    "However package is not present in '{}'".format(dy_app["diren_pkgs"])
+                )
+                sys.exit(1)
 
 
 def get_json_data(filenpa_json):
@@ -117,7 +122,7 @@ def get_json_data(filenpa_json):
         sys.exit(1)
 
     try:
-        print(filenpa_json)
+        # print(filenpa_json)
         data=Json_config(filenpa_json).data
     except BaseException as e:
         msg.error("There is a syntax error in '{}'".format(filenpa_json))
