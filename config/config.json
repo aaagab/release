@@ -1,6 +1,5 @@
 {
-    "options": [
-        {
+    "options": [{
             "help": {
                 "action": "store_true",
                 "args": [
@@ -104,6 +103,24 @@
                     "PKG",
                     "..."
                 ]
+            }
+        },
+        {
+            "init": {
+                "action": "store_true",
+                "args": [
+                    "--init"
+                ],
+                "info": "create a gpm.json file for a new project.",
+                "nargs": [
+                    0,
+                    1
+                ],
+                "params_optional": [
+                    "path"
+                ],
+                "required": false,
+                "show": true
             }
         },
         {
