@@ -50,6 +50,10 @@ if __name__ == "__main__":
         pkg.import_pkgs(conf.data, conf.data["args"]["import_pkgs"])
         sys.exit(0)
 
+    if args.init:
+        pkg.init(conf.data, vars(args))
+        sys.exit(0)
+
     if args.generate_db:
         pkg.generate_db(conf.data)
         sys.exit(0)
