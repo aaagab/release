@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.5.2
+# version: 4.6.0
 # name: release
 # license: MIT
 
-__version__ = "4.5.2"
+__version__ = "4.6.0"
 
 from .dev.bump_version import bump_version
 from .dev.check_repo import check_repo
 from .dev.export import export
 from .dev.generate_db import generate_db
 from .dev.import_pkgs import import_pkgs
+from .dev.init import init
 from .dev.ls_repo import ls_repo
 from .dev.remove import remove
 from .dev.restore import restore
