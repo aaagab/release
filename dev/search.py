@@ -17,7 +17,7 @@ from .filter_version import filter_version
 from .helpers import get_pkg_id
 from ..gpkgs.sort_separated import sort_separated
 
-def search(pkgs, pkg_filter):
+def search(pkgs, pkg_filter=""):
     # pkgs=[
     #     '259d7ae3-d03e-4e5a-96d4-32259ff55a07|mockpackage|3.2.0',
     #     '259d7ae3-d03e-4e5a-96d4-32259ff55a07|mockpackage|3.2.3',

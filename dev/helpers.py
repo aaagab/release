@@ -11,7 +11,6 @@ from ..gpkgs import message as msg
 # from import 
 from ..modules.json_config.json_config import Json_config
 
-
 def get_direpa_root(path=""):
     if is_pkg_git(path):
         direpa_current=""

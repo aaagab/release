@@ -21,7 +21,7 @@ from ..gpkgs.sort_separated import sort_separated
 
 # ./__init__.py -i message,a.a.a prompt
 
-def import_pkgs(dy_app):
+def import_pkgs(dy_app, pkg_filters, action=None):
     if is_pkg_git():
         filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
         db=Json_config(filenpa_json_repo).data
@@ -29,7 +29,6 @@ def import_pkgs(dy_app):
         direpa_root=get_direpa_root()
         # direpa_pkgs=os.path.join(direpa_root, dy_app["diren_pkgs"])
         # os.makedirs(direpa_pkgs, exist_ok=True)
-        pkg_filters=dy_app["args"]["import_pkgs"]
         for pkg_filter in pkg_filters:
             chosen_pkg=get_pkg_from_db(db, dy_app, pkg_filter)
             if chosen_pkg is None:
@@ -39,7 +38,7 @@ def import_pkgs(dy_app):
             filenpa_dst_root=os.path.join(direpa_root, dy_app["filen_json_app"])
 
             # check pkgs integrity
-            check_pkg_integrity(dy_app, direpa_root)
+            check_pkg_integrity(dy_app, direpa_root, action="restore")
 
             check_pkg_integrity(dy_app, direpa_src)
 
@@ -59,7 +58,10 @@ def import_pkgs(dy_app):
                         "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
                         "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
 
-                    if prompt_boolean("Do you want to replace it", "Y"):
+                    replace="Y"
+                    if action == "restore":
+                        replace="N"
+                    if prompt_boolean("Do you want to replace it", replace):
                         delete_index=d
                         break
                     else:
@@ -71,7 +73,9 @@ def import_pkgs(dy_app):
             else:
                 if delete_index != "":
                     del conf_app.data["deps"][delete_index]
-                    shutil.rmtree(direpa_dst)
+                    # if action == "restore":
+                    if os.path.exists(direpa_dst):
+                        shutil.rmtree(direpa_dst)
 
                 dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), chosen_pkg["bound"])
                 conf_app.data["deps"].append(dep_to_insert)
