@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.5.1
+# version: 4.5.2
 # name: release
 # license: MIT
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.import_pkgs:
-        pkg.import_pkgs(conf.data, dy_app["args"]["import_pkgs"])
+        pkg.import_pkgs(conf.data, conf.data["args"]["import_pkgs"])
         sys.exit(0)
 
     if args.generate_db:
