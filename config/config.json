@@ -237,6 +237,17 @@
             }
         },
         {
+            "restore": {
+                "action": "store_true",
+                "args": [
+                    "--restore"
+                ],
+                "info": "Reinstall all dependencies from gpm.json",
+                "required": false,
+                "show": true
+            }
+        },
+        {
             "set_bump_deploy": {
                 "action": "store_true",
                 "args": [

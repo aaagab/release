@@ -47,7 +47,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.import_pkgs:
-        pkg.import_pkgs(conf.data)
+        pkg.import_pkgs(conf.data, dy_app["args"]["import_pkgs"])
         sys.exit(0)
 
     if args.generate_db:
@@ -85,6 +85,10 @@ if __name__ == "__main__":
     if args.to_repo:
         # print("New start")
         pkg.to_repo(conf.data, vars(args))
+        sys.exit(0)
+
+    if args.restore:
+        pkg.restore(conf.data, vars(args))
         sys.exit(0)
 
     if args.update:
