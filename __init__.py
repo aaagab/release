@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 4.5.2
+# version: 4.6.0
 # name: release
 # license: MIT
 
-__version__ = "4.5.2"
+__version__ = "4.6.0"
 
 from .dev.bump_version import bump_version
 from .dev.check_repo import check_repo
