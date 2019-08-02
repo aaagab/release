@@ -3,7 +3,8 @@
         "Gabriel Auger"
     ],
     "deps": [
-        "cf09346e-b436-4259-b6dd-e56516b508a5|message|5.0.6|gpm",
+        "a30e109e-650f-4636-83e4-e18320c60788|format_text|0.3.0|gpm",
+        "cf09346e-b436-4259-b6dd-e56516b508a5|message|5.0.7|gpm",
         "9aaed767-ea75-499c-ac4c-6524d720ff10|refine|0.1.1|gpm",
         "2bc6fae5-9e7a-4181-9b6a-3ae35409f8e2|sort_separated|0.1.0|gpm"
     ],
