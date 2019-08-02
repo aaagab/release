@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 5.1.1
+# version: 5.1.2
 # name: release
 # license: MIT
 
-__version__ = "5.1.1"
+__version__ = "5.1.2"
 
 from .dev.bump_version import bump_version
 from .dev.check_repo import check_repo
@@ -13,7 +13,7 @@ from .dev.generate_db import generate_db
 from .dev.import_pkgs import import_pkgs
 from .dev.init import init
 from .dev.ls_repo import ls_repo
-from .dev.remove import remove
+from .dev.remove import removesj 
 from .dev.restore import restore
 from .dev.set_bump_deploy import set_bump_deploy
 from .dev.steps import steps
