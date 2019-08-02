@@ -23,14 +23,28 @@ from ..modules.json_config.json_config import Json_config
 from ..modules.shell_helpers import shell_helpers as shell
 
 def export(dy_app, args, dy_pkg=None, direpa_rel=None):
-    direpa_root=""
 
-    if args["path_src"]:
+    direpa_root=""
+    if args["from_rel"]:
+        if not args["release_version"]:
+            msg.error("You have to provide --rversion when using --from-rel", exit=1)
+
+        if not args["app_name"]:
+            msg.error("You have to provide --app-name when using --from-rel", exit=1)
+
+        rversion=args["release_version"][0]
+        app_name=args["app_name"][0]
+
+        direpa_root=os.path.join(dy_app["direpa_release"], app_name, rversion, app_name)
+        if not os.path.exists(direpa_root):
+            msg.error("Not found '{}'".format(direpa_root), exit=1)
+    elif args["path_src"]:
         direpa_root=get_direpa_root(args["path_src"][0])
     else:
         direpa_root=get_direpa_root()
 
-    os.chdir(direpa_root)
+    if not args["from_rel"]:
+        os.chdir(direpa_root) # do I really need that
     # dy_pkg=None
     added_refine_rules=[]
     direpa_dst=""
@@ -85,6 +99,7 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
             direpa_bin=args["path"][0]
 
         if args["release_version"] is None: # get current repository state
+
             direpa_dst=os.path.join(
                 direpa_bin, 
                 "{}_data".format(dy_pkg["name"]),
@@ -103,8 +118,8 @@ def export(dy_app, args, dy_pkg=None, direpa_rel=None):
                 dy_pkg["name"])
 
             prompt_for_replace(direpa_dst)
-
-            previous_branch=checkout_version(version, direpa_root)
+            if not args["from_rel"]:
+                previous_branch=checkout_version(version, direpa_root)
     elif direpa_rel is not None:
         direpa_root=os.path.join(dy_app["direpa_release"], dy_pkg["name"], dy_pkg["version"], dy_pkg["name"])
         direpa_dst=os.path.join(direpa_rel, dy_pkg["name"], dy_pkg["version"], dy_pkg["name"])
