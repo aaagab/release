@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 5.1.1
+# version: 5.1.2
 # name: release
 # license: MIT
 import uuid
