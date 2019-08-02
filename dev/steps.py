@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 5.1.0
+# version: 5.1.1
 # name: gpm
 # license: MIT
 
