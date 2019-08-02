@@ -1,5 +1,21 @@
 {
-    "options": [{
+    "options": [
+        {
+            "app_name": {
+                "action": "store_true",
+                "args": [
+                    "--app-name"
+                ],
+                "info": "Provide app name for export --from-rel",
+                "nargs": 1,
+                "params_required": [
+                    "APP_NAME"
+                ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
             "help": {
                 "action": "store_true",
                 "args": [
@@ -199,6 +215,17 @@
                 "params_required": [
                     "PATH"
                 ],
+                "required": false,
+                "show": true
+            }
+        },
+        {
+            "from_rel": {
+                "action": "store_true",
+                "args": [
+                    "--from-rel"
+                ],
+                "info": "When used with export direpa source comes from rel.",
                 "required": false,
                 "show": true
             }
