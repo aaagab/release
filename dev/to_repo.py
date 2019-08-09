@@ -16,7 +16,7 @@ from ..gpkgs.json_config import Json_config
 from ..gpkgs.sort_separated import sort_separated
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def to_repo(dy_app, direpa_rel, pkg_filter):
+def to_repo(dy_app, direpa_rel, pkg_filters):
     filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
     db=Json_config(filenpa_json_repo).data
     for pkg_filter in pkg_filters:
