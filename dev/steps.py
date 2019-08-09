@@ -1,15 +1,4 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: gpm
-# license: MIT
-
-import os
-from pprint import pprint
-import re
-import glob
-import shutil
-
 def steps():
 	steps= """
 		create folder

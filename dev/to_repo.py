@@ -1,35 +1,28 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
-import re
-from pprint import pprint
 import json
+import os
+from pprint import pprint
+import re
+import sys
 
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-from ..modules.json_config.json_config import Json_config
-from ..modules.shell_helpers import shell_helpers as shell
 from . import regex_obj as ro
+from .export import export
 from .filter_version import filter_version
 from .helpers import get_pkg_id
-from ..gpkgs.sort_separated import sort_separated
 from .get_pkg_from_db import get_pkg_from_db
-from .export import export
 
+from ..gpkgs import message as msg
+from ..gpkgs.json_config import Json_config
+from ..gpkgs.sort_separated import sort_separated
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def to_repo(dy_app, args):
+def to_repo(dy_app, direpa_rel, pkg_filter):
     filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
     db=Json_config(filenpa_json_repo).data
-    pkg_filters=dy_app["args"]["packages"]
-    direpa_rel=dy_app["args"]["to_repo"][0]
     for pkg_filter in pkg_filters:
         chosen_pkg=get_pkg_from_db(db, dy_app, pkg_filter)
         if chosen_pkg is None:
             continue
         else:
-            export(dy_app, args, chosen_pkg, direpa_rel)      
+            export(dy_app, "to_repo", dy_pkg=chosen_pkg, direpa_repo_dst=direpa_rel)      
    

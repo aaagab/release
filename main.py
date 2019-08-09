@@ -1,113 +1,103 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 5.1.4
+# version: 5.1.5
 # name: release
 # license: MIT
 
-from pprint import pprint
-
 if __name__ == "__main__":
-    import sys, os
-    import importlib
     import getpass  
+    import importlib
     import platform
+    from pprint import pprint
+    import os
+    import sys
     direpa_script_parent=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     module_name=os.path.basename(os.path.dirname(os.path.realpath(__file__)))
     sys.path.insert(0, direpa_script_parent)
     pkg = importlib.import_module(module_name)
     del sys.path[0]
     
-    filenpa_script=os.path.realpath(__file__)
-    direpa_script=os.path.dirname(filenpa_script)
-    filenpa_ops=os.path.join(direpa_script, "config", "config.json")
-    conf_options=pkg.Json_config(filenpa_ops)
+    args, dy_app=pkg.Options(filenpa_app="gpm.json", filenpa_args="config/options.json").get_argsns_dy_app()
 
-    filenpa_gpm_json=os.path.join(direpa_script, "gpm.json")
-    conf=pkg.Json_config(filenpa_gpm_json)
+    if dy_app["platform"] == "Linux":
+        dy_app["direpa_bin"]="/data/bin"
+        dy_app["direpa_release"]="/data/rel"
+    elif dy_app["platform"] == "Windows":
+        dy_app["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
+        dy_app["direpa_release"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
 
-    conf_options.data.update(description=conf.data["description"])
-    args, this_help=pkg.ops.get_args(sys.argv, conf_options.data)
+    pkg.check_repo(dy_app)
 
-    conf.data["args"]=vars(args)
-    conf.data["platform"]=platform.system()
-    if conf.data["platform"] == "Linux":
-        pass
-    elif conf.data["platform"] == "Windows":
-        conf.data["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
-        conf.data["direpa_release"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
-
-    pkg.check_repo(conf.data)
-
-    if args.help:
-        print(this_help)
+    if args.bump_version.here is True:
+        pkg.bump_version(args.bump_version.value)
         sys.exit(0)
 
-    if args.bump_version:
-        pkg.bump_version(args.bump_version[0])
+    if args.import_pkgs.here is True:
+        pkg.import_pkgs(dy_app, args.packages.values)
         sys.exit(0)
 
-    if args.import_pkgs:
-        pkg.import_pkgs(conf.data, conf.data["args"]["import_pkgs"])
+    if args.init.here is True:
+        pkg.init(dy_app, args.init.value)
         sys.exit(0)
 
-    if args.init:
-        pkg.init(conf.data, vars(args))
+    if args.generate_db.here is True:
+        pkg.generate_db(dy_app)
         sys.exit(0)
 
-    if args.generate_db:
-        pkg.generate_db(conf.data)
-        sys.exit(0)
-
-    if args.ls_repo:
-        pkg.ls_repo(conf.data)
+    if args.ls_repo.here is True:
+        pkg.ls_repo(dy_app, args.packages.values, args.add_deps.here)
         sys.exit(0)
         
-    if args.set_bump_deploy:
-        pkg.set_bump_deploy(conf.data)
+    if args.set_bump_deploy.here is True:
+        pkg.set_bump_deploy(dy_app)
         sys.exit(0)
 
-    if args.switch_bin:
-        pkg.switch_bin(conf.data, vars(args))
+    if args.switch_bin.here is True:
+        pkg.switch_bin(dy_app, args.pkg_name.value, args.pkg_version.value)
         sys.exit(0)
 
-    if args.steps:
+    if args.steps.here is True:
         pkg.steps()
         sys.exit(0)
 
-    if args.export_bin:
-        pkg.export(conf.data, vars(args))
+    if args.export_bin.here is True:
+        pkg.export(dy_app,
+            "export_bin",
+            from_rel=args.from_rel.here,
+            no_symlink=args.no_symlink.here,
+            path_src=args.path_src.value,
+            path_dst=args.path.value,
+            pkg_name=args.pkg_name.value,
+            pkg_version=args.pkg_version.value,
+        )
         sys.exit(0)
 
-    if args.export_rel:
-        pkg.export(conf.data, vars(args))
+    if args.export_rel.here is True:
+        pkg.export(dy_app, 
+            "export_rel",
+            add_deps=args.add_deps.here,
+            path_dst=args.path.value,
+            path_src=args.path_src.value,
+            pkg_version=args.pkg_version.value,
+        )
         sys.exit(0)
 
-    if args.remove:
-        pkg.remove(conf.data)
+    if args.remove.here is True:
+        pkg.remove(dy_app, args.remove.values)
         sys.exit(0)
 
-    if args.to_repo:
-        # print("New start")
-        pkg.to_repo(conf.data, vars(args))
+    if args.to_repo.here is True:
+        pkg.to_repo(dy_app, args.to_repo.value, args.packages.values)
         sys.exit(0)
 
-    if args.restore:
-        pkg.restore(conf.data, vars(args))
+    if args.restore.here is True:
+        pkg.restore(dy_app)
         sys.exit(0)
 
-    if args.update:
-        pkg.update_upgrade(conf.data, "update")
+    if args.update.here is True:
+        pkg.update_upgrade(dy_app, "update", args.update.values)
         sys.exit(0)
 
-    if args.upgrade:
-        pkg.update_upgrade(conf.data, "upgrade")
+    if args.upgrade.here is True:
+        pkg.update_upgrade(dy_app, "upgrade", args.upgrade.values)
         sys.exit(0)
-
-    if args.version is True:
-        lspace="  "
-        print(lspace+pkg.msg.ft.bold("Name: ")+conf.data["name"])
-        print(lspace+pkg.msg.ft.bold("Author(s): ")+", ".join(conf.data["authors"]))
-        print(lspace+pkg.msg.ft.bold("License(s): ")+", ".join(conf.data["licenses"]))
-        print(lspace+pkg.msg.ft.bold("Version: ")+conf.data["version"])
-        sys.exit(0)
-

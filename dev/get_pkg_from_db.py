@@ -1,21 +1,14 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
 from pprint import pprint
+import os
+import sys
 import shutil
 
-from ..modules.json_config.json_config import Json_config
-from ..modules.prompt.prompt import prompt_multiple
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-
 from .search import search
-from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
-from .check_pkg_integrity import check_pkg_integrity
-from ..gpkgs.sort_separated import sort_separated
+
+from ..gpkgs import message as msg
+from ..gpkgs.json_config import Json_config
+from ..gpkgs.prompt import prompt_multiple
 
 # ./__init__.py -i message,a.a.a prompt
 

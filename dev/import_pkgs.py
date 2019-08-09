@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
+import os
 from pprint import pprint
 import shutil
+import sys
 
-from ..modules.json_config.json_config import Json_config
-from ..modules.prompt.prompt import prompt_multiple
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-
-from .get_pkg_from_db import get_pkg_from_db
-from .search import search
-from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
-from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from .check_pkg_integrity import check_pkg_integrity
+from .get_pkg_from_db import get_pkg_from_db
+from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
+
+from ..gpkgs import message as msg
+from ..gpkgs.json_config import Json_config
+from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..gpkgs.sort_separated import sort_separated
 
 # ./__init__.py -i message,a.a.a prompt
@@ -80,7 +75,7 @@ def import_pkgs(dy_app, pkg_filters, action=None):
                 dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), chosen_pkg["bound"])
                 conf_app.data["deps"].append(dep_to_insert)
                 conf_app.data["deps"]=sort_separated(conf_app.data["deps"], sort_order=[1,0,2,3], keep_sort_order=False, separator="|")
-                conf_app.set_file_with_data()
+                conf_app.save()
 
                 if chosen_pkg["bound"] == "gpm":
                     paths=get_paths_to_copy(direpa_src)
