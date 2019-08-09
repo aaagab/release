@@ -1,33 +1,27 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
+import os
 from pprint import pprint
 import shutil
+import sys
 
-from ..modules.json_config.json_config import Json_config
-from ..modules.prompt.prompt import prompt_multiple
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-
-from .search import search
-from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
-from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
+from . import regex_obj as ro
 from .check_pkg_integrity import check_pkg_integrity
 from .choose_pkg_cli import choose_pkg_cli
-from . import regex_obj as ro
+from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
+from .search import search
 
+from ..gpkgs import message as msg
+from ..gpkgs.json_config import Json_config
+from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..gpkgs.sort_separated import sort_separated
 
 # ./__init__.py -i message,a.a.a prompt
 
-def update_upgrade(dy_app, action):
+def update_upgrade(dy_app, action, pkg_names):
     if is_pkg_git():
         direpa_root=get_direpa_root()
         check_pkg_integrity(dy_app, direpa_root)
-        pkg_names=dy_app["args"][action]
 
         filenpa_json=os.path.join(direpa_root, dy_app["filen_json_app"])
         conf_app=Json_config(filenpa_json)
@@ -99,7 +93,7 @@ def update_upgrade(dy_app, action):
                 dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), dep_pkgs[pkg_name]["bound"])
                 conf_app.data["deps"].append(dep_to_insert)
                 conf_app.data["deps"]=sort_separated(conf_app.data["deps"], sort_order=[1,0,2,3], keep_sort_order=False, separator="|")
-                conf_app.set_file_with_data()
+                conf_app.save()
 
                 if dep_pkgs[pkg_name]["bound"] == "gpm":
                     direpa_src=os.path.join(dy_app["direpa_release"], chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])

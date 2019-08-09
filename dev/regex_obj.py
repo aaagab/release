@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 import re
-# import git_helpers.git_utils as git
-from ..gpkgs import message as msg
 import sys
 import textwrap
+
+from ..gpkgs import message as msg
 
 class Regex_obj():
     def __init__(self, group_string):

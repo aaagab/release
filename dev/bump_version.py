@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
-import re
 from pprint import pprint
+import os
+import re
+import sys
 
-from ..dev.helpers import get_direpa_root, is_pkg_git
-from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
+from .helpers import get_direpa_root, is_pkg_git
+
 from ..gpkgs import message as msg
-from ..modules.json_config.json_config import Json_config
+from ..gpkgs.json_config import Json_config
+from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 
 def bump_version(version):
     direpa_root=get_direpa_root()
@@ -33,7 +31,7 @@ def bump_version(version):
             conf=Json_config(filenpa_conf)
             if "version" in conf.data:
                 conf.data["version"]=version
-                conf.set_file_with_data()
+                conf.save()
 
     for path in paths:
         if os.path.isfile(path):

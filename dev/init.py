@@ -3,37 +3,24 @@
 # version: 5.1.4
 # name: release
 # license: MIT
-import uuid
-import os, sys
-import re
-from pprint import pprint
-import shutil
 import json
+import os
+from pprint import pprint
+import re
+import shutil
+import sys
+import uuid
 
-from .import_pkgs import import_pkgs
+from . import regex_obj as ro
 
 from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean, prompt
-from ..modules.json_config.json_config import Json_config
-from ..modules.shell_helpers import shell_helpers as shell
-from . import regex_obj as ro
-from .filter_version import filter_version
-from .helpers import get_pkg_id, get_direpa_root
-from ..gpkgs.sort_separated import sort_separated
-from .get_pkg_from_db import get_pkg_from_db
-from .search import search
-
-from .export import export
-
+from ..gpkgs.prompt import prompt_boolean, prompt
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def init(dy_app, args, direpa_root=""):
-	direpa_root=""
-	if isinstance(args["init"], list):
-		direpa_root=args["init"][0]
+def init(dy_app, direpa_root=None):
 	msg.info("gpm init")
 
-	if not direpa_root:
+	if direpa_root is None:
 		direpa_root=os.getcwd()
 
 	filenpa_gpm_json=os.path.join(direpa_root, dy_app["filen_json_app"])
