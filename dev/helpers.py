@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, shlex, sys
 import contextlib
+import os
+import shlex
 import subprocess
-from ..modules.shell_helpers import shell_helpers as shell
+import sys
+
+from . import regex_obj as ro
+
 from ..gpkgs import message as msg
-# from import 
-from ..modules.json_config.json_config import Json_config
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.json_config import Json_config
 
 def get_direpa_root(path=""):
+    direpa_current=""
     if is_pkg_git(path):
-        direpa_current=""
         if path:
             direpa_current=os.getcwd()
             os.chdir(path)
@@ -24,7 +24,7 @@ def get_direpa_root(path=""):
 
         return direpa_root
     else:
-        direpa_current==os.getcwd()
+        direpa_current=os.getcwd()
 
         if not path:
             path=direpa_current
@@ -124,3 +124,27 @@ def get_pkg_id(dy_pkg, **added):
         dy_pkg.update(added)
 
     return "{}|{}|{}".format(dy_pkg["uuid4"], dy_pkg["name"], dy_pkg["version"])
+
+# def identify_package_filters(pkg_filter):
+#     components=pkg_filter.split(",")
+#     name=components[0]
+#     version=""
+#     bound=""
+#     if len(components) == 2:
+#         version=components[1]
+#     elif len(components) == 3:
+#         bound=components[2]
+
+#     tmp_filter="n:{}".format(name)
+#     if version:
+#         tmp_filter+=",v:{}".format(version)
+#     else:
+
+
+
+# if ro.Version_regex(ftr_component).match:
+#     return dict(version_ftr=ftr_component)
+# if ro.Package_name_regex(ftr_component).match:
+#     return dict(name=ftr_component)
+# if ro.Uuid4_regex(ftr_component).match:
+#     return dict(uuid4=ftr_component)

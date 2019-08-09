@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
+import os
 import logging
 from pprint import pprint
 import shutil
-
-from ..modules.json_config.json_config import Json_config
-from ..modules.prompt.prompt import prompt_multiple
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
+import sys
 
 from .search import search
 from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
 
+from ..gpkgs import message as msg
+from ..gpkgs.json_config import Json_config
+
 # ./__init__.py -i message,a.a.a prompt
 
 def check_pkg_integrity(dy_app, direpa_pkg, action=None):
-    print
     filenpa_json_root=os.path.join(direpa_pkg, dy_app["filen_json_app"])
     data_root=get_json_data(filenpa_json_root)
 

@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
 import os, sys
 import re
 from pprint import pprint
@@ -10,24 +6,12 @@ import shutil
 import json
 
 from .import_pkgs import import_pkgs
+from .helpers import get_direpa_root
 
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-from ..modules.json_config.json_config import Json_config
-from ..modules.shell_helpers import shell_helpers as shell
-from . import regex_obj as ro
-from .filter_version import filter_version
-from .helpers import get_pkg_id, get_direpa_root
-from ..gpkgs.sort_separated import sort_separated
-from .get_pkg_from_db import get_pkg_from_db
-from .search import search
-
-
-from .export import export
-
+from ..gpkgs.json_config import Json_config
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def restore(dy_app, args):
+def restore(dy_app):
     filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
     db=Json_config(filenpa_json_repo).data
 

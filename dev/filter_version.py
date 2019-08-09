@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
-import re
-from pprint import pprint
 import inspect
 import json
+from pprint import pprint
+import os
+import re
+import sys
+
+from . import regex_obj as ro
 
 from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-from ..modules.json_config.json_config import Json_config
-from ..modules.shell_helpers import shell_helpers as shell
-from . import regex_obj as ro
 from ..gpkgs.sort_separated import sort_separated
 
 def get_preselected(reg_versions, version_component, reg_version_ftr ):

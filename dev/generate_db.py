@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
-import re
-import shutil
 import contextlib
-import subprocess
-import shlex
 from pprint import pprint
-
-from ..dev.helpers import get_direpa_root, to_be_coded
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
 
 from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-from ..modules.json_config.json_config import Json_config
-from ..modules.shell_helpers import shell_helpers as shell
+from ..gpkgs.json_config import Json_config
 
 # mockpackage 0.2.2
 # mockpackage 0.2.3
@@ -52,4 +45,4 @@ def generate_db(dy_app):
     filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
     db.update({"pkgs": pkgs, "uuid4s": uuid4s})
     with open(filenpa_json_repo, "w") as f:
-        Json_config(filenpa_json_repo).set_file_with_data(db)
+        Json_config(filenpa_json_repo).save(db)

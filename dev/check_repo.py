@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
 from pprint import pprint
+import os
+import sys
 
-from ..modules.json_config.json_config import Json_config
+from ..gpkgs.json_config import Json_config
 
 def check_repo(dy_app, direpa_rel=None):
     if direpa_rel is None:
@@ -20,5 +17,5 @@ def check_repo(dy_app, direpa_rel=None):
             f.write("{}")
 
         data={"pkgs":{}, "uuid4s":{}}
-        Json_config(filenpa_json).set_file_with_data(data)
+        Json_config(filenpa_json).save(data)
     

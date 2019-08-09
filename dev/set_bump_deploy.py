@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
-import re
-from pprint import pprint
 import json
+from pprint import pprint
+import os
+import re
+import sys
 
 from ..dev.helpers import get_direpa_root, is_pkg_git, create_symlink
+
 from ..gpkgs import message as msg
-from ..modules.shell_helpers import shell_helpers as shell
-from ..modules.json_config.json_config import Json_config
-from ..modules.prompt.prompt import prompt_boolean, prompt
+from ..gpkgs import shell_helpers as shell
+from ..gpkgs.prompt import prompt_boolean
 
 def set_bump_deploy(dy_app):
     filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
@@ -110,8 +107,8 @@ def get_default_deploy_file():
         #!/usr/bin/env python3
         import os, sys
         version=sys.argv[1]
-        os.system("release --export-rel --rversion {} --add-deps".format(version))
-        # os.system("release --export-bin --rversion {}".format(version))
+        os.system("release --export-rel --pkg-version {} --add-deps".format(version))
+        # os.system("release --export-bin --pkg-version {}".format(version))
     """
 
 def get_default_launch_pyw():
