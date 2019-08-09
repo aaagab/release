@@ -1,0 +1,124 @@
+{
+    "pkg_name": {
+        "aliases": "--name,--pkg-name,--pname",
+        "info": "package name",
+        "nested": true,
+        "values": "PKG_NAME"
+    },
+    "add_deps": {
+        "aliases": "--add-deps",
+        "info": "Add dependencies",
+        "nested": true
+    },
+    "bump_version": {
+        "aliases": "--bump-version",
+        "info": "Send refined project 'selected version' to /$project_path/rel or path.",
+        "values": "VERSION"
+    },
+    "export_bin": {
+        "aliases": "--export-bin",
+        "args": "from_rel,path,path_src,pkg_version,no_symlink",
+        "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path."
+    },
+    "export_rel": {
+        "aliases": "--export-rel",
+        "args": "add_deps,path,path_src,pkg_version",
+        "info": "Send refined project 'selected version' to /$project_path/rel or path."
+    },
+    "from_rel": {
+        "aliases": "--from-rel",
+        "args": "pkg_name,pkg_version",
+        "nested": true,
+        "required": "pkg_name,pkg_version",
+        "info": "When used with export direpa source comes from rel."
+    },
+    "generate_db": {
+        "aliases": "-g,--generate-db,--gen,--gd",
+        "info": "list all folders in repository and generate the db.json."
+    },
+    "import_pkgs": {
+        "aliases": "-i,--import",
+        "args": "packages",
+        "required": "packages",
+        "info": "import packages in a git project with a folder gpkgs."
+    },
+    "init": {
+        "aliases": "--init",
+        "info": "create a gpm.json file for a new project.",
+        "nvalues": "?",
+        "values": "path"
+    },
+    "ls_repo": {
+        "aliases": "-l,--ls,--ls-repo",
+        "args": "packages,add_deps",
+        "info": "List all packages in the repo. You can add name(s) to filter by names."
+    },
+    "no_symlink": {
+        "aliases": "--no-symlink",
+        "info": "Prevent symlink creation on --export-bin.",
+        "nested": true
+    },
+    "packages": {
+        "aliases": "-p,--pkgs,--packages",
+        "info": "Packages are identified with the following syntax uuid4,name,version,pkg_bound . Generally you just select the name, but you can also use the uuid4, and the version. To import a package you have to name the packages. if only name, latest version of the package is selected and package bound is going to be gpm. if name,version then version is a filter and several options are possible: major.minor.patch each element can be a number, the letter L for latest or the letter A for any . It allows advanced filters to display and select packages.",
+        "nested": true,
+        "nvalues": "*",
+        "values": "PGK_FILTER"
+    },
+    "path": {
+        "aliases": "--path",
+        "info": "Select path.",
+        "nested": true,
+        "values": "PATH"
+    },
+    "path_src": {
+        "aliases": "--path-src",
+        "info": "Select source path. When this path is selected the application move to this directory before starting processing the command.",
+        "nested": true,
+        "values": "PATH"
+    },
+    "pkg_version": {
+        "aliases": "--pversion,--pv,--pkg-version,--rversion",
+        "info": "Select version.",
+        "nested": true,
+        "values": "VERSION"
+    },
+    "remove": {
+        "aliases": "-r,--remove",
+        "nvalues": "*",
+        "values": "PKG_NAMES"
+    },
+    "restore": {
+        "aliases": "--restore",
+        "info": "Reinstall all dependencies from gpm.json"
+    },
+    "set_bump_deploy": {
+        "aliases": "--set-bump-deploy",
+        "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken."
+    },
+    "steps": {
+        "aliases": "--steps",
+        "info": "Give the main steps to create an application."
+    },
+    "switch_bin": {
+        "aliases": "--switch-bin,--sb",
+        "args": "pkg_name,pkg_version",
+        "info": "Given an application name and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available",
+        "required": "pkg_name,pkg_version"
+    },
+    "to_repo": {
+        "aliases": "--to-repo",
+        "args": "packages",
+        "required": "packages",
+        "info": "Send Package from repo to another",
+        "values": "direpa_repo"
+    },
+    "update": {
+        "aliases": "-u,--update",
+        "values": "PKG_NAMES"
+    },
+    "upgrade": {
+        "aliases": "--upgrade,--ug",
+        "values": "PKG_NAMES"
+    }
+}

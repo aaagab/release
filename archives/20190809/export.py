@@ -19,7 +19,16 @@ from ..gpkgs.json_config import Json_config
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..gpkgs.prompt import prompt_boolean
 
-
+def export(dy_app,
+    action, # export_bin, export_rel, to_repo
+    add_deps=False,
+    dy_pkg=None, 
+    from_rel=False,
+    path_src=None,
+    pkg_name=None,
+    pkg_version=None,
+    direpa_repo_dst=None,
+):
     # from rel means from existing repository, it is supposed to be send to bin. so I don't have to export the code again.
     # it is not export bin then it is direpa_dst == bin
     # it is not export rel then it is direpa_dst == rel
@@ -29,65 +38,7 @@ from ..gpkgs.prompt import prompt_boolean
     # export should be direpa_src and direpa_dst and from there according to the destination and the source I know what to do.
     # the ideal would be from and to
     # for now I am not able to detect if release of other so it should be specify.
-    # dy_pkg from path from-type repo to path to-type pkg,bin
-
-
-# bin
-# repo
-# pkg
-
-
-#  that is for later
-# def export(
-#     dy_app,
-#     direpa_src,
-#     direpa_dst,
-#     src_type,
-#     dst_type,
-#     pkg_filters= [],
-# ):
-
-    # What about packages what form? provided or not?
-
-    # pkgs, if no filters, grab
-
-
-
-    # if src_type == "repo":
-    #     if not pkg_filters:
-    #         pass # grab all gpm packages
-    #     else:
-    #         for each pkgs get an a path and then for each path send to destination.
-    #         I have to create locations
-    #         create a location and then have all the data. needed.
-    #     direpa_dst ==
-
-    
-    # elif src_type == "pkg":
-
-
-    # if dst_type == "repo":
-
-    # elif dst_type == "bin":
-    
-    # elif dst_type == "pkg":
-
-
-# from_rel or --from-rel is when you want to send to bin from main repository
-# path is when you export to release export_rel or export_bin to any destination. this one is not really clear
-
-def export(dy_app,
-    action, # export_bin, export_rel, to_repo
-    add_deps=False,
-    dy_pkg=None, 
-    from_rel=False,
-    no_symlink=False,
-    path_dst=None,
-    path_src=None,
-    pkg_name=None,
-    pkg_version=None,
-    direpa_repo_dst=None,
-):
+    # from path from-type repo to path to-type pkg,bin
     direpa_root=""
     if from_rel is True:
         direpa_root=os.path.join(dy_app["direpa_release"], pkg_name, pkg_version, pkg_name)
@@ -110,10 +61,10 @@ def export(dy_app,
     if action == "export_rel":
         dy_pkg=get_app_meta_data(direpa_root)
         
-        if add_deps is False:
+        if args["add_deps"] is False:
             added_refine_rules=["/modules/", "/.pkgs/", "/upacks/", "/gpkgs/"]
 
-        if path_dst is None:
+        if args["path"] is None:
             if pkg_version is None:
                 msg.error("You need to provide a release version with --pkg-version for export release")
                 sys.exit(1)
@@ -125,7 +76,7 @@ def export(dy_app,
             previous_branch=checkout_version(pkg_version, direpa_root)
             insert_db=True
         else:
-            direpa_dst_root=path_dst
+            direpa_dst_root=args["path"][0]
             direpa_dst=os.path.join(direpa_dst_root, dy_pkg["name"])
             prompt_for_replace(direpa_dst)
 
@@ -139,19 +90,20 @@ def export(dy_app,
     elif action == "export_bin":
         dy_pkg=get_app_meta_data(direpa_root)
 
-        if add_deps is True:
+        if args["add_deps"] is True:
             msg.warning(
                 "--add-deps is not an option for export to bin",
                 "dependencies are included by default in this context."
                 )
 
         added_refine_rules=[]
-        if path_dst is None:
+        if args["path"] is None:
             direpa_bin=dy_app["direpa_bin"]
         else:
-            direpa_bin=path_dst
+            direpa_bin=args["path"][0]
 
         if pkg_version is None: # get current repository state
+
             direpa_dst=os.path.join(
                 direpa_bin, 
                 "{}_data".format(dy_pkg["name"]),
@@ -160,6 +112,7 @@ def export(dy_app,
             if os.path.exists(direpa_dst):
                 shutil.rmtree(direpa_dst)
             os.makedirs(direpa_dst, exist_ok=True)
+
         else: # checkout at chosen version
             direpa_dst=os.path.join(
                 direpa_bin, 
@@ -216,10 +169,12 @@ def export(dy_app,
         conf_db.save()
 
     if direpa_bin:
-        if no_symlink is False:
+        if args["no_symlink"] is False:
             filenpa_exec=os.path.join(direpa_dst, dy_pkg["filen_main"])
             filenpa_symlink=os.path.join(direpa_bin, dy_pkg["name"])
+
             create_symlink(dy_app["platform"], filenpa_exec, filenpa_symlink )
+
 
     if previous_branch:
         shell.cmd_prompt("git checkout "+previous_branch)

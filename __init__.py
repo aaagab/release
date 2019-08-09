@@ -22,5 +22,5 @@ from .dev.to_repo import to_repo
 from .dev.update_upgrade import update_upgrade
 
 from .gpkgs import message as msg
-from .modules.json_config.json_config import Json_config
-from .modules.options import options as ops
+from .gpkgs.json_config import Json_config
+from .gpkgs.options import Options

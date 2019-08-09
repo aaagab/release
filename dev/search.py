@@ -1,23 +1,18 @@
 #!/usr/bin/env python3
-# author: Gabriel Auger
-# version: 5.1.4
-# name: release
-# license: MIT
-import os, sys
-import re
-from pprint import pprint
 import json
+import os
+from pprint import pprint
+import re
+import sys
 
-from ..gpkgs import message as msg
-from ..modules.prompt.prompt import prompt_boolean
-from ..modules.json_config.json_config import Json_config
-from ..modules.shell_helpers import shell_helpers as shell
 from . import regex_obj as ro
 from .filter_version import filter_version
 from .helpers import get_pkg_id
+
+from ..gpkgs import message as msg
 from ..gpkgs.sort_separated import sort_separated
 
-def search(pkgs, pkg_filter=""):
+def search(pkgs, pkg_filter="",identify=False):
     # pkgs=[
     #     '259d7ae3-d03e-4e5a-96d4-32259ff55a07|mockpackage|3.2.0',
     #     '259d7ae3-d03e-4e5a-96d4-32259ff55a07|mockpackage|3.2.3',
@@ -59,14 +54,14 @@ def search(pkgs, pkg_filter=""):
         dy_filter={}
         if len(ftr_split) == 1:
             ftr_component=ftr_split[0]
-            dy_filter=get_dy_filter_part(ftr_component)
+            dy_filter=get_dy_filter_part(ftr_component, identify)
             if not "name" in dy_filter and not "uuid4" in dy_filter:
                 msg.error("Search Filter incomplete for '{}'".format(ftr_component),
                     "Please provide at least a name or a uuid4.")
                 sys.exit(1)
         elif len(ftr_split) < 5:
             for ftr_component in ftr_split:
-                filter_part=get_dy_filter_part(ftr_component)
+                filter_part=get_dy_filter_part(ftr_component, identify)
                 if next(iter(filter_part)) in dy_filter:
                     msg.error("for '{}' key '{}' already in '{}'".format(json.dumps(filter_part), next(iter(filter_part)), json.dumps(dy_filter) ))
                     sys.exit(1)
@@ -164,7 +159,7 @@ def search(pkgs, pkg_filter=""):
     else:
         return []
 
-def get_dy_filter_part(ftr_component):
+def get_dy_filter_part(ftr_component, identify):
     identifiers=["b", "n", "u", "v"]
     reg_identifier=re.match(r"^(["+"{}".format("|".join(identifiers))+r"]):(.*)$", ftr_component)
     if reg_identifier:
@@ -195,5 +190,14 @@ def get_dy_filter_part(ftr_component):
         elif id_letter == "v":
             return dict(version_ftr=search_elem)
     else:
-        msg.error("'{}' has not identifier".format(ftr_component))
-        sys.exit(1)
+        # if identify is False:
+        msg.error("'{}' has not identifier".format(ftr_component),
+            "identifiers are '{}'".format(identifiers),
+            "Use them like that 'n:name,v:2.3.4,u:2b20ffd7-d9bf-4a23-b8cf-354b6063a26b,b:gpm'",
+        exit=1)
+        # else:
+            
+            
+            
+        #     print("I am here")
+        #     sys.exit()
