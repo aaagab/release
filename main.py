@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.1.1
+# version: 6.2.0
 # name: release
 # license: MIT
 
@@ -42,6 +42,7 @@ if __name__ == "__main__":
             description=args.description.value,
             direpa_root=args.init.value,
             filen_main=args.filen_main.value,
+            get_uuid4=args.get_uuid4.here,
             licenses=args.licenses.values,
             pkg_name=args.pkg_name.value,
             pkg_version=args.pkg_version.value,

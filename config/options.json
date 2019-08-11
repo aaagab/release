@@ -44,6 +44,9 @@
         "aliases": "-g,--generate-db,--gen,--gd",
         "info": "list all folders in repository and generate the db.json."
     },
+    "get_uuid4": {
+        "nested": true
+    },
     "import_pkgs": {
         "aliases": "-i,--import",
         "args": "packages",
@@ -52,7 +55,7 @@
     },
     "init": {
         "aliases": "--init",
-        "args": "authors,description,filen_main,licenses,pkg_name,pkg_version",
+        "args": "authors,description,get_uuid4,filen_main,licenses,pkg_name,pkg_version",
         "info": "create a gpm.json file for a new project.",
         "nvalues": "?",
         "values": "path"
