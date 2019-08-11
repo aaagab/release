@@ -37,7 +37,15 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.init.here is True:
-        pkg.init(dy_app, args.init.value)
+        pkg.init(dy_app, 
+            authors=args.authors.values,
+            description=args.description.value,
+            direpa_root=args.init.value,
+            filen_main=args.filen_main.value,
+            licenses=args.licenses.values,
+            pkg_name=args.pkg_name.value,
+            pkg_version=args.pkg_version.value,
+        )
         sys.exit(0)
 
     if args.generate_db.here is True:
