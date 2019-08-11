@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.0.1
+# version: 6.1.0
 # name: release
 # license: MIT
 import json
@@ -17,7 +17,15 @@ from ..gpkgs import message as msg
 from ..gpkgs.prompt import prompt_boolean, prompt
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def init(dy_app, direpa_root=None):
+def init(dy_app, 
+    authors=[],
+    description=None,
+    direpa_root=None,
+    filen_main=None,
+    licenses=[],
+    pkg_name=None,
+    pkg_version=None,
+):
 	msg.info("gpm init")
 
 	if direpa_root is None:
@@ -28,50 +36,74 @@ def init(dy_app, direpa_root=None):
 		msg.warning("{} already exists.".format(filenpa_gpm_json))
 		sys.exit(1)
 
-	# create gpm.json
-	reg_name=ro.Package_name_regex(prompt("Package Name"))
-	if not reg_name.match:
-		sys.exit(1)
-
 	dct_gpm=dict(
-		name=reg_name.text,
-		authors=get_authors(),
-		licenses=get_licenses(),
-		description=prompt("Package Description"),
-		# cmds=get_cmds(),
-		filen_main=prompt("Enter name Main File"),
+		name=get_pkg_name(pkg_name),
+		authors=get_authors(authors),
+		licenses=get_licenses(licenses),
+		description=get_description(description),
+		filen_main=get_filen_main(filen_main),
+		version=get_pkg_version(pkg_version),
 		deps=[],
 		installer="gpm",
 		uuid4=str(uuid.uuid4()),
 		gpm_version=dy_app["version"],
-		# repository=prompt("Enter a repository path"),
-		version=prompt("Enter version")
 	)
 
 	with open(filenpa_gpm_json, "w") as f:
 		f.write(json.dumps(dct_gpm,sort_keys=True, indent=4))
 
+def get_pkg_name(pkg_name):
+	if pkg_name is None:
+		pkg_name=prompt("Package Name")
+	
+	while ro.Package_name_regex(pkg_name).match is False:
+		pkg_name=prompt("Package Name")
 
-def get_authors():
-    authors=[]
-    authors.append(prompt("Author"))
+	return pkg_name
 
-    while True:
-        if prompt_boolean("Do you want to add another author"):
-            authors.append(prompt("Author"))
-        else:
-            break
-    
-    return authors
+def get_authors(authors):
+	if not authors:
+		authors=[]
+		authors.append(prompt("Author"))
+		while True:
+			if prompt_boolean("Do you want to add another author"):
+				authors.append(prompt("Author"))
+			else:
+				break
 
-def get_licenses():
-    licenses=[]
-    licenses.append(prompt("License"))
+	return authors
 
-    while True:
-        if prompt_boolean("Do you want to add another license"):
-            licenses.append(prompt("License"))
-        else:
-            break
+def get_licenses(licenses):
+	if not licenses:
+		licenses=[]
+		licenses.append(prompt("License"))
 
-    return licenses
+		while True:
+			if prompt_boolean("Do you want to add another license"):
+				licenses.append(prompt("License"))
+			else:
+				break
+
+	return licenses
+
+def get_description(description):
+	if description is None:
+		description=prompt("Package Description")
+
+	return description
+
+def get_filen_main(filen_main):
+	if filen_main is None:
+		filen_main=prompt("Package Main File", allow_empty=True)
+
+	return filen_main
+
+def get_pkg_version(pkg_version):
+	prompt_text="Package Version ex:0.0.0"
+	if pkg_version is None:
+		pkg_version=prompt(prompt_text)
+	
+	while ro.Version_regex(pkg_version).match is False:
+		pkg_version=prompt(prompt_text)
+
+	return pkg_version

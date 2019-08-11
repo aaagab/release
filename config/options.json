@@ -1,19 +1,22 @@
 {
-    "pkg_name": {
-        "aliases": "--name,--pkg-name,--pname",
-        "info": "package name",
-        "nested": true,
-        "values": "PKG_NAME"
-    },
     "add_deps": {
         "aliases": "--add-deps",
         "info": "Add dependencies",
         "nested": true
     },
+    "authors": {
+        "nested": true,
+        "nvalues": "1,*",
+        "values": "Full Name"
+    },
     "bump_version": {
         "aliases": "--bump-version",
         "info": "Send refined project 'selected version' to /$project_path/rel or path.",
         "values": "VERSION"
+    },
+    "description": {
+        "nested": true,
+        "values": "Package Description"
     },
     "export_bin": {
         "aliases": "--export-bin",
@@ -24,6 +27,11 @@
         "aliases": "--export-rel",
         "args": "add_deps,path,path_src,pkg_version",
         "info": "Send refined project 'selected version' to /$project_path/rel or path."
+    },
+    "filen_main": {
+        "nested": true,
+        "info": "Package main file if any, just the full name",
+        "values": "main_file"
     },
     "from_rel": {
         "aliases": "--from-rel",
@@ -44,9 +52,15 @@
     },
     "init": {
         "aliases": "--init",
+        "args": "authors,description,filen_main,licenses,pkg_name,pkg_version",
         "info": "create a gpm.json file for a new project.",
         "nvalues": "?",
         "values": "path"
+    },
+    "licenses": {
+        "nested": true,
+        "nvalues": "1,*",
+        "values": "MIT|None"
     },
     "ls_repo": {
         "aliases": "-l,--ls,--ls-repo",
@@ -76,6 +90,12 @@
         "info": "Select source path. When this path is selected the application move to this directory before starting processing the command.",
         "nested": true,
         "values": "PATH"
+    },
+    "pkg_name": {
+        "aliases": "--pkg-name,--pname",
+        "info": "package name",
+        "nested": true,
+        "values": "PKG_NAME"
     },
     "pkg_version": {
         "aliases": "--pversion,--pv,--pkg-version,--rversion",
