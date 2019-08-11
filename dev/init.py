@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.1.1
+# version: 6.2.0
 # name: release
 # license: MIT
 import json
@@ -22,12 +22,11 @@ def init(dy_app,
     description=None,
     direpa_root=None,
     filen_main=None,
+	get_uuid4=False,
     licenses=[],
     pkg_name=None,
     pkg_version=None,
 ):
-	msg.info("gpm init")
-
 	if direpa_root is None:
 		direpa_root=os.getcwd()
 
@@ -36,6 +35,7 @@ def init(dy_app,
 		msg.warning("{} already exists.".format(filenpa_gpm_json))
 		sys.exit(1)
 
+	uuid4=str(uuid.uuid4())
 	dct_gpm=dict(
 		name=get_pkg_name(pkg_name),
 		authors=get_authors(authors),
@@ -45,12 +45,15 @@ def init(dy_app,
 		version=get_pkg_version(pkg_version),
 		deps=[],
 		installer="gpm",
-		uuid4=str(uuid.uuid4()),
+		uuid4=uuid4,
 		gpm_version=dy_app["version"],
 	)
 
 	with open(filenpa_gpm_json, "w") as f:
 		f.write(json.dumps(dct_gpm,sort_keys=True, indent=4))
+
+	if get_uuid4 is True:
+		print(uuid4)
 
 def get_pkg_name(pkg_name):
 	if pkg_name is None:
