@@ -44,9 +44,6 @@
         "aliases": "-g,--generate-db,--gen,--gd",
         "info": "list all folders in repository and generate the db.json."
     },
-    "get_uuid4": {
-        "nested": true
-    },
     "import_pkgs": {
         "aliases": "-i,--import",
         "args": "packages",
@@ -55,7 +52,7 @@
     },
     "init": {
         "aliases": "--init",
-        "args": "authors,description,get_uuid4,filen_main,licenses,pkg_name,pkg_version,set_uuid4",
+        "args": "authors,description,filen_main,licenses,pkg_name,pkg_version,uuid4",
         "info": "create a gpm.json file for a new project.",
         "nvalues": "?",
         "values": "path"
@@ -119,10 +116,6 @@
         "aliases": "--set-bump-deploy",
         "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken."
     },
-    "set_uuid4": {
-        "nested": true,
-        "values": "UUID4"
-    },
     "steps": {
         "aliases": "--steps",
         "info": "Give the main steps to create an application."
@@ -147,5 +140,9 @@
     "upgrade": {
         "aliases": "--upgrade,--ug",
         "values": "PKG_NAMES"
+    },
+    "uuid4": {
+        "nested": true,
+        "values": "UUID4"
     }
 }

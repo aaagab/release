@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.3.0
+# version: 7.0.0
 # name: release
 # license: MIT
 import json
@@ -22,7 +22,7 @@ def init(dy_app,
     description=None,
     direpa_root=None,
     filen_main=None,
-	get_uuid4=False,
+	# get_uuid4=False,
     licenses=[],
     pkg_name=None,
     pkg_version=None,
@@ -54,8 +54,8 @@ def init(dy_app,
 	with open(filenpa_gpm_json, "w") as f:
 		f.write(json.dumps(dct_gpm,sort_keys=True, indent=4))
 
-	if get_uuid4 is True:
-		print(uuid4)
+	# if get_uuid4 is True:
+		# print(uuid4)
 
 def get_pkg_name(pkg_name):
 	if pkg_name is None:
