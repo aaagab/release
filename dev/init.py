@@ -26,6 +26,7 @@ def init(dy_app,
     licenses=[],
     pkg_name=None,
     pkg_version=None,
+	uuid4=None,
 ):
 	if direpa_root is None:
 		direpa_root=os.getcwd()
@@ -35,7 +36,8 @@ def init(dy_app,
 		msg.warning("{} already exists.".format(filenpa_gpm_json))
 		sys.exit(1)
 
-	uuid4=str(uuid.uuid4())
+	if uuid4 is None:
+		uuid4=str(uuid.uuid4())
 	dct_gpm=dict(
 		name=get_pkg_name(pkg_name),
 		authors=get_authors(authors),
