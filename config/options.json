@@ -55,7 +55,7 @@
     },
     "init": {
         "aliases": "--init",
-        "args": "authors,description,get_uuid4,filen_main,licenses,pkg_name,pkg_version",
+        "args": "authors,description,get_uuid4,filen_main,licenses,pkg_name,pkg_version,set_uuid4",
         "info": "create a gpm.json file for a new project.",
         "nvalues": "?",
         "values": "path"
@@ -118,6 +118,10 @@
     "set_bump_deploy": {
         "aliases": "--set-bump-deploy",
         "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken."
+    },
+    "set_uuid4": {
+        "nested": true,
+        "values": "UUID4"
     },
     "steps": {
         "aliases": "--steps",
