@@ -42,11 +42,11 @@ if __name__ == "__main__":
             description=args.description.value,
             direpa_root=args.init.value,
             filen_main=args.filen_main.value,
-            get_uuid4=args.get_uuid4.here,
+            # get_uuid4=args.get_uuid4.here,
             licenses=args.licenses.values,
             pkg_name=args.pkg_name.value,
             pkg_version=args.pkg_version.value,
-            uuid4=args.set_uuid4.value,
+            uuid4=args.uuid4.value,
         )
         sys.exit(0)
 
