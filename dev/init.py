@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 6.3.0
+# version: 7.0.0
 # name: release
 # license: MIT
 import json
