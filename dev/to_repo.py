@@ -25,4 +25,3 @@ def to_repo(dy_app, direpa_rel, pkg_filters):
             continue
         else:
             export(dy_app, "to_repo", dy_pkg=chosen_pkg, direpa_repo_dst=direpa_rel)      
-   

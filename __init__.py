@@ -18,6 +18,7 @@ from .dev.restore import restore
 from .dev.set_bump_deploy import set_bump_deploy
 from .dev.steps import steps
 from .dev.switch_bin import switch_bin
+from .dev.repo_strip import repo_strip
 from .dev.to_repo import to_repo
 from .dev.update_upgrade import update_upgrade
 
