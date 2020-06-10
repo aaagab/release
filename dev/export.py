@@ -96,9 +96,10 @@ def export(dy_app,
     elif path_src is not None:
         direpa_root=get_direpa_root(path_src)
     else:
-        direpa_root=get_direpa_root()
+        if action != "to_repo":
+            direpa_root=get_direpa_root()
 
-    if from_rel is False:
+    if from_rel is False and action != "to_repo" :
         os.chdir(direpa_root) # do I really need that
     # dy_pkg=None
     added_refine_rules=[]
@@ -106,6 +107,7 @@ def export(dy_app,
     previous_branch=""
     direpa_bin=""
     insert_db=False
+
 
     if action == "export_rel":
         dy_pkg=get_app_meta_data(direpa_root)
