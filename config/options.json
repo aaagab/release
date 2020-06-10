@@ -108,6 +108,12 @@
         "nvalues": "*",
         "values": "PKG_NAMES"
     },
+    "repo_strip": {
+        "aliases": "--repo-strip",
+        "info": "Remove all versions of a package except the latest. Select specific packages or no packages to run the function on all packages",
+        "nvalues": "*",
+        "values": "PKG_NAMES"
+    },
     "restore": {
         "aliases": "--restore",
         "info": "Reinstall all dependencies from gpm.json"

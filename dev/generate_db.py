@@ -46,3 +46,4 @@ def generate_db(dy_app):
     db.update({"pkgs": pkgs, "uuid4s": uuid4s})
     with open(filenpa_json_repo, "w") as f:
         Json_config(filenpa_json_repo).save(db)
+        msg.success("db regenerated {}".format(filenpa_json_repo))
