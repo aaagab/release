@@ -96,6 +96,11 @@ if __name__ == "__main__":
         pkg.remove(dy_app, args.remove.values)
         sys.exit(0)
 
+    if args.repo_strip.here is True:
+        # print(args.packages.values)
+        pkg.repo_strip(dy_app, args.repo_strip.values)
+        sys.exit(0)
+
     if args.to_repo.here is True:
         pkg.to_repo(dy_app, args.to_repo.value, args.packages.values)
         sys.exit(0)
