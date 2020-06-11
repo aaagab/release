@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 def steps():
 	steps= """
-		create folder
-		gf --anp
-			user@domain:/apps/{first_app_name_char}/{app_name}/1
-		release --set-bump-deploy
-		sj --so {app_name}
+mkdir -p /data/wrk/a/{app_name}/1
+cd /data/wrk/a/{app_name}/1
+sshk
+gf --anp
+# Enter repository [q to quit]: user@domain:/apps/a/{app_name}/1     │
+# Server Password:                                                                 │
+# Enter git user email [q to quit]: user@domain                            │
+# Enter ssh user [q to quit]: user  
+release --set-bump-deploy
+sj --so {app_name}
+gf -o #features branch
 
-		gf -o #features branch
+gpm --init --no-db
 
-		gpm --init --no-db
-
-		add files
-			.gitignore
+# add files
+.gitignore
 __pycache__/
 .env/
 .pytest_cache/
@@ -21,18 +25,19 @@ __pycache__/
 modules/
 gpkgs/
 
-		if existing folder:
-			git checkout develop
-			git merge release-1.0.0
-			git branch --delete release-1.0.0
-			git push origin --delete release-1.0.0
-			gf -o # features branch 'at work'
+## if existing folder:
+git checkout develop
+git merge release-1.0.0
+git branch --delete release-1.0.0
+git push origin --delete release-1.0.0
+gf -o # features branch 'at work'
 
-			for gitignore:
-				git rm -r --cached . 
-				git add .
+for gitignore:
+	git rm -r --cached . 
+	git add .
 
-			create __init__.py:
+## create __init__.py:
+
 #!/usr/bin/env python3
 # author: {author}
 # version: {version}
@@ -40,7 +45,7 @@ gpkgs/
 # license: {licence}
 __version__ = "{version}"
 
-			create main.py, or test.py
+## create main.py, or test.py
 #!/usr/bin/env python3
 # author: {author}
 # version: {version}
@@ -56,7 +61,7 @@ if __name__ == "__main__":
     pkg = importlib.import_module(module_name)
     del sys.path[0]
 			
-			.refine
+## .refine
 __pycache__/
 .env/
 .pytest_cache/
@@ -66,7 +71,7 @@ __pycache__/
 /archives/
 		dev files
 
-		add headers to them
+## add headers to them
 #!/usr/bin/env python3
 # author: {author}
 # version: {version}
@@ -82,7 +87,7 @@ touch test.py
 chmod +x test.py
 mkdir gpkgs
 
-		gf --pr
+gf --pr
 
 	"""	
 	print(steps)
