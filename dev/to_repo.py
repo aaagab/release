@@ -16,12 +16,17 @@ from ..gpkgs.json_config import Json_config
 from ..gpkgs.sort_separated import sort_separated
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def to_repo(dy_app, direpa_rel, pkg_filters):
-    filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
-    db=Json_config(filenpa_json_repo).data
+def to_repo(dy_app, direpa_repo, pkg_filters):
+    filenpa_json_repo=os.path.join(dy_app["direpa_repo"], dy_app["filen_json_repo"])
+    db_data=Json_config(filenpa_json_repo).data
     for pkg_filter in pkg_filters:
-        chosen_pkg=get_pkg_from_db(db, dy_app, pkg_filter)
+        chosen_pkg=get_pkg_from_db(
+            db_data=db_data,
+            direpa_repo=direpa_repo,
+            filen_json_default=dy_app["filen_json_repo"], 
+            pkg_filter=pkg_filter,
+        )
         if chosen_pkg is None:
             continue
         else:
-            export(dy_app, "to_repo", dy_pkg=chosen_pkg, direpa_repo_dst=direpa_rel)      
+            export(dy_app, "to_repo", dy_pkg=chosen_pkg, direpa_repo_dst=direpa_repo)      

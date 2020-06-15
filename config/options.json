@@ -1,4 +1,5 @@
 {
+    "__app__": {},
     "add_deps": {
         "aliases": "--add-deps",
         "info": "Add dependencies",
@@ -10,8 +11,9 @@
         "values": "Full Name"
     },
     "bump_version": {
-        "aliases": "--bump-version",
-        "info": "Send refined project 'selected version' to /$project_path/rel or path.",
+        "args": "filenpa_conf,increment,not_git,pkg_name,path_deps,path_pkg",
+        "info": "Increment package version",
+        "nvalues": "?",
         "values": "VERSION"
     },
     "description": {
@@ -20,12 +22,12 @@
     },
     "export_bin": {
         "aliases": "--export-bin",
-        "args": "from_rel,path,path_src,pkg_version,no_symlink",
+        "args": "from_repo,filenpa_conf,not_git,path_bin,path_pkg,pkg_name,pkg_version",
         "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path."
     },
     "export_rel": {
         "aliases": "--export-rel",
-        "args": "add_deps,path,path_src,pkg_version",
+        "args": "add_deps,filenpa_conf,from_repo,not_git,path_pkg,path_repo,pkg_version",
         "info": "Send refined project 'selected version' to /$project_path/rel or path."
     },
     "filen_main": {
@@ -33,12 +35,18 @@
         "info": "Package main file if any, just the full name",
         "values": "main_file"
     },
-    "from_rel": {
-        "aliases": "--from-rel",
-        "args": "pkg_name,pkg_version",
+    "filenpa_conf": {
         "nested": true,
-        "required": "pkg_name,pkg_version",
-        "info": "When used with export direpa source comes from rel."
+        "info": "package JSON config file path. It can be relative or absolute.",
+        "values": "FILE_JSON"
+    },
+    "from_repo": {
+        "args": "pkg_name",
+        "required": "pkg_name",
+        "nested": true,
+        "info": "Direpa source comes from repository,",
+        "nvalues": "?",
+        "values": "direpa_repo"
     },
     "generate_db": {
         "aliases": "-g,--generate-db,--gen,--gd",
@@ -46,16 +54,17 @@
     },
     "import_pkgs": {
         "aliases": "-i,--import",
-        "args": "packages",
+        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_dst",
         "required": "packages",
         "info": "import packages in a git project with a folder gpkgs."
     },
-    "init": {
-        "aliases": "--init",
-        "args": "authors,description,filen_main,licenses,pkg_name,pkg_version,uuid4",
-        "info": "create a gpm.json file for a new project.",
-        "nvalues": "?",
-        "values": "path"
+    "increment": {
+        "info": "Add this flag to increment the current version before bumping.",
+        "nested": true
+    },
+    "set_conf": {
+        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_name,pkg_version,uuid4",
+        "info": "create a config file for a new project."
     },
     "licenses": {
         "nested": true,
@@ -67,9 +76,20 @@
         "args": "packages,add_deps",
         "info": "List all packages in the repo. You can add name(s) to filter by names."
     },
-    "no_symlink": {
-        "aliases": "--no-symlink",
-        "info": "Prevent symlink creation on --export-bin.",
+    "no_conf_dst": {
+        "info": "Do not import the conf file with the imported package",
+        "nested": true
+    },
+    "no_conf_src": {
+        "info": "Allow to process the command with having a configuration file.",
+        "nested": true
+    },
+    "no_root_dir": {
+        "info": "Package content is copied without the package name root directory.",
+        "nested": true
+    },
+    "not_git": {
+        "info": "Allow working with packages that does not have a .git folder",
         "nested": true
     },
     "packages": {
@@ -79,15 +99,34 @@
         "nvalues": "*",
         "values": "PGK_FILTER"
     },
-    "path": {
-        "aliases": "--path",
-        "info": "Select path.",
+    "path_bin": {
+        "info": "Select Bin Path (can be relative or absolute).",
+        "nested": true,
+        "values": "PATH"
+    },
+    "path_deps": {
+        "info": "Select directory destination path for dependencies (can be relative or absolute). If path is omitted, current directory is selected",
+        "nested": true,
+        "nvalues": "?",
+        "values": "PATH"
+    },
+    "path_dst": {
+        "info": "Select directory destination path (can be relative or absolute).",
+        "nested": true,
+        "values": "PATH"
+    },
+    "path_pkg": {
+        "info": "Select directory package path (can be relative or absolute).",
+        "nested": true,
+        "values": "PATH"
+    },
+    "path_repo": {
+        "info": "Select Repository Path (can be relative or absolute).",
         "nested": true,
         "values": "PATH"
     },
     "path_src": {
-        "aliases": "--path-src",
-        "info": "Select source path. When this path is selected the application move to this directory before starting processing the command.",
+        "info": "Select directory source path (can be relative or absolute).",
         "nested": true,
         "values": "PATH"
     },
@@ -104,26 +143,23 @@
         "values": "VERSION"
     },
     "remove": {
+        "args": "filenpa_conf,packages,no_conf_src,no_root_dir,not_git,path_deps,path_pkg",
         "aliases": "-r,--remove",
-        "nvalues": "*",
-        "values": "PKG_NAMES"
+        "info": "Remove packages installed in directory"
     },
     "repo_strip": {
-        "aliases": "--repo-strip",
         "info": "Remove all versions of a package except the latest. Select specific packages or no packages to run the function on all packages",
         "nvalues": "*",
         "values": "PKG_NAMES"
     },
     "restore": {
-        "aliases": "--restore",
+        "args": "filenpa_conf,not_git,path_deps,path_pkg",
         "info": "Reinstall all dependencies from gpm.json"
     },
     "set_bump_deploy": {
-        "aliases": "--set-bump-deploy",
         "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken."
     },
     "steps": {
-        "aliases": "--steps",
         "info": "Give the main steps to create an application."
     },
     "switch_bin": {
@@ -133,10 +169,8 @@
         "required": "pkg_name,pkg_version"
     },
     "to_repo": {
-        "aliases": "--to-repo",
-        "args": "packages",
-        "required": "packages",
         "info": "Send Package from repo to another",
+        "nested": true,
         "values": "direpa_repo"
     },
     "update": {

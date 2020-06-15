@@ -19,9 +19,9 @@ def generate_db(dy_app):
     db={}
     pkgs={}
     uuid4s={}
-    for pkg_name in sorted(os.listdir(dy_app["direpa_release"])): 
+    for pkg_name in sorted(os.listdir(dy_app["direpa_repo"])): 
         if pkg_name != dy_app["filen_json_repo"]:
-            direpa_pkg=os.path.join(dy_app["direpa_release"], pkg_name)
+            direpa_pkg=os.path.join(dy_app["direpa_repo"], pkg_name)
             for version in os.listdir(direpa_pkg):
                 filenpa_gpm=os.path.join(direpa_pkg, version, pkg_name, "gpm.json")
                 if os.path.exists(filenpa_gpm):
@@ -42,7 +42,7 @@ def generate_db(dy_app):
                 else:
                     msg.warning("'{}' does not exists".format(filenpa_gpm))
 
-    filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
+    filenpa_json_repo=os.path.join(dy_app["direpa_repo"], dy_app["filen_json_repo"])
     db.update({"pkgs": pkgs, "uuid4s": uuid4s})
     with open(filenpa_json_repo, "w") as f:
         Json_config(filenpa_json_repo).save(db)

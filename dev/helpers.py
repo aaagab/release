@@ -6,10 +6,12 @@ import subprocess
 import sys
 
 from . import regex_obj as ro
+from .set_conf import set_conf
 
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.json_config import Json_config
+from ..gpkgs.prompt import prompt_boolean
 
 def get_direpa_root(path=""):
     direpa_current=""
@@ -95,29 +97,33 @@ def create_symlink(platform, filenpa_exec, filenpa_symlink ):
     msg.success("symlink '{}' set.".format(filenpa_symlink))
 
 
-def get_app_meta_data(direpa_root):
-    keys=["name", "filen_main", "version"]
-    filenpa_conf=os.path.join(direpa_root, "gpm.json")
-    if os.path.exists(filenpa_conf):
-        data=Json_config(filenpa_conf).data
-        all_key_found=True
-        for key in keys:
-            if not key in data:
-                msg.warning("Missing '{}' in '{}'".format(key, filenpa_conf))
-                all_key_found=False
-
-        if all_key_found:
-            if "options" in data:
-                del data["options"]
-            return data
+def get_app_meta_data(default_filen, filenpa_conf):
+    keys=["name", "filen_main", "version", "uuid4"]
+    if not os.path.exists(filenpa_conf):
+        msg.warning("'{}' not found".format(filenpa_conf))
+        if prompt_boolean("Do you want to create it", "N"):
+            set_conf(default_filen, 
+                filenpa_conf=filenpa_conf,
+            )
         else:
-            sys.exit(1)
+            msg.error("Run 'release --set-conf'")
+            sys.exit(1)   
 
+    data=Json_config(filenpa_conf).data
+    all_key_found=True
+    for key in keys:
+        if not key in data:
+            msg.warning("Missing '{}' in '{}'".format(key, filenpa_conf))
+            all_key_found=False
+
+    if all_key_found:
+        if "options" in data:
+            del data["options"]
+        return data
     else:
-        msg.error(
-            "'{}' not found".format(filenpa_conf),
-            "Run 'gpm --init --no-db'")
-        sys.exit(1)   
+        sys.exit(1)
+
+        
 
 def get_pkg_id(dy_pkg, **added):
     if added:

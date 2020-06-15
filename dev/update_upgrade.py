@@ -21,7 +21,10 @@ from ..gpkgs.sort_separated import sort_separated
 def update_upgrade(dy_app, action, pkg_names):
     if is_pkg_git():
         direpa_root=get_direpa_root()
-        check_pkg_integrity(dy_app, direpa_root)
+        check_pkg_integrity(
+            dy_app["filen_json_app"], dy_app["diren_pkgs"], 
+            direpa_root
+        )
 
         filenpa_json=os.path.join(direpa_root, dy_app["filen_json_app"])
         conf_app=Json_config(filenpa_json)
@@ -69,13 +72,13 @@ def update_upgrade(dy_app, action, pkg_names):
                     compare_status=reg_version_chosen_pkg.compare(reg_version_dep)
                     if compare_status == "smaller":
                         msg.warning("For '{}' {} not needed".format(pkg_name, action),
-                            "Version '{}' from '{}' is smaller than".format(chosen_pkg["version"], dy_app["direpa_release"]),
+                            "Version '{}' from '{}' is smaller than".format(chosen_pkg["version"], dy_app["direpa_repo"]),
                             "Version '{}' from '{}'".format(dep_pkgs[pkg_name]["version"], direpa_root)
                             )
                         continue
                     elif compare_status == "equals":
                         msg.warning("For '{}' {} not needed".format(pkg_name, action),
-                            "Version '{}' is already the latest {}".format(chosen_pkg["version"], action, dy_app["direpa_release"])
+                            "Version '{}' is already the latest {}".format(chosen_pkg["version"], action, dy_app["direpa_repo"])
                             )
                         continue
                     elif compare_status == "bigger":
@@ -96,7 +99,7 @@ def update_upgrade(dy_app, action, pkg_names):
                 conf_app.save()
 
                 if dep_pkgs[pkg_name]["bound"] == "gpm":
-                    direpa_src=os.path.join(dy_app["direpa_release"], chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
+                    direpa_src=os.path.join(dy_app["direpa_repo"], chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
                     paths=get_paths_to_copy(direpa_src)
                     copy_to_destination(paths, direpa_src, direpa_dep)
 
