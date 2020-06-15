@@ -19,29 +19,86 @@ if __name__ == "__main__":
     
     args, dy_app=pkg.Options(filenpa_app="gpm.json", filenpa_args="config/options.json").get_argsns_dy_app()
 
-    if dy_app["platform"] == "Linux":
-        dy_app["direpa_bin"]="/data/bin"
-        dy_app["direpa_release"]="/data/rel"
-    elif dy_app["platform"] == "Windows":
-        dy_app["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
-        dy_app["direpa_release"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
+    
+    
 
-    pkg.check_repo(dy_app)
+    for arg_str in [
+        "filenpa_conf",
+        "from_repo",
+        "path_bin",
+        "path_dst",
+        "path_deps",
+        "path_pkg",
+        "path_repo",
+        "path_src",
+    ]:
+        arg=dy_app["args"][arg_str]
+        if arg.here is True:
+            if arg_str == "path_deps":
+                if arg.value is None:
+                    arg.value=os.getcwd()
+            if arg_str == "from_repo":
+                if arg.value is None:
+                    continue
+            if not os.path.isabs(arg.value):
+                arg.value=os.path.abspath(arg.value)
 
-    if args.bump_version.here is True:
-        pkg.bump_version(args.bump_version.value)
-        sys.exit(0)
+    if args.path_repo.here:
+        dy_app["direpa_repo"]=args.path_repo.value
+    else:
+        if dy_app["platform"] == "Linux":
+            dy_app["direpa_repo"]="/data/rel"
+        elif dy_app["platform"] == "Windows":
+            dy_app["direpa_repo"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
+        
+    if args.path_bin.here:
+        dy_app["direpa_bin"]=args.path_bin.value
+    else:
+        if dy_app["platform"] == "Linux":
+            dy_app["direpa_bin"]="/data/bin"
+        elif dy_app["platform"] == "Windows":
+            dy_app["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
 
-    if args.import_pkgs.here is True:
-        pkg.import_pkgs(dy_app, args.packages.values)
-        sys.exit(0)
+    pkg.check_repo(
+        filen_repo_default=dy_app["filen_json_repo"],
+        direpa_repo=dy_app["direpa_repo"],
+    )
 
-    if args.init.here is True:
-        pkg.init(dy_app, 
+    if args.from_repo.value is not None:
+        pkg.check_repo(
+            filen_repo_default=dy_app["filen_json_repo"],
+            direpa_repo=args.from_repo.value,
+        )   
+
+    for arg_str in [
+        "import_pkgs",
+        "remove",
+        "restore",
+    ]:
+        arg=dy_app["args"][arg_str]
+        if arg.here:
+            pkg.setup_vars(
+                dy_app=dy_app,
+                arg_str=arg_str,
+                filenpa_conf=args.filenpa_conf.value,
+                is_git=not args.not_git.here,
+                direpa_pkg=args.path_dst.value,
+                direpa_deps=args.path_deps.value,
+                no_conf_src=args.no_conf_src.here,
+                no_conf_dst=args.no_conf_dst.here,
+                no_root_dir=args.no_root_dir.here,
+                pkg_filters=args.packages.values,
+            )
+
+            sys.exit(0)
+
+    if args.set_conf.here is True:
+        pkg.set_conf(
+            dy_app["filen_json_app"], 
             authors=args.authors.values,
             description=args.description.value,
-            direpa_root=args.init.value,
             filen_main=args.filen_main.value,
+            filenpa_conf=args.filenpa_conf.value,
             # get_uuid4=args.get_uuid4.here,
             licenses=args.licenses.values,
             pkg_name=args.pkg_name.value,
@@ -62,6 +119,22 @@ if __name__ == "__main__":
         pkg.set_bump_deploy(dy_app)
         sys.exit(0)
 
+    if args.bump_version.here is True:
+        pkg.bump_version(
+            db_data=pkg.Json_config(os.path.join(dy_app["direpa_repo"], dy_app["filen_json_repo"])).data,
+            direpa_repo=dy_app["direpa_repo"],
+            dy_app=dy_app,
+            filen_json_default=dy_app["filen_json_repo"], 
+            filenpa_conf=args.filenpa_conf.value,
+            increment=args.increment.here,
+            is_git=not args.not_git.here,
+            pkg_name=args.pkg_name.value,
+            direpa_deps=args.path_deps.value,
+            direpa_pkg=args.path_pkg.value,
+            version=args.bump_version.value,
+        )
+        sys.exit(0)
+
     if args.switch_bin.here is True:
         pkg.switch_bin(dy_app, args.pkg_name.value, args.pkg_version.value)
         sys.exit(0)
@@ -70,44 +143,60 @@ if __name__ == "__main__":
         pkg.steps()
         sys.exit(0)
 
-    if args.export_bin.here is True:
-        pkg.export(dy_app,
-            "export_bin",
-            from_rel=args.from_rel.here,
-            no_symlink=args.no_symlink.here,
-            path_src=args.path_src.value,
-            path_dst=args.path.value,
-            pkg_name=args.pkg_name.value,
-            pkg_version=args.pkg_version.value,
-        )
-        sys.exit(0)
+    for arg_str in ["export_bin", "export_rel"]:
+        arg=dy_app["args"][arg_str]
 
-    if args.export_rel.here is True:
-        pkg.export(dy_app, 
-            "export_rel",
-            add_deps=args.add_deps.here,
-            path_dst=args.path.value,
-            path_src=args.path_src.value,
-            pkg_version=args.pkg_version.value,
-        )
-        sys.exit(0)
+        if arg.here:
+        
+            options=dict(
+                filenpa_conf=args.filenpa_conf.value,
+                is_git=not args.not_git.here,
+                # # path_src=args.path_src.value,
+                # path_dst=args.path_dst.value,
+                pkg_version=args.pkg_version.value,
+                direpa_pkg=args.path_pkg.value,
+            )
 
-    if args.remove.here is True:
-        pkg.remove(dy_app, args.remove.values)
-        sys.exit(0)
+            if arg_str == "export_bin":
+                if args.from_repo.here:
+                    if args.from_repo.value is None:
+                        args.from_repo.value=dy_app["direpa_repo"]
+                    else:
+                        dy_app["direpa_repo"]=args.from_repo.value
+                options["from_repo"]=args.from_repo.value
+
+                pkg.export(
+                    dy_app,
+                    "export_bin",
+                    direpa_bin=dy_app["direpa_bin"],
+                    direpa_repo=dy_app["direpa_repo"],
+                    pkg_name=args.pkg_name.value,
+                    **options,
+                )
+                
+            elif arg_str == "export_rel":
+                if args.from_repo.here:
+                    if args.from_repo.value is None:
+                        pkg.msg.error("--from-repo path must be set")
+                        sys.exit(1)
+                options["from_repo"]=args.from_repo.value
+
+                pkg.export(dy_app, 
+                    "export_rel",
+                    add_deps=args.add_deps.here,
+                    direpa_repo=dy_app["direpa_repo"],
+                    **options,
+                )
+            sys.exit(0)
 
     if args.repo_strip.here is True:
         # print(args.packages.values)
         pkg.repo_strip(dy_app, args.repo_strip.values)
         sys.exit(0)
 
-    if args.to_repo.here is True:
-        pkg.to_repo(dy_app, args.to_repo.value, args.packages.values)
-        sys.exit(0)
-
-    if args.restore.here is True:
-        pkg.restore(dy_app)
-        sys.exit(0)
+    # if args.to_repo.here is True:
+    #     pkg.to_repo(dy_app, args.to_repo.value, args.packages.values)
+    #     sys.exit(0)
 
     if args.update.here is True:
         pkg.update_upgrade(dy_app, "update", args.update.values)

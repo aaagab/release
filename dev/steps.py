@@ -5,7 +5,7 @@ mkdir -p /data/wrk/a/{app_name}/1
 cd /data/wrk/a/{app_name}/1
 sshk
 gf --anp
-# Enter repository [q to quit]: user@domain:/apps/a/{app_name}/1     │
+# Enter repository [q to quit]: git@domain:/apps/a/{app_name}/1     │
 # Server Password:                                                                 │
 # Enter git user email [q to quit]: user@domain                            │
 # Enter ssh user [q to quit]: user  
@@ -13,7 +13,7 @@ release --set-bump-deploy
 sj --so {app_name}
 gf -o #features branch
 
-gpm --init --no-db
+release --set-conf
 
 # add files
 .gitignore

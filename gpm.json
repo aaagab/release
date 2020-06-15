@@ -14,7 +14,6 @@
     ],
     "description": "This is a small package manager that is developped on the side for my current needs until I finish coding the 'Generic Package Manager'",
     "diren_pkgs": "gpkgs",
-    "diren_release": "rel",
     "filen_json_app": "gpm.json",
     "filen_json_repo": "db.json",
     "filen_main": "main.py",
