@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 7.2.0
+# version: 8.0.0
 # name: release
 # license: MIT
 import json
@@ -17,23 +17,22 @@ from ..gpkgs import message as msg
 from ..gpkgs.prompt import prompt_boolean, prompt
 
 # ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def init(dy_app, 
+def set_conf(default_filen, 
     authors=[],
     description=None,
-    direpa_root=None,
     filen_main=None,
+	filenpa_conf=None,
 	# get_uuid4=False,
     licenses=[],
     pkg_name=None,
     pkg_version=None,
 	uuid4=None,
 ):
-	if direpa_root is None:
-		direpa_root=os.getcwd()
+	if filenpa_conf is None:
+		filenpa_conf=os.path.join(os.getcwd(), default_filen)
 
-	filenpa_gpm_json=os.path.join(direpa_root, dy_app["filen_json_app"])
-	if os.path.exists(filenpa_gpm_json):
-		msg.warning("{} already exists.".format(filenpa_gpm_json))
+	if os.path.exists(filenpa_conf):
+		msg.warning("{} already exists.".format(filenpa_conf))
 		sys.exit(1)
 
 	if uuid4 is None:
@@ -47,11 +46,10 @@ def init(dy_app,
 		version=get_pkg_version(pkg_version),
 		deps=[],
 		installer="gpm",
-		uuid4=uuid4,
-		gpm_version=dy_app["version"],
+		uuid4=uuid4
 	)
 
-	with open(filenpa_gpm_json, "w") as f:
+	with open(filenpa_conf, "w") as f:
 		f.write(json.dumps(dct_gpm,sort_keys=True, indent=4))
 
 	# if get_uuid4 is True:

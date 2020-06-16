@@ -12,7 +12,12 @@ from ..gpkgs.prompt import prompt_multiple
 
 # ./__init__.py -i message,a.a.a prompt
 
-def get_pkg_from_db(db, dy_app, pkg_filter):
+def get_pkg_from_db(
+    db_data, 
+    direpa_repo,
+    filen_json_default, 
+    pkg_filter
+):
     components=pkg_filter.split(",")
     name=components[0]
     version=""
@@ -28,7 +33,7 @@ def get_pkg_from_db(db, dy_app, pkg_filter):
     else:
         tmp_filter+=",v:L.L.L"
 
-    selected_pkgs=search(db["pkgs"], tmp_filter)
+    selected_pkgs=search(db_data["pkgs"], tmp_filter)
     chosen_pkg={}
     if not selected_pkgs:
         msg.warning("No package found with filter '{}' in  db.json from repository".format(pkg_filter))
@@ -52,12 +57,12 @@ def get_pkg_from_db(db, dy_app, pkg_filter):
             items=[]
             for uuid4 in uuid4s:
                 pkg_version=[pkg["version"] for pkg in selected_pkgs if pkg["uuid4"] == uuid4][-1]
-                filenpa_description=os.path.join(dy_app["direpa_release"], name, pkg_version, name, dy_app["filen_json_app"])
+                filenpa_description=os.path.join(direpa_repo, name, pkg_version, name, filen_json_default)
                 description=""
                 if os.path.exists(filenpa_description):
                     description=Json_config(filenpa_description).data["description"]
 
-                items.append("{} {}\n\t{}".format(db["uuid4s"][uuid4], uuid4, description))
+                items.append("{} {}\n\t{}".format(db_data["uuid4s"][uuid4], uuid4, description))
 
             chosen_uuid4=prompt_multiple(
                 dict(
