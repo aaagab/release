@@ -46,6 +46,7 @@ def export(
     previous_branch=None
 
     if arg_str == "export_bin":
+        add_deps=True
         if from_repo is None:
             if direpa_pkg is None:
                 if is_git is True:
