@@ -8,7 +8,7 @@ from .search import search
 from ..gpkgs.json_config import Json_config
 
 def ls_repo(dy_app, pkg_filters=[], add_deps=False):
-    filenpa_json_repo=os.path.join(dy_app["direpa_release"], dy_app["filen_json_repo"])
+    filenpa_json_repo=os.path.join(dy_app["direpa_repo"], dy_app["filen_json_repo"])
     pkg_name_and_versions=[]
     name_uuids={}
     db=Json_config(filenpa_json_repo).data
