@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.0.0
+# version: 8.1.0
 # name: release
 # license: MIT
 
@@ -192,8 +192,9 @@ if __name__ == "__main__":
             elif arg_str == "export_rel":
                 if args.from_repo.here:
                     if args.from_repo.value is None:
-                        pkg.msg.error("--from-repo path must be set")
-                        sys.exit(1)
+                        args.from_repo.value=dy_app["direpa_repo"]
+                        # pkg.msg.error("--from-repo path must be set")
+                        # sys.exit(1)
                 options["from_repo"]=args.from_repo.value
 
                 pkg.export(dy_app, 
