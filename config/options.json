@@ -22,12 +22,12 @@
     },
     "export_bin": {
         "aliases": "--export-bin",
-        "args": "from_repo,filenpa_conf,not_git,path_bin,path_pkg,pkg_name,pkg_version",
+        "args": "from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,pkg_name,pkg_version",
         "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path."
     },
     "export_rel": {
         "aliases": "--export-rel",
-        "args": "add_deps,filenpa_conf,from_repo,not_git,path_pkg,path_repo,pkg_version",
+        "args": "add_deps,filenpa_conf,from_repo,not_git,pkg_name,only_paths,path_pkg,path_repo,pkg_version",
         "info": "Send refined project 'selected version' to /$project_path/rel or path."
     },
     "filen_main": {
@@ -54,7 +54,7 @@
     },
     "import_pkgs": {
         "aliases": "-i,--import",
-        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_dst",
+        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_repo",
         "required": "packages",
         "info": "import packages in a git project with a folder gpkgs."
     },
@@ -73,7 +73,7 @@
     },
     "ls_repo": {
         "aliases": "-l,--ls,--ls-repo",
-        "args": "packages,add_deps",
+        "args": "add_deps,packages,path_repo",
         "info": "List all packages in the repo. You can add name(s) to filter by names."
     },
     "no_conf_dst": {
@@ -91,6 +91,12 @@
     "not_git": {
         "info": "Allow working with packages that does not have a .git folder",
         "nested": true
+    },
+    "only_paths": {
+        "info": "Select directories or files that are going to be selected for the package",
+        "nested": true,
+        "nvalues": "+",
+        "values": "PATH"
     },
     "packages": {
         "aliases": "-p,--pkgs,--packages",
@@ -148,6 +154,7 @@
         "info": "Remove packages installed in directory"
     },
     "repo_strip": {
+        "args": "path_repo",
         "info": "Remove all versions of a package except the latest. Select specific packages or no packages to run the function on all packages",
         "nvalues": "*",
         "values": "PKG_NAMES"
@@ -164,7 +171,7 @@
     },
     "switch_bin": {
         "aliases": "--switch-bin,--sb",
-        "args": "pkg_name,pkg_version",
+        "args": "path_bin,pkg_name,pkg_version",
         "info": "Given an application name and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available",
         "required": "pkg_name,pkg_version"
     },
@@ -174,11 +181,15 @@
         "values": "direpa_repo"
     },
     "update": {
+        "args": "filenpa_conf,not_git,path_deps,path_pkg,path_repo",
         "aliases": "-u,--update",
+        "nvalues": "*",
         "values": "PKG_NAMES"
     },
     "upgrade": {
+        "args": "filenpa_conf,not_git,path_deps,path_pkg,path_repo",
         "aliases": "--upgrade,--ug",
+        "nvalues": "*",
         "values": "PKG_NAMES"
     },
     "uuid4": {

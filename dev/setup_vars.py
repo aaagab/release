@@ -9,6 +9,7 @@ from .check_pkg_integrity import check_pkg_integrity
 
 from .remove import remove 
 from .import_pkgs import import_pkgs 
+from .update_upgrade import update_upgrade 
 
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
@@ -25,9 +26,8 @@ def setup_vars(
     no_conf_dst,
     no_root_dir,
     pkg_filters,
+    pkg_names,
 ):
-    direpa_pkg=None
-
     if direpa_pkg is None:
         if is_git is True:
             if not is_pkg_git():
@@ -76,3 +76,14 @@ def setup_vars(
                 options["pkg_filters"].append("{},{}".format(name,version))
 
         import_pkgs(**options)
+    elif arg_str in ["upgrade", "update"]:
+        update_upgrade(
+            arg_str=arg_str,
+            conf_pkg=conf_pkg,
+            direpa_deps=direpa_deps,
+            direpa_pkg=direpa_pkg,
+            direpa_repo=dy_app["direpa_repo"],
+            filen_json_app=dy_app["filen_json_app"],
+            filen_json_repo=dy_app["filen_json_repo"],
+            pkg_names=pkg_names,
+        )

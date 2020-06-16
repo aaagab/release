@@ -42,6 +42,7 @@ if __name__ == "__main__":
                     continue
             if not os.path.isabs(arg.value):
                 arg.value=os.path.abspath(arg.value)
+            arg.value=os.path.normpath(arg.value)
 
     if args.path_repo.here:
         dy_app["direpa_repo"]=args.path_repo.value
@@ -74,7 +75,10 @@ if __name__ == "__main__":
         "import_pkgs",
         "remove",
         "restore",
+        "update",
+        "upgrade"
     ]:
+        # "args": "filenpa_conf,not_git,path_deps,path_pkg,path_repo",
         arg=dy_app["args"][arg_str]
         if arg.here:
             pkg.setup_vars(
@@ -82,15 +86,25 @@ if __name__ == "__main__":
                 arg_str=arg_str,
                 filenpa_conf=args.filenpa_conf.value,
                 is_git=not args.not_git.here,
-                direpa_pkg=args.path_dst.value,
+                direpa_pkg=args.path_pkg.value,
                 direpa_deps=args.path_deps.value,
                 no_conf_src=args.no_conf_src.here,
                 no_conf_dst=args.no_conf_dst.here,
                 no_root_dir=args.no_root_dir.here,
                 pkg_filters=args.packages.values,
+                pkg_names=arg.values,
             )
 
             sys.exit(0)
+
+
+        if arg.here is True:
+            pkg.update_upgrade(
+                dy_app, 
+                arg_str, 
+                arg.values)
+            sys.exit(0)
+
 
     if args.set_conf.here is True:
         pkg.set_conf(
@@ -124,13 +138,15 @@ if __name__ == "__main__":
             db_data=pkg.Json_config(os.path.join(dy_app["direpa_repo"], dy_app["filen_json_repo"])).data,
             direpa_repo=dy_app["direpa_repo"],
             dy_app=dy_app,
-            filen_json_default=dy_app["filen_json_repo"], 
+            filen_json_app=dy_app["filen_json_app"], 
             filenpa_conf=args.filenpa_conf.value,
             increment=args.increment.here,
             is_git=not args.not_git.here,
+            only_paths=[],
             pkg_name=args.pkg_name.value,
             direpa_deps=args.path_deps.value,
             direpa_pkg=args.path_pkg.value,
+            save_filenpa_conf=True,
             version=args.bump_version.value,
         )
         sys.exit(0)
@@ -151,8 +167,8 @@ if __name__ == "__main__":
             options=dict(
                 filenpa_conf=args.filenpa_conf.value,
                 is_git=not args.not_git.here,
-                # # path_src=args.path_src.value,
-                # path_dst=args.path_dst.value,
+                only_paths=args.only_paths.values,
+                pkg_name=args.pkg_name.value,
                 pkg_version=args.pkg_version.value,
                 direpa_pkg=args.path_pkg.value,
             )
@@ -170,7 +186,6 @@ if __name__ == "__main__":
                     "export_bin",
                     direpa_bin=dy_app["direpa_bin"],
                     direpa_repo=dy_app["direpa_repo"],
-                    pkg_name=args.pkg_name.value,
                     **options,
                 )
                 
@@ -192,16 +207,4 @@ if __name__ == "__main__":
     if args.repo_strip.here is True:
         # print(args.packages.values)
         pkg.repo_strip(dy_app, args.repo_strip.values)
-        sys.exit(0)
-
-    # if args.to_repo.here is True:
-    #     pkg.to_repo(dy_app, args.to_repo.value, args.packages.values)
-    #     sys.exit(0)
-
-    if args.update.here is True:
-        pkg.update_upgrade(dy_app, "update", args.update.values)
-        sys.exit(0)
-
-    if args.upgrade.here is True:
-        pkg.update_upgrade(dy_app, "upgrade", args.upgrade.values)
         sys.exit(0)
