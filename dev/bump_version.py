@@ -59,13 +59,15 @@ def bump_version(
     db_data,
     direpa_repo,
     dy_app,
-    filen_json_default,
+    filen_json_app,
     filenpa_conf,
     increment,
     is_git,
+    only_paths,
     pkg_name,
     direpa_deps,
     direpa_pkg,
+    save_filenpa_conf,
     version,
 ):
     if direpa_pkg is None:
@@ -89,13 +91,17 @@ def bump_version(
             sys.exit(1)
         if filenpa_conf is None:
             if pkg_name is None:
-                msg.error("You need to provide either a version with either --filenpa-conf or --pkg-name")
-                sys.exit(1)
+                filenpa_conf=os.path.join(direpa_pkg, filen_json_app)
+                if os.path.exists(filenpa_conf):
+                    version=Json_config(filenpa_conf).data["version"]
+                else:
+                    msg.error("You need to provide either a version with either --filenpa-conf or --pkg-name")
+                    sys.exit(1)
             else:
                 chosen_pkg=get_pkg_from_db(
                     db_data=db_data,
                     direpa_repo=direpa_repo,
-                    filen_json_default=filen_json_default, 
+                    filen_json_default=filen_json_app, 
                     pkg_filter=pkg_name,
                 )
                 version=chosen_pkg["version"]
@@ -113,40 +119,45 @@ def bump_version(
         msg.error("No version to bump")
         sys.exit(1)
 
-    paths=get_paths_to_copy(direpa_pkg, added_rules=[
-        "config.json",
-        "gpm.json",
-        "modules.json",
-        "upacks.json",
-        ".refine",
-        "modules/",
-        ".pkgs/",
-        "gpkgs/",
-        "*.db"
-    ])
+    paths=[]
+    if len(only_paths) > 0:
+        paths=only_paths
+    else:
+        paths=get_paths_to_copy(direpa_pkg, added_rules=[
+            "config.json",
+            "gpm.json",
+            "modules.json",
+            "upacks.json",
+            ".refine",
+            "modules/",
+            ".pkgs/",
+            "gpkgs/",
+            "*.db"
+        ])
 
-    conf_elems=[
-        "config/config.json",
-        "config.json",
-        "gpm.json",
-        "modules.json",
-        "upacks.json"
-    ]
+        conf_elems=[
+            "config/config.json",
+            "config.json",
+            "gpm.json",
+            "modules.json",
+            "upacks.json"
+        ]
 
-    if filenpa_conf is not None:
-        conf_elems.append(filenpa_conf)
+        if filenpa_conf is not None:
+            if save_filenpa_conf is True:
+                conf_elems.append(filenpa_conf)
 
-    for elem in conf_elems:
-        filenpa_conf_elem=None
-        if os.path.isabs(elem):
-            filenpa_conf_elem=elem
-        else:
-            filenpa_conf_elem=os.path.join(direpa_pkg, elem)
-        if os.path.exists(filenpa_conf_elem):
-            conf=Json_config(filenpa_conf_elem)
-            if "version" in conf.data:
-                conf.data["version"]=version
-                conf.save()
+        for elem in conf_elems:
+            filenpa_conf_elem=None
+            if os.path.isabs(elem):
+                filenpa_conf_elem=elem
+            else:
+                filenpa_conf_elem=os.path.join(direpa_pkg, elem)
+            if os.path.exists(filenpa_conf_elem):
+                conf=Json_config(filenpa_conf_elem)
+                if "version" in conf.data:
+                    conf.data["version"]=version
+                    conf.save()
 
     for path in paths:
         if os.path.isfile(path):
@@ -184,3 +195,5 @@ def bump_version(
                 msg.warning("file '{}' is not readable.".format(path))
     
     msg.success("Bumped to version v{}".format(version))
+    return version
+
