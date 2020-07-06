@@ -1,14 +1,53 @@
 #!/usr/bin/env python3
 def steps():
 	steps= """
-mkdir -p /data/wrk/a/{app_name}/1
-cd /data/wrk/a/{app_name}/1
-sshk
-gf --anp
-# Enter repository [q to quit]: git@domain:/apps/a/{app_name}/1     │
-# Server Password:                                                                 │
-# Enter git user email [q to quit]: user@domain                            │
-# Enter ssh user [q to quit]: user  
+# create structure
+mkdir -p /data/wrk/{app_name}[0]/{app_name}/1/src
+cd /data/wrk/{app_name}[0]/{app_name}/1/src
+
+# setup git
+gitframe --init . ../doc ../mgt --username user --email user@email.com
+gitframe --clone-to-repository . ../doc ../mgt --repository /data/git --package {app_name} --add-origin --sync
+release --set-conf
+gitframe --open-branch  #features branch
+# add files, could be just one step with create structure by importing a template.
+echo -e ".git" > .refine
+release --set-launcher
+
+# release work
+release --bump-version --increment
+gitframe --tag --version-file gpm.json
+release --export-rel --add-deps
+release --export-bin --beta
+
+##  update gitframe
+cd /data/wrk/g/gitframe/1/src/
+main.py --clone-to-repository . ../doc ../mgt --repository /data/git --package gitframe --add-origin --sync
+release --bump-version --increment
+main.py --update-gitframe; gitframe --tag --version-file gpm.json
+release --export-rel --add-deps
+
+## update release
+cd /data/wrk/r/release/1/src
+main.py --export-bin --beta; release --set-launcher
+release --bump-version --increment
+gitframe --tag --version-file gpm.json
+main.py --export-bin --beta && release --export-rel && release --export-bin
+
+
+
+
+
+
+
+
+# # # # sshk
+# # # # gf --anp
+# # # # # Enter repository [q to quit]: git@domain:/apps/a/{app_name}/1     │
+# # # # # Server Password:                                                                 │
+# # # # # Enter git user email [q to quit]: user@domain                            │
+# # # # # Enter ssh user [q to quit]: user  
+
 release --set-bump-deploy
 sj --so {app_name}
 gf -o #features branch
@@ -69,7 +108,9 @@ __pycache__/
 .git/
 .gitignore
 /archives/
-		dev files
+
+
+dev files
 
 ## add headers to them
 #!/usr/bin/env python3

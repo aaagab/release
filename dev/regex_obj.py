@@ -146,7 +146,7 @@ class Version_minor_regex(Regex_obj):
 
 class Package_name_regex(Regex_obj):
     def __init__(self, txt=""):
-        Regex_obj.__init__(self, r"^[A-Za-z][A-Za-z0-9_]*$")
+        Regex_obj.__init__(self, r"^[A-Za-z][A-Za-z0-9_-]*$")
         self.set_text(txt)
 
     def set_text(self, txt):

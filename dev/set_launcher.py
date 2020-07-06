@@ -11,13 +11,21 @@ from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.prompt import prompt_boolean
 
-def set_bump_deploy(dy_app):
-    filens=["bump_version.py", "deploy.py", "scriptjob_save.json"]
+def set_launcher(dy_app):
+    filen="scriptjob_save.json"
     if dy_app["platform"] == "Windows":
-        filens=["bump_version.py", "deploy.py", "launch.pyw"]
+        filen="launch.pyw"
 
     direpa_current=os.getcwd()
-    direpa_src=os.path.join(direpa_current, "src")
+    direpa_project=None
+    direpa_src=None
+    if os.path.basename(direpa_current) == "src":
+        direpa_project=os.path.dirname(direpa_current)
+    else:
+        direpa_project=direpa_current
+
+    direpa_src=os.path.join(direpa_project, "src")
+
     if not os.path.exists(direpa_src):
         msg.error("'{}' not found.".format(direpa_src),
             "This is not a gitframe project structure.")
@@ -29,8 +37,8 @@ def set_bump_deploy(dy_app):
 
     os.chdir(direpa_src)
     username=shell.cmd_get_value("git config --local user.name")
-    os.chdir(direpa_current)
-    direpa_mgt=os.path.join(direpa_current, "mgt")
+    os.chdir(direpa_project)
+    direpa_mgt=os.path.join(direpa_project, "mgt")
     if not os.path.exists(direpa_mgt):
         msg.error("'{}' not found".format(direpa_mgt),
             "This is not a gitframe project structure.")
@@ -44,72 +52,50 @@ def set_bump_deploy(dy_app):
     if os.path.exists(direpa_mgt_username):
         direpa_mgt=direpa_mgt_username
 
-    for filen in filens:
-        filenpa_symlink=os.path.join(direpa_current, filen)
-        filenpa_original=os.path.join(direpa_mgt, filen)
+    filenpa_symlink=os.path.join(direpa_project, filen)
+    filenpa_original=os.path.join(direpa_mgt, filen)
 
-        if not os.path.exists(filenpa_original):
-            with open(filenpa_original, "w") as f:
-                msg.success("'{}' created.".format(filenpa_original))
+    if not os.path.exists(filenpa_original):
+        with open(filenpa_original, "w") as f:
+            msg.success("'{}' created.".format(filenpa_original))
 
-        newly_created=False
-        if not os.path.exists(filenpa_symlink):
+    newly_created=False
+    if not os.path.exists(filenpa_symlink):
+        create_symlink(dy_app["platform"], filenpa_original, filenpa_symlink )
+        newly_created=True
+    
+    if os.path.islink(filenpa_symlink):
+        if newly_created is False:
+            os.remove(filenpa_symlink)
             create_symlink(dy_app["platform"], filenpa_original, filenpa_symlink )
-            newly_created=True
-        
-        if os.path.islink(filenpa_symlink):
-            if newly_created is False:
-                os.remove(filenpa_symlink)
-                create_symlink(dy_app["platform"], filenpa_original, filenpa_symlink )
 
-                msg.warning("'{}' already exists.".format(filen))
-                if not prompt_boolean("Do you want to overwrite it with default values"):
-                    continue
-                    
-            if filen == "bump_version.py":
-                data=get_default_bump_version_file()
-            elif filen == "deploy.py":
-                data=get_default_deploy_file()
-            elif filen == "scriptjob_save.json":
-                data=get_default_scriptjob_save_json_file(direpa_current)
-            elif filen == "launch.pyw":
-                data=get_default_launch_pyw()            
+            msg.warning("'{}' already exists.".format(filen))
+            if not prompt_boolean("Do you want to overwrite it with default values"):
+                sys.exit(1)
+                
+        if filen == "scriptjob_save.json":
+            data=get_default_scriptjob_save_json_file(direpa_project)
+        elif filen == "launch.pyw":
+            data=get_default_launch_pyw()            
 
-            with open(filenpa_original, "w") as f:
-                if filen == "scriptjob_save.json":
-                    data=re.sub(r"\n\s+","\n", data)[1:-1]
-                    f.write(json.dumps(json.loads(data),sort_keys=True, indent=4))
-                else:
-                    indent=None
-                    for line in data.splitlines()[1:-1]:
-                        if line.strip():
-                            reg=re.match(r"^( +)(.+)", line)
-                            tmp_indent=reg.group(1)
-                            cmd=reg.group(2)
-                            if indent is None:
-                                indent=tmp_indent
-                            f.write(line[len(indent):]+"\n")
-                        else:
-                            f.write(line+"\n")
-        else:
-            print("'{}' not a link.".format(filenpa_symlink))
-
-def get_default_bump_version_file():
-    return """
-        #!/usr/bin/env python3
-        import os, sys
-        version=sys.argv[1]
-        os.system("release --bump-version {}".format(version))
-    """
-
-def get_default_deploy_file():
-    return """
-        #!/usr/bin/env python3
-        import os, sys
-        version=sys.argv[1]
-        os.system("release --export-rel --pkg-version {} --add-deps".format(version))
-        # os.system("release --export-bin --pkg-version {}".format(version))
-    """
+        with open(filenpa_original, "w") as f:
+            if filen == "scriptjob_save.json":
+                data=re.sub(r"\n\s+","\n", data)[1:-1]
+                f.write(json.dumps(json.loads(data),sort_keys=True, indent=4))
+            else:
+                indent=None
+                for line in data.splitlines()[1:-1]:
+                    if line.strip():
+                        reg=re.match(r"^( +)(.+)", line)
+                        tmp_indent=reg.group(1)
+                        cmd=reg.group(2)
+                        if indent is None:
+                            indent=tmp_indent
+                        f.write(line[len(indent):]+"\n")
+                    else:
+                        f.write(line+"\n")
+    else:
+        print("'{}' not a link.".format(filenpa_symlink))
 
 def get_default_launch_pyw():
     return """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.1.1
+# version: 9.0.0
 # name: release
 # license: MIT
 
@@ -129,8 +129,8 @@ if __name__ == "__main__":
         pkg.ls_repo(dy_app, args.packages.values, args.add_deps.here)
         sys.exit(0)
         
-    if args.set_bump_deploy.here is True:
-        pkg.set_bump_deploy(dy_app)
+    if args.set_launcher.here is True:
+        pkg.set_launcher(dy_app)
         sys.exit(0)
 
     if args.bump_version.here is True:
@@ -186,6 +186,7 @@ if __name__ == "__main__":
                     "export_bin",
                     direpa_bin=dy_app["direpa_bin"],
                     direpa_repo=dy_app["direpa_repo"],
+                    is_beta=args.beta.here,
                     **options,
                 )
                 
@@ -198,7 +199,7 @@ if __name__ == "__main__":
 
                 pkg.export(dy_app, 
                     "export_rel",
-                    add_deps=args.add_deps.here,
+                    add_deps=not args.no_deps.here,
                     direpa_repo=dy_app["direpa_repo"],
                     **options,
                 )
