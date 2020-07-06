@@ -34,6 +34,7 @@ release --bump-version --increment
 gitframe --tag --version-file gpm.json
 gitframe --clone-to-repository . ../doc ../mgt --repository /data/git --package release --add-origin --sync
 main.py --export-bin --beta && release --export-rel && release --export-bin
+main.py --bump-version --increment && gitframe --tag --version-file gpm.json && release --export-rel && release --export-bin
 
 ## import a template
 release -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps .

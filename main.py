@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.1.0
+# version: 9.1.1
 # name: release
 # license: MIT
 
@@ -132,7 +132,10 @@ if __name__ == "__main__":
         sys.exit(0)
         
     if args.set_launcher.here is True:
-        pkg.set_launcher(dy_app)
+        pkg.set_launcher(
+            dy_app,
+            app_name=args.set_launcher.value,
+        )
         sys.exit(0)
 
     if args.bump_version.here is True:
