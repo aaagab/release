@@ -5,6 +5,15 @@
         "info": "Add dependencies",
         "nested": true
     },
+    "beta": {
+        "info": "Add this flag to send the current state to bin as beta.",
+        "nested": true
+    },
+    "no_deps": {
+        "aliases": "--no-deps",
+        "info": "Do not add dependencies",
+        "nested": true
+    },
     "authors": {
         "nested": true,
         "nvalues": "1,*",
@@ -22,12 +31,12 @@
     },
     "export_bin": {
         "aliases": "--export-bin",
-        "args": "from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,pkg_name,pkg_version",
+        "args": "beta,from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,pkg_name,pkg_version",
         "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path."
     },
     "export_rel": {
         "aliases": "--export-rel",
-        "args": "add_deps,filenpa_conf,from_repo,not_git,pkg_name,only_paths,path_pkg,path_repo,pkg_version",
+        "args": "no_deps,filenpa_conf,from_repo,not_git,pkg_name,only_paths,path_pkg,path_repo,pkg_version",
         "info": "Send refined project 'selected version' to /$project_path/rel or path."
     },
     "filen_main": {
@@ -163,8 +172,8 @@
         "args": "filenpa_conf,not_git,path_deps,path_pkg",
         "info": "Reinstall all dependencies from gpm.json"
     },
-    "set_bump_deploy": {
-        "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken."
+    "set_launcher": {
+        "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening."
     },
     "steps": {
         "info": "Give the main steps to create an application."
