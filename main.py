@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.0.0
+# version: 9.0.1
 # name: release
 # license: MIT
 
@@ -82,12 +82,14 @@ if __name__ == "__main__":
         arg=dy_app["args"][arg_str]
         if arg.here:
             pkg.setup_vars(
-                dy_app=dy_app,
                 arg_str=arg_str,
+                dy_app=dy_app,
+                direpa_deps=args.path_deps.value,
+                direpa_pkg=args.path_pkg.value,
                 filenpa_conf=args.filenpa_conf.value,
                 is_git=not args.not_git.here,
-                direpa_pkg=args.path_pkg.value,
-                direpa_deps=args.path_deps.value,
+                is_template=args.keys.here,
+                keys=args.keys.value,
                 no_conf_src=args.no_conf_src.here,
                 no_conf_dst=args.no_conf_dst.here,
                 no_root_dir=args.no_root_dir.here,
