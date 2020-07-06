@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.1.0
+# version: 9.1.1
 # name: release
 # license: MIT
 
-__version__ = "9.1.0"
+__version__ = "9.1.1"
 
 from .dev.bump_version import bump_version
 from .dev.check_repo import check_repo

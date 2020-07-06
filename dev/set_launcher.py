@@ -10,8 +10,12 @@ from ..dev.helpers import get_direpa_root, is_pkg_git, create_symlink
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs.json_config import Json_config
 
-def set_launcher(dy_app):
+def set_launcher(
+    dy_app,
+    app_name=None,
+):
     filen="scriptjob_save.json"
     if dy_app["platform"] == "Windows":
         filen="launch.pyw"
@@ -74,7 +78,13 @@ def set_launcher(dy_app):
                 sys.exit(1)
                 
         if filen == "scriptjob_save.json":
-            data=get_default_scriptjob_save_json_file(direpa_project)
+            if app_name is None:
+                filenpa_gpm=os.path.join(direpa_src, "gpm.json")
+                if os.path.exists(filenpa_gpm):
+                    app_name=Json_config(filenpa_gpm).data["name"]
+                else:
+                    app_name=prompt("app_name")
+            data=get_default_scriptjob_save_json_file(direpa_project, app_name)
         elif filen == "launch.pyw":
             data=get_default_launch_pyw()            
 
@@ -117,14 +127,13 @@ def get_default_launch_pyw():
         # subprocess.call('firefox https://lclwapps.edu/t/timeclock/1/', shell=True)
     """
 
-def get_default_scriptjob_save_json_file(direpa_app):
-    diren_app=os.path.basename(direpa_app)
+def get_default_scriptjob_save_json_file(direpa_app, app_name):
     return """
         {{
             "diren": "src",
             "groups": [
                 {{
-                    "name": "{diren_app}",
+                    "name": "{app_name}",
                     "windows": [
                         {{
                             "actions": [
@@ -159,11 +168,11 @@ def get_default_scriptjob_save_json_file(direpa_app):
                     "exe": "code",
                     "filenpa_exe": "/usr/share/code/code",
                     "groups": [
-                        "{diren_app}"
+                        "{app_name}"
                     ],
                     "id": "co_0",
                     "monitor": 1,
-                    "name": "{diren_app} - update_groups.py",
+                    "name": "{app_name}",
                     "paths": [
                         "{direpa_app}"
                     ],
@@ -171,15 +180,15 @@ def get_default_scriptjob_save_json_file(direpa_app):
                 }},
                 {{
                     "_class": "konsole",
-                    "cmd_parameters": "-p tabtitle={diren_app}",
+                    "cmd_parameters": "-p tabtitle={app_name}",
                     "exe": "konsole",
                     "filenpa_exe": "/usr/bin/konsole",
                     "groups": [
-                        "{diren_app}"
+                        "{app_name}"
                     ],
                     "id": "ko_1",
                     "monitor": 0,
-                    "name": "{diren_app} \u2014 Konsole",
+                    "name": "{app_name} \u2014 Konsole",
                     "paths": [],
                     "rcfile_cmds": [
                         "cd {direpa_app}/src"
@@ -188,4 +197,4 @@ def get_default_scriptjob_save_json_file(direpa_app):
                 }}
             ]
         }}
-    """.format(diren_app=diren_app, direpa_app=direpa_app)
+    """.format(app_name=app_name, direpa_app=direpa_app)

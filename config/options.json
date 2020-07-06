@@ -180,7 +180,9 @@
         "info": "create a config file for a new project."
     },
     "set_launcher": {
-        "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening."
+        "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening.",
+        "nvalues": "?",
+        "values": "APP_NAME"
     },
     "steps": {
         "info": "Give the main steps to create an application."
