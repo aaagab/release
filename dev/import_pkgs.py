@@ -94,10 +94,8 @@ def import_pkgs(
                             with open(tmp_path, "r") as f:
                                 data=f.read()
                                 data=re.sub(r"{{([a-zA-Z0-9-_ ]+?)}}", lambda m: replace_key(m, keys), data)
-                            print()
-                            print(tmp_path)
-                            print("##########")
-                            pprint(data)
+                            with open(tmp_path, "w") as f:
+                                f.write(data)
                                 
                     copy_to_destination(tmp_paths, direpa_tmp, direpa_dst)
                     shutil.rmtree(direpa_tmp)

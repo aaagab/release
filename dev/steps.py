@@ -38,6 +38,7 @@ main.py --export-bin --beta && release --export-rel && release --export-bin
 ## import a template
 release -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps .
 rm -rf /home/gabaaa/Desktop/test/*; /data/wrk/r/release/1/src/main.py -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys
+/main.py -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys "{'authors': 'John Doe', 'licenses': 'MIT', 'version':'0.2.0', 'package_name': 'mytestpackage'}"
 
 
 
