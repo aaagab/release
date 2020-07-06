@@ -17,7 +17,7 @@ release --set-launcher
 # release work
 release --bump-version --increment
 gitframe --tag --version-file gpm.json
-release --export-rel --add-deps
+release --export-rel
 release --export-bin --beta
 
 ##  update gitframe
@@ -25,15 +25,19 @@ cd /data/wrk/g/gitframe/1/src/
 main.py --clone-to-repository . ../doc ../mgt --repository /data/git --package gitframe --add-origin --sync
 release --bump-version --increment
 main.py --update-gitframe; gitframe --tag --version-file gpm.json
-release --export-rel --add-deps
+release --export-rel
 
 ## update release
 cd /data/wrk/r/release/1/src
 main.py --export-bin --beta; release --set-launcher
 release --bump-version --increment
 gitframe --tag --version-file gpm.json
+gitframe --clone-to-repository . ../doc ../mgt --repository /data/git --package release --add-origin --sync
 main.py --export-bin --beta && release --export-rel && release --export-bin
 
+## import a template
+release -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps .
+rm -rf /home/gabaaa/Desktop/test/*; /data/wrk/r/release/1/src/main.py -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys
 
 
 

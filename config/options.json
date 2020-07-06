@@ -9,11 +9,6 @@
         "info": "Add this flag to send the current state to bin as beta.",
         "nested": true
     },
-    "no_deps": {
-        "aliases": "--no-deps",
-        "info": "Do not add dependencies",
-        "nested": true
-    },
     "authors": {
         "nested": true,
         "nvalues": "1,*",
@@ -63,7 +58,7 @@
     },
     "import_pkgs": {
         "aliases": "-i,--import",
-        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_repo",
+        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_repo,keys",
         "required": "packages",
         "info": "import packages in a git project with a folder gpkgs."
     },
@@ -71,9 +66,12 @@
         "info": "Add this flag to increment the current version before bumping.",
         "nested": true
     },
-    "set_conf": {
-        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_name,pkg_version,uuid4",
-        "info": "create a config file for a new project."
+    "keys": {
+        "nested": true,
+        "info": "If keys is present, the imported package is considered a template and its files are going to be copied first in a tmp directory. Then the files are going to be scanned for {{placeholders}}. If keys json values are provided then they are going to autofill the related {{placeholders}} else for each found values not provided the user is going to be prompted to enter the value. regex syntax for placeholders {{([a-zA-Z0-9-_ ]+?)}}",
+        "type": "json",
+        "nvalues": "?",
+        "values": "JSON"
     },
     "licenses": {
         "nested": true,
@@ -90,7 +88,12 @@
         "nested": true
     },
     "no_conf_src": {
-        "info": "Allow to process the command with having a configuration file.",
+        "info": "Allow to process the command without having a configuration file.",
+        "nested": true
+    },
+    "no_deps": {
+        "aliases": "--no-deps",
+        "info": "Do not add dependencies",
         "nested": true
     },
     "no_root_dir": {
@@ -171,6 +174,10 @@
     "restore": {
         "args": "filenpa_conf,not_git,path_deps,path_pkg",
         "info": "Reinstall all dependencies from gpm.json"
+    },
+    "set_conf": {
+        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_name,pkg_version,uuid4",
+        "info": "create a config file for a new project."
     },
     "set_launcher": {
         "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening."

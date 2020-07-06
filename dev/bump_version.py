@@ -120,21 +120,22 @@ def bump_version(
         sys.exit(1)
 
     paths=[]
+    ignore=[]
     if len(only_paths) > 0:
         paths=only_paths
     else:
-        paths=get_paths_to_copy(direpa_pkg, added_rules=[
+        # paths=get_paths_to_copy(direpa_pkg, added_rules=)
+        ignore_files=[   
             "config.json",
             "gpm.json",
             "modules.json",
             "upacks.json",
             ".refine",
-            "modules/",
-            ".pkgs/",
-            "gpkgs/",
-            "*.db"
-        ])
-
+            ".gitignore",
+        ]
+        ignore_exts=[
+            ".db"
+        ]
         conf_elems=[
             "config/config.json",
             "config.json",
@@ -142,6 +143,13 @@ def bump_version(
             "modules.json",
             "upacks.json"
         ]
+
+        for elem in os.listdir(direpa_pkg):
+            path_elem=os.path.join(direpa_pkg, elem)
+            if os.path.isfile(path_elem) and elem not in ignore_files:
+                filer, ext = os.path.splitext(elem)
+                if ext not in ignore_exts:
+                    paths.append(path_elem)
 
         if filenpa_conf is not None:
             if save_filenpa_conf is True:

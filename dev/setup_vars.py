@@ -16,14 +16,16 @@ from ..gpkgs.json_config import Json_config
 from ..gpkgs.prompt import prompt_boolean
 
 def setup_vars(
-    dy_app,
     arg_str, 
+    dy_app,
     direpa_deps,
     direpa_pkg,
     filenpa_conf,
     is_git,
-    no_conf_src,
+    is_template,
+    keys,
     no_conf_dst,
+    no_conf_src,
     no_root_dir,
     pkg_filters,
     pkg_names,
@@ -70,6 +72,9 @@ def setup_vars(
         options["direpa_repo"]=dy_app["direpa_repo"]
         options["no_conf_dst"]=no_conf_dst
         options["no_root_dir"]=no_root_dir
+        options["keys"]=keys
+        options["is_template"]=is_template
+
         if arg_str == "restore":
             for dep in conf_pkg.data["deps"]:
                 uuid4, name, version, bound = dep.split("|")
