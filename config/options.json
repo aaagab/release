@@ -185,7 +185,8 @@
         "values": "APP_NAME"
     },
     "steps": {
-        "info": "Give the main steps to create an application."
+        "info": "Give the main steps to create an application.",
+        "show": false
     },
     "switch_bin": {
         "aliases": "--switch-bin,--sb",

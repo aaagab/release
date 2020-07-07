@@ -32,7 +32,7 @@ cd /data/wrk/r/release/1/src
 main.py --export-bin --beta; release --set-launcher
 release --bump-version --increment
 gitframe --tag --version-file gpm.json
-gitframe --clone-to-repository . ../doc ../mgt --repository /data/git --package release --add-origin --sync
+gitframe --clone-to-repository . ../doc ../mgt --repository /data/git --package shell_helpers --add-origin --sync
 main.py --export-bin --beta && release --export-rel && release --export-bin
 main.py --bump-version --increment && gitframe --tag --version-file gpm.json && release --export-rel && release --export-bin
 
