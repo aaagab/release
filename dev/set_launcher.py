@@ -86,7 +86,7 @@ def set_launcher(
                     app_name=prompt("app_name")
             data=get_default_scriptjob_save_json_file(direpa_project, app_name)
         elif filen == "launch.pyw":
-            data=get_default_launch_pyw()            
+            data=get_default_launch_pyw(app_name)            
 
         with open(filenpa_original, "w") as f:
             if filen == "scriptjob_save.json":
@@ -107,7 +107,7 @@ def set_launcher(
     else:
         print("'{}' not a link.".format(filenpa_symlink))
 
-def get_default_launch_pyw():
+def get_default_launch_pyw(app_name):
     return """
         #/usr/bin/env python3
         import os
@@ -120,12 +120,11 @@ def get_default_launch_pyw():
         if os.path.basename(direpa_project) == "mgt":
             direpa_project=os.path.dirname(direpa_project)
         direpa_project_src=os.path.join(direpa_project,"src")
-        app_name=os.path.basename(direpa_project)
 
-        os.system('start cmd.exe /K "prompt $G$S & title {} & cd {}"'.format(app_name, direpa_project_src))
-        subprocess.call('code "{}"'.format(direpa_project), shell=True)
+        os.system('start cmd.exe /K "prompt $G$S & title {app_name} & cd /d {{}}"'.format(direpa_project_src))
+        subprocess.call('code "{{}}"'.format(direpa_project), shell=True)
         # subprocess.call('firefox https://lclwapps.edu/t/timeclock/1/', shell=True)
-    """
+    """.format(app_name=app_name)
 
 def get_default_scriptjob_save_json_file(direpa_app, app_name):
     return """
