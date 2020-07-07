@@ -22,7 +22,7 @@ release --export-bin --beta
 
 ##  update gitframe
 cd /data/wrk/g/gitframe/1/src/
-main.py --clone-to-repository . ../doc ../mgt --repository /data/git --package gitframe --add-origin --sync
+main.py --clone-to-repository . ../doc ../mgt --repository /data/git --package options --add-origin --sync
 release --bump-version --increment
 main.py --update-gitframe; gitframe --tag --version-file gpm.json
 release --export-rel
@@ -38,8 +38,8 @@ main.py --bump-version --increment && gitframe --tag --version-file gpm.json && 
 
 ## import a template
 release -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps .
-rm -rf /home/gabaaa/Desktop/test/*; /data/wrk/r/release/1/src/main.py -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys
-/main.py -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys "{'authors': 'John Doe', 'licenses': 'MIT', 'version':'0.2.0', 'package_name': 'mytestpackage'}"
+rm -rf /home/gabaaa/Desktop/test/{,.[!.],..?}*; /data/wrk/r/release/1/src/main.py -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys
+rm -rf /home/gabaaa/Desktop/test/{,.[!.],..?}*; release -i -p template-py --no-conf-src --no-conf-dst --no-root-dir --not-git --path-deps . --keys "{'authors': 'John Doe', 'licenses': 'MIT', 'version':'0.2.0', 'package_name': 'mytestpackage'}"
 
 
 
