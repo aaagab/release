@@ -86,6 +86,9 @@ def get_licenses(licenses):
 				licenses.append(prompt("License"))
 			else:
 				break
+	else:
+		if licences[0] == "":
+			return []
 
 	return licenses
 
