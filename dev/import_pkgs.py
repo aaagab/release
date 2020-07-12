@@ -88,7 +88,13 @@ def import_pkgs(
                     direpa_tmp = tempfile.mkdtemp()
                     copy_to_destination(paths, direpa_src, direpa_tmp)
                     tmp_paths=get_paths_to_copy(direpa_tmp)
-                    for tmp_path in tmp_paths:
+                    for t, tmp_path in enumerate(tmp_paths):
+                        new_path=re.sub(r"{{([a-zA-Z0-9-_ ]+?)}}", lambda m: replace_key(m, keys), tmp_path)
+                        if new_path != tmp_path:
+                            os.rename(tmp_path, new_path)
+                            tmp_path=new_path
+                            tmp_paths[t]=new_path
+
                         if os.path.isfile(tmp_path):
                             data=None
                             with open(tmp_path, "r") as f:
