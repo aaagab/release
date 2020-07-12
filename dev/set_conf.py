@@ -87,7 +87,7 @@ def get_licenses(licenses):
 			else:
 				break
 	else:
-		if licences[0] == "":
+		if licenses[0] == "":
 			return []
 
 	return licenses
