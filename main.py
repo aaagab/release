@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.2.0
+# version: 9.3.0
 # name: release
 # license: MIT
 
