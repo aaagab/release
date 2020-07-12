@@ -108,7 +108,7 @@ def import_pkgs(
                 else:
                     copy_to_destination(paths, direpa_src, direpa_dst)
 
-            msg.success("Package '{}' installed in '{}'".format(chosen_pkg["name"], os.path.dirname(direpa_dst)))
+            msg.success("Package '{}' '{}' installed in '{}'".format(chosen_pkg["name"], chosen_pkg["version"], os.path.dirname(direpa_dst)))
     
     
 def replace_key(reg, keys):
