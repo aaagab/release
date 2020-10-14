@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.4.2
+# version: 9.5.0
 # name: release
 # license: MIT
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         if dy_app["platform"] == "Linux":
             dy_app["direpa_repo"]="/data/rel"
         elif dy_app["platform"] == "Windows":
-            dy_app["direpa_repo"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
+            dy_app["direpa_repo"]=r"C:\Users\{}\data\rel".format(getpass.getuser())
         
     if args.path_bin.here:
         dy_app["direpa_bin"]=args.path_bin.value
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         if dy_app["platform"] == "Linux":
             dy_app["direpa_bin"]="/data/bin"
         elif dy_app["platform"] == "Windows":
-            dy_app["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
+            dy_app["direpa_bin"]=r"C:\Users\{}\data\bin".format(getpass.getuser())
 
     pkg.check_repo(
         filen_repo_default=dy_app["filen_json_repo"],
