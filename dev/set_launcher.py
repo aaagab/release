@@ -121,7 +121,7 @@ def get_default_launch_pyw(app_name):
             direpa_project=os.path.dirname(direpa_project)
         direpa_project_src=os.path.join(direpa_project,"src")
 
-        os.system('start cmd.exe /K "prompt $G$S & title {app_name} & cd /d {{}}"'.format(direpa_project_src))
+        os.system('start cmd.exe /K "title {app_name} & cd /d {{}}"'.format(direpa_project_src))
         subprocess.call('code "{{}}"'.format(direpa_project), shell=True)
         # subprocess.call('firefox https://lclwapps.edu/t/timeclock/1/', shell=True)
     """.format(app_name=app_name)
