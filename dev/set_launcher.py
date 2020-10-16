@@ -110,6 +110,7 @@ def set_launcher(
 def get_default_launch_pyw(app_name):
     return """
         #/usr/bin/env python3
+        import platform
         import os
         import shlex
         import subprocess
