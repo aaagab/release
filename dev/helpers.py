@@ -86,7 +86,10 @@ def create_symlink(platform, filenpa_exec, filenpa_symlink ):
     with contextlib.suppress(FileNotFoundError):
         os.remove(filenpa_symlink)
 
-    filenparel_symlink=os.path.relpath(filenpa_exec, filenpa_symlink)
+    curdir=os.getcwd()
+    os.chdir(os.path.dirname(filenpa_exec))
+    direpa_rel=os.path.relpath(os.path.dirname(filenpa_symlink), os.path.dirname(filenpa_exec))
+    filenparel_symlink=os.path.join(direpa_rel, os.path.basename(filenpa_symlink))
     
     if platform == "Linux":
         os.symlink( filenpa_exec, filenparel_symlink)
@@ -96,6 +99,7 @@ def create_symlink(platform, filenpa_exec, filenpa_symlink ):
             print("Error When creating link '{}'".format(filenpa_symlink))
             sys.exit(1)
     
+    os.chdir(curdir)
     msg.success("symlink '{}' set.".format(filenpa_symlink))
 
 
