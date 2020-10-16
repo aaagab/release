@@ -85,11 +85,13 @@ def create_symlink(platform, filenpa_exec, filenpa_symlink ):
         
     with contextlib.suppress(FileNotFoundError):
         os.remove(filenpa_symlink)
+
+    filenparel_symlink=os.path.relpath(filenpa_exec, filenpa_symlink)
     
     if platform == "Linux":
-        os.symlink( filenpa_exec, filenpa_symlink)
+        os.symlink( filenpa_exec, filenparel_symlink)
     elif platform == "Windows":
-        cmd='mklink "{}" "{}"'.format(filenpa_symlink, filenpa_exec)
+        cmd='mklink "{}" "{}"'.format(filenparel_symlink, filenpa_exec)
         if os.system(cmd) != 0:
             print("Error When creating link '{}'".format(filenpa_symlink))
             sys.exit(1)
