@@ -121,8 +121,14 @@ def get_default_launch_pyw(app_name):
             direpa_project=os.path.dirname(direpa_project)
         direpa_project_src=os.path.join(direpa_project,"src")
 
-        os.system('start cmd.exe /K "title {app_name} & cd /d {{}}"'.format(direpa_project_src))
-        subprocess.call('code "{{}}"'.format(direpa_project), shell=True)
+        # using 32 bit python on 64 bit system that needs to be done otherwise when launching a command from the terminal you have on some programs error is not recognized as an internal or external command, operable program or batch file.
+        system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if 
+        platform.architecture()[0] == '32bit' else 'System32')
+
+        os.system('start {} /K "title pb & cd /d {}"'.format(
+            os.path.join(system32, "cmd.exe"),
+            direpa_project_src))
+        subprocess.call('code "{}"'.format(direpa_project), shell=True)
         # subprocess.call('firefox https://lclwapps.edu/t/timeclock/1/', shell=True)
     """.format(app_name=app_name)
 
