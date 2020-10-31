@@ -26,6 +26,7 @@ def export(
     arg_str, # export_bin, export_rel, to_repo
     add_deps=False,
     filenpa_conf=None,
+    is_beta=False,
     is_git=True,
     pkg_name=None,
     pkg_version=None,
@@ -58,13 +59,15 @@ def export(
                     direpa_src=get_direpa_root(direpa_pkg)
                 else:
                     direpa_src=direpa_pkg
+
         
         if from_repo is None:
             if filenpa_conf is None:
                 filenpa_conf=os.path.join(direpa_src, dy_app["filen_json_app"])
             conf_data=Json_config(filenpa_conf).data
             pkg_name=conf_data["name"]
-            filen_main=conf_data["filen_main"]
+            if is_beta is False and pkg_version is None:
+                pkg_version=conf_data["version"]
         else:
             if pkg_version is None:
                 chosen_pkg=get_pkg_from_db(
@@ -76,7 +79,8 @@ def export(
                 pkg_version=chosen_pkg["version"]
             direpa_src=os.path.join(direpa_repo, pkg_name, pkg_version, pkg_name)
             conf_data=Json_config(os.path.join(direpa_src, dy_app["filen_json_app"])).data
-            filen_main=conf_data["filen_main"]
+        
+        filen_main=conf_data["filen_main"]
 
         diren_bin=None
         if pkg_version is None: # get current repository state
@@ -235,9 +239,9 @@ def export(
                 shutil.rmtree(direpa_dst)
             os.makedirs(direpa_dst, exist_ok=True)
         else:
-            prompt_for_replace(direpa_dst)
+            prompt_for_replace(direpa_dst, previous_branch, direpa_src)
     elif arg_str == "export_rel":
-        prompt_for_replace(direpa_dst)
+        prompt_for_replace(direpa_dst, previous_branch, direpa_src)
 
     msg.info("Copying from '{}' to '{}'".format(direpa_src, direpa_dst))
     copy_to_destination(paths, direpa_src, direpa_dst)
@@ -322,13 +326,15 @@ def checkout_version(version, direpa_git):
         os.chdir(direpa_current)
     return previous_branch
     
-def prompt_for_replace(direpa_dst):
+def prompt_for_replace(direpa_dst, previous_branch=None, direpa_src=None):
     if os.path.exists(direpa_dst):
         msg.warning("'{}' already exists.".format(direpa_dst))
         if prompt_boolean("Do you want to replace it", "Y"):
             shutil.rmtree(direpa_dst)
             os.makedirs(direpa_dst, exist_ok=True)
         else:
+            if previous_branch:
+                checkout(previous_branch, direpa_src)
             msg.warning("Operation Cancelled.")
             sys.exit(1)
 

@@ -111,7 +111,7 @@ def check_pkg_integrity(
                     msg.error(
                         "At location '{}' for package '{}'".format(direpa_deps, name),
                         "Package id = '{}'".format(pkg_id),
-                        "Package is present in '{}' with bound 'gpm'".format(dy_app["filen_json_app"]),
+                        "Package is present in '{}' with bound 'gpm'".format(filen_json_default),
                         "However package is not present in '{}'".format(diren_deps)
                     )
                     sys.exit(1)

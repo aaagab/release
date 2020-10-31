@@ -5,6 +5,10 @@
         "info": "Add dependencies",
         "nested": true
     },
+    "beta": {
+        "info": "Add this flag to send the current state to bin as beta.",
+        "nested": true
+    },
     "authors": {
         "nested": true,
         "nvalues": "1,*",
@@ -22,12 +26,12 @@
     },
     "export_bin": {
         "aliases": "--export-bin",
-        "args": "from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,pkg_name,pkg_version",
+        "args": "beta,from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,pkg_name,pkg_version",
         "info": "Send refined project 'current state' or 'selected version' to /data/bin and create symlink or send to path."
     },
     "export_rel": {
         "aliases": "--export-rel",
-        "args": "add_deps,filenpa_conf,from_repo,not_git,pkg_name,only_paths,path_pkg,path_repo,pkg_version",
+        "args": "no_deps,filenpa_conf,from_repo,not_git,pkg_name,only_paths,path_pkg,path_repo,pkg_version",
         "info": "Send refined project 'selected version' to /$project_path/rel or path."
     },
     "filen_main": {
@@ -54,7 +58,7 @@
     },
     "import_pkgs": {
         "aliases": "-i,--import",
-        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_repo",
+        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_repo,keys",
         "required": "packages",
         "info": "import packages in a git project with a folder gpkgs."
     },
@@ -62,9 +66,12 @@
         "info": "Add this flag to increment the current version before bumping.",
         "nested": true
     },
-    "set_conf": {
-        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_name,pkg_version,uuid4",
-        "info": "create a config file for a new project."
+    "keys": {
+        "nested": true,
+        "info": "If keys is present, the imported package is considered a template and its files are going to be copied first in a tmp directory. Then the files are going to be scanned for {{placeholders}}. If keys json values are provided then they are going to autofill the related {{placeholders}} else for each found values not provided the user is going to be prompted to enter the value. regex syntax for placeholders {{([a-zA-Z0-9-_ ]+?)}}",
+        "type": "json",
+        "nvalues": "?",
+        "values": "JSON"
     },
     "licenses": {
         "nested": true,
@@ -81,7 +88,12 @@
         "nested": true
     },
     "no_conf_src": {
-        "info": "Allow to process the command with having a configuration file.",
+        "info": "Allow to process the command without having a configuration file.",
+        "nested": true
+    },
+    "no_deps": {
+        "aliases": "--no-deps",
+        "info": "Do not add dependencies",
         "nested": true
     },
     "no_root_dir": {
@@ -163,11 +175,18 @@
         "args": "filenpa_conf,not_git,path_deps,path_pkg",
         "info": "Reinstall all dependencies from gpm.json"
     },
-    "set_bump_deploy": {
-        "info": "Generate bump_version.py and deploy.py files. It also repair symlinks if they are broken."
+    "set_conf": {
+        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_name,pkg_version,uuid4",
+        "info": "create a config file for a new project."
+    },
+    "set_launcher": {
+        "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening.",
+        "nvalues": "?",
+        "values": "APP_NAME"
     },
     "steps": {
-        "info": "Give the main steps to create an application."
+        "info": "Give the main steps to create an application.",
+        "show": false
     },
     "switch_bin": {
         "aliases": "--switch-bin,--sb",
