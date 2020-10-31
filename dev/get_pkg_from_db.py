@@ -36,7 +36,7 @@ def get_pkg_from_db(
     selected_pkgs=search(db_data["pkgs"], tmp_filter)
     chosen_pkg={}
     if not selected_pkgs:
-        msg.warning("No package found with filter '{}' in  db.json from repository".format(pkg_filter))
+        msg.error("\nNo package found with filter '{}' in  db.json from repository".format(pkg_filter))
         return None
     elif len(selected_pkgs) == 1:
         chosen_pkg={

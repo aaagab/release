@@ -54,7 +54,7 @@ def import_pkgs(
                 ex_uuid4, ex_name, ex_version, ex_bound = dep.split("|")
                 if chosen_pkg["name"] == ex_name:
                     msg.warning(
-                        "'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
+                        "\n'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
                         "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
                         "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
                     if prompt_boolean("Do you want to replace it", "Y"):
