@@ -39,22 +39,12 @@ def set_launcher(
         msg.error("'{}' is not a git folder.".format(direpa_src))
         sys.exit(1)
 
-    os.chdir(direpa_src)
-    username=shell.cmd_get_value("git config --local user.name")
     os.chdir(direpa_project)
     direpa_mgt=os.path.join(direpa_project, "mgt")
     if not os.path.exists(direpa_mgt):
         msg.error("'{}' not found".format(direpa_mgt),
             "This is not a gitframe project structure.")
         sys.exit(1)
-
-    if not username:
-        msg.error("username has not been set for git folder '{}'.".format(direpa_src))
-        sys.exit(1)
-
-    direpa_mgt_username=os.path.join(direpa_mgt, username)
-    if os.path.exists(direpa_mgt_username):
-        direpa_mgt=direpa_mgt_username
 
     filenpa_symlink=os.path.join(direpa_project, filen)
     filenpa_original=os.path.join(direpa_mgt, filen)
