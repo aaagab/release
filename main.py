@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.1.1
+# version: 9.7.4
 # name: release
 # license: MIT
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         if dy_app["platform"] == "Linux":
             dy_app["direpa_repo"]="/data/rel"
         elif dy_app["platform"] == "Windows":
-            dy_app["direpa_repo"]=r"C:\Users\{}\Desktop\data\rel".format(getpass.getuser())
+            dy_app["direpa_repo"]=r"C:\Users\{}\data\rel".format(getpass.getuser())
         
     if args.path_bin.here:
         dy_app["direpa_bin"]=args.path_bin.value
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         if dy_app["platform"] == "Linux":
             dy_app["direpa_bin"]="/data/bin"
         elif dy_app["platform"] == "Windows":
-            dy_app["direpa_bin"]=r"C:\Users\{}\Desktop\data\bin".format(getpass.getuser())
+            dy_app["direpa_bin"]=r"C:\Users\{}\data\bin".format(getpass.getuser())
 
     pkg.check_repo(
         filen_repo_default=dy_app["filen_json_repo"],
@@ -82,12 +82,14 @@ if __name__ == "__main__":
         arg=dy_app["args"][arg_str]
         if arg.here:
             pkg.setup_vars(
-                dy_app=dy_app,
                 arg_str=arg_str,
+                dy_app=dy_app,
+                direpa_deps=args.path_deps.value,
+                direpa_pkg=args.path_pkg.value,
                 filenpa_conf=args.filenpa_conf.value,
                 is_git=not args.not_git.here,
-                direpa_pkg=args.path_pkg.value,
-                direpa_deps=args.path_deps.value,
+                is_template=args.keys.here,
+                keys=args.keys.value,
                 no_conf_src=args.no_conf_src.here,
                 no_conf_dst=args.no_conf_dst.here,
                 no_root_dir=args.no_root_dir.here,
@@ -129,8 +131,11 @@ if __name__ == "__main__":
         pkg.ls_repo(dy_app, args.packages.values, args.add_deps.here)
         sys.exit(0)
         
-    if args.set_bump_deploy.here is True:
-        pkg.set_bump_deploy(dy_app)
+    if args.set_launcher.here is True:
+        pkg.set_launcher(
+            dy_app,
+            app_name=args.set_launcher.value,
+        )
         sys.exit(0)
 
     if args.bump_version.here is True:
@@ -186,6 +191,7 @@ if __name__ == "__main__":
                     "export_bin",
                     direpa_bin=dy_app["direpa_bin"],
                     direpa_repo=dy_app["direpa_repo"],
+                    is_beta=args.beta.here,
                     **options,
                 )
                 
@@ -198,7 +204,7 @@ if __name__ == "__main__":
 
                 pkg.export(dy_app, 
                     "export_rel",
-                    add_deps=args.add_deps.here,
+                    add_deps=not args.no_deps.here,
                     direpa_repo=dy_app["direpa_repo"],
                     **options,
                 )

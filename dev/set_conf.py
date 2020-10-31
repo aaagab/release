@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 8.1.1
+# version: 9.0.0
 # name: release
 # license: MIT
 import json
@@ -86,6 +86,9 @@ def get_licenses(licenses):
 				licenses.append(prompt("License"))
 			else:
 				break
+	else:
+		if licenses[0] == "":
+			return []
 
 	return licenses
 

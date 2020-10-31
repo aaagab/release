@@ -85,15 +85,22 @@ def create_symlink(platform, filenpa_exec, filenpa_symlink ):
         
     with contextlib.suppress(FileNotFoundError):
         os.remove(filenpa_symlink)
-    
+
+    curdir=os.getcwd()
+    os.chdir(os.path.dirname(filenpa_symlink))
+    filenrel_exec=os.path.relpath(filenpa_exec, os.path.dirname(filenpa_symlink))
+
     if platform == "Linux":
-        os.symlink( filenpa_exec, filenpa_symlink)
+        # >>> os.symlink("mgt/file.txt", "file.txt")
+        os.symlink(filenrel_exec, os.path.basename(filenpa_symlink))
     elif platform == "Windows":
-        cmd='mklink "{}" "{}"'.format(filenpa_symlink, filenpa_exec)
+        #  mklink launch.pyw mgt\launch.pyw
+        cmd='mklink "{}" "{}"'.format(os.path.basename(filenpa_symlink), filenrel_exec)
         if os.system(cmd) != 0:
             print("Error When creating link '{}'".format(filenpa_symlink))
             sys.exit(1)
     
+    os.chdir(curdir)
     msg.success("symlink '{}' set.".format(filenpa_symlink))
 
 

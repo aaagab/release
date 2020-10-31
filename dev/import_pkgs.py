@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import os
 from pprint import pprint
+import re
 import shutil
 import sys
+import tempfile
 
 from .check_pkg_integrity import check_pkg_integrity
 from .get_pkg_from_db import get_pkg_from_db
@@ -10,7 +12,7 @@ from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
 
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
-from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs.prompt import prompt_boolean, prompt
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..gpkgs.sort_separated import sort_separated
 
@@ -23,6 +25,8 @@ def import_pkgs(
     direpa_repo,
     direpa_pkg,
     filen_json_default,
+    keys,
+    is_template,
     no_conf_src,
     no_conf_dst,
     no_root_dir,
@@ -50,7 +54,7 @@ def import_pkgs(
                 ex_uuid4, ex_name, ex_version, ex_bound = dep.split("|")
                 if chosen_pkg["name"] == ex_name:
                     msg.warning(
-                        "'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
+                        "\n'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
                         "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
                         "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
                     if prompt_boolean("Do you want to replace it", "Y"):
@@ -77,10 +81,39 @@ def import_pkgs(
             if chosen_pkg["bound"] == "gpm":
                 added_rules=[]
                 if no_conf_dst:
-                    added_rules=["/gpm.json"]
+                    added_rules=["/gpm.json", "/.refine"]
                 paths=get_paths_to_copy(direpa_src, added_rules=added_rules)
-                copy_to_destination(paths, direpa_src, direpa_dst)
 
-            msg.success("Package '{}' installed in '{}'".format(chosen_pkg["name"], os.path.dirname(direpa_dst)))
+                if is_template:
+                    direpa_tmp = tempfile.mkdtemp()
+                    copy_to_destination(paths, direpa_src, direpa_tmp)
+                    tmp_paths=get_paths_to_copy(direpa_tmp)
+                    for t, tmp_path in enumerate(tmp_paths):
+                        new_path=re.sub(r"{{([a-zA-Z0-9-_ ]+?)}}", lambda m: replace_key(m, keys), tmp_path)
+                        if new_path != tmp_path:
+                            os.rename(tmp_path, new_path)
+                            tmp_path=new_path
+                            tmp_paths[t]=new_path
+
+                        if os.path.isfile(tmp_path):
+                            data=None
+                            with open(tmp_path, "r") as f:
+                                data=f.read()
+                                data=re.sub(r"{{([a-zA-Z0-9-_ ]+?)}}", lambda m: replace_key(m, keys), data)
+                            with open(tmp_path, "w") as f:
+                                f.write(data)
+                                
+                    copy_to_destination(tmp_paths, direpa_tmp, direpa_dst)
+                    shutil.rmtree(direpa_tmp)
+                else:
+                    copy_to_destination(paths, direpa_src, direpa_dst)
+
+            msg.success("Package '{}' '{}' installed in '{}'".format(chosen_pkg["name"], chosen_pkg["version"], os.path.dirname(direpa_dst)))
     
     
+def replace_key(reg, keys):
+    key=next(iter(reg.groups()))
+    if key in keys:
+        return keys[key]
+    else:
+        return prompt(key)
