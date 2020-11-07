@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.7.4
+# version: 10.0.0
 # name: release
 # license: MIT
 
@@ -18,9 +18,6 @@ if __name__ == "__main__":
     del sys.path[0]
     
     args, dy_app=pkg.Options(filenpa_app="gpm.json", filenpa_args="config/options.json").get_argsns_dy_app()
-
-    
-    
 
     for arg_str in [
         "filenpa_conf",
@@ -47,18 +44,12 @@ if __name__ == "__main__":
     if args.path_repo.here:
         dy_app["direpa_repo"]=args.path_repo.value
     else:
-        if dy_app["platform"] == "Linux":
-            dy_app["direpa_repo"]="/data/rel"
-        elif dy_app["platform"] == "Windows":
-            dy_app["direpa_repo"]=r"C:\Users\{}\data\rel".format(getpass.getuser())
+        dy_app["direpa_repo"]=os.path.join(os.path.expanduser("~"),"data","rel")
         
     if args.path_bin.here:
         dy_app["direpa_bin"]=args.path_bin.value
     else:
-        if dy_app["platform"] == "Linux":
-            dy_app["direpa_bin"]="/data/bin"
-        elif dy_app["platform"] == "Windows":
-            dy_app["direpa_bin"]=r"C:\Users\{}\data\bin".format(getpass.getuser())
+        dy_app["direpa_bin"]=os.path.join(os.path.expanduser("~"),"data","bin")
 
     pkg.check_repo(
         filen_repo_default=dy_app["filen_json_repo"],
@@ -160,10 +151,6 @@ if __name__ == "__main__":
         pkg.switch_bin(dy_app, args.pkg_name.value, args.pkg_version.value)
         sys.exit(0)
 
-    if args.steps.here is True:
-        pkg.steps()
-        sys.exit(0)
-
     for arg_str in ["export_bin", "export_rel"]:
         arg=dy_app["args"][arg_str]
 
@@ -201,7 +188,6 @@ if __name__ == "__main__":
                         pkg.msg.error("--from-repo path must be set")
                         sys.exit(1)
                 options["from_repo"]=args.from_repo.value
-
                 pkg.export(dy_app, 
                     "export_rel",
                     add_deps=not args.no_deps.here,

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 9.7.4
+# version: 10.0.0
 # name: release
 # license: MIT
 
-__version__ = "9.7.4"
+__version__ = "10.0.0"
 
 from .dev.bump_version import bump_version
 from .dev.check_repo import check_repo
@@ -16,7 +16,6 @@ from .dev.ls_repo import ls_repo
 from .dev.remove import remove 
 from .dev.setup_vars import setup_vars 
 from .dev.set_launcher import set_launcher
-from .dev.steps import steps
 from .dev.switch_bin import switch_bin
 from .dev.repo_strip import repo_strip
 from .dev.update_upgrade import update_upgrade
