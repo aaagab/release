@@ -314,7 +314,7 @@ def checkout_version(version, direpa_git):
     if not version in existing_versions:
         msg.error("Version '{}' does not exist at path '{}'".format(
             version,
-            direpa
+            direpa_git,
         ))
         sys.exit(1)
     else:
