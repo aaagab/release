@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 10.0.0
+# version: 11.0.0
 # name: release
 # license: MIT
 
@@ -44,12 +44,12 @@ if __name__ == "__main__":
     if args.path_repo.here:
         dy_app["direpa_repo"]=args.path_repo.value
     else:
-        dy_app["direpa_repo"]=os.path.join(os.path.expanduser("~"),"data","rel")
+        dy_app["direpa_repo"]=os.path.join(os.path.expanduser("~"),"fty","rel")
         
     if args.path_bin.here:
         dy_app["direpa_bin"]=args.path_bin.value
     else:
-        dy_app["direpa_bin"]=os.path.join(os.path.expanduser("~"),"data","bin")
+        dy_app["direpa_bin"]=os.path.join(os.path.expanduser("~"),"fty","bin")
 
     pkg.check_repo(
         filen_repo_default=dy_app["filen_json_repo"],
