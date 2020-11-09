@@ -36,7 +36,6 @@ def export(
     direpa_pkg=None,
     only_paths=[],
 ):
-
     added_refine_rules=[]
     conf_data=None
     conf_db=None
