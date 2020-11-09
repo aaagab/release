@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 11.1.0
+# version: 11.2.0
 # name: release
 # license: MIT
 
@@ -18,6 +18,30 @@ if __name__ == "__main__":
     del sys.path[0]
     
     args, dy_app=pkg.Options(filenpa_app="gpm.json", filenpa_args="config/options.json").get_argsns_dy_app()
+
+    if args.examples.here is True:
+        print("""
+release --set-conf
+release --set-launcher
+release --restore
+release -i --pgks message prompt
+release --update message
+release --upgrade message
+release --bump-version --increment
+release --export-bin --beta
+release --export-bin
+release --export-rel
+release --export-bin --to-repo ~/mnt/web/bin --from-repo --pname guidelines
+release --export-rel --from-repo --path-repo ~/mnt/office-lw-vm/rel --pname guidelines
+release --export-rel --from-repo ~/fty/rel --path-repo ~/mnt/office-lw-vm/rel --pname guidelines
+release --export
+# repair release when developing
+cd /home/$USER/fty/wrk/r/release/1/src
+/home/$USER/fty/wrk/r/release/1/src/main.py --export-bin --beta
+# restore release from hdd
+cd /home/$USER/fty/rel/release/11.1.0/release/main.py
+main.py --export-bin --from-repo --pname release         
+        """)
 
     for arg_str in [
         "filenpa_conf",
