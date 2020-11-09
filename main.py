@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 11.2.0
+# version: 11.3.0
 # name: release
 # license: MIT
 
@@ -32,6 +32,7 @@ release --export-bin --beta
 release --export-bin
 release --export-rel
 release --export-bin --to-repo ~/mnt/web/bin --from-repo --pname guidelines
+release --export-bin --to-repo ~/mnt/web/bin --from-repo --pname guidelines --no-symlink
 release --export-rel --from-repo --path-repo ~/mnt/office-lw-vm/rel --pname guidelines
 release --export-rel --from-repo ~/fty/rel --path-repo ~/mnt/office-lw-vm/rel --pname guidelines
 release --export
@@ -210,6 +211,7 @@ main.py --export-bin --from-repo --pname release
                     direpa_bin=direpa_bin,
                     direpa_repo=dy_app["direpa_repo"],
                     is_beta=args.beta.here,
+                    no_symlink=args.no_symlink.here,
                     **options,
                 )
                 
