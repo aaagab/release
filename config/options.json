@@ -27,7 +27,7 @@
     "examples": {},
     "export_bin": {
         "aliases": "--export-bin",
-        "args": "beta,from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,path_repo,pkg_name,pkg_version,to_repo",
+        "args": "beta,from_repo,filenpa_conf,not_git,no_symlink,only_paths,path_bin,path_pkg,path_repo,pkg_name,pkg_version,to_repo",
         "info": "Send refined project 'current state' or 'selected version' to {user_profile}/data/bin and create symlink or send to path."
     },
     "export_rel": {
@@ -90,6 +90,10 @@
     },
     "no_conf_src": {
         "info": "Allow to process the command without having a configuration file.",
+        "nested": true
+    },
+    "no_symlink": {
+        "info": "When pushing a bin pkg to an sshfs mount bin from another system, like from linux to windows then use no symlink and use mlink on windows computer to restore the symlink.",
         "nested": true
     },
     "no_deps": {
