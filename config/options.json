@@ -24,6 +24,7 @@
         "nested": true,
         "values": "Package Description"
     },
+    "examples": {},
     "export_bin": {
         "aliases": "--export-bin",
         "args": "beta,from_repo,filenpa_conf,not_git,only_paths,path_bin,path_pkg,path_repo,pkg_name,pkg_version,to_repo",
