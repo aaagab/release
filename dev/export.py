@@ -28,6 +28,7 @@ def export(
     filenpa_conf=None,
     is_beta=False,
     is_git=True,
+    no_symlink=False,
     pkg_name=None,
     pkg_version=None,
     from_repo=None,
@@ -254,9 +255,10 @@ def export(
         conf_db.save()
 
     if arg_str == "export_bin":
-        filenpa_exec=os.path.join(direpa_dst, filen_main)
-        filenpa_symlink=os.path.join(direpa_bin, pkg_name)
-        create_symlink(dy_app["platform"], filenpa_exec, filenpa_symlink )
+        if no_symlink is False:
+            filenpa_exec=os.path.join(direpa_dst, filen_main)
+            filenpa_symlink=os.path.join(direpa_bin, pkg_name)
+            create_symlink(dy_app["platform"], filenpa_exec, filenpa_symlink )
 
     if previous_branch:
         checkout(previous_branch, direpa_src)
