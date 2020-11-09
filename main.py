@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 11.0.0
+# version: 11.1.0
 # name: release
 # license: MIT
 
@@ -173,10 +173,17 @@ if __name__ == "__main__":
                         dy_app["direpa_repo"]=args.from_repo.value
                 options["from_repo"]=args.from_repo.value
 
+                direpa_bin=dy_app["direpa_bin"]
+                if args.to_repo.here:
+                    if args.to_repo.value is not None:
+                        direpa_bin=args.to_repo.value
+
+                pprint(options["from_repo"])
+
                 pkg.export(
                     dy_app,
                     "export_bin",
-                    direpa_bin=dy_app["direpa_bin"],
+                    direpa_bin=direpa_bin,
                     direpa_repo=dy_app["direpa_repo"],
                     is_beta=args.beta.here,
                     **options,
@@ -185,8 +192,9 @@ if __name__ == "__main__":
             elif arg_str == "export_rel":
                 if args.from_repo.here:
                     if args.from_repo.value is None:
-                        pkg.msg.error("--from-repo path must be set")
-                        sys.exit(1)
+                        args.from_repo.value=dy_app["direpa_repo"]
+                        # pkg.msg.error("--from-repo path must be set")
+                        # sys.exit(1)
                 options["from_repo"]=args.from_repo.value
                 pkg.export(dy_app, 
                     "export_rel",
