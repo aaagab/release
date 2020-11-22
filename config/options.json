@@ -15,26 +15,23 @@
         "values": "Full Name"
     },
     "bump_version": {
-        "args": "filenpa_conf,increment,not_git,pkg_name,path_deps,path_pkg",
+        "args": "filenpa_conf,increment,not_git,pkg_name,path_pkg",
         "info": "Increment package version",
         "nvalues": "?",
         "values": "VERSION"
+    },
+    "conf_from_rel": {
+        "info": "package configuration can be retrieved from a release repository",
+        "nested": true,
+        "type": "directory",
+        "nvalues": "?",
+        "values": "DIREPA_REPO_REL"
     },
     "description": {
         "nested": true,
         "values": "Package Description"
     },
     "examples": {},
-    "export_bin": {
-        "aliases": "--export-bin",
-        "args": "beta,from_repo,filenpa_conf,not_git,no_symlink,only_paths,path_bin,path_pkg,path_repo,pkg_name,pkg_version,to_repo",
-        "info": "Send refined project 'current state' or 'selected version' to {user_profile}/data/bin and create symlink or send to path."
-    },
-    "export_rel": {
-        "aliases": "--export-rel",
-        "args": "no_deps,filenpa_conf,from_repo,not_git,pkg_name,only_paths,path_pkg,path_repo,pkg_version",
-        "info": "Send refined project 'selected version' to /$project_path/rel or path."
-    },
     "filen_main": {
         "nested": true,
         "info": "Package main file if any, just the full name",
@@ -43,24 +40,59 @@
     "filenpa_conf": {
         "nested": true,
         "info": "package JSON config file path. It can be relative or absolute.",
+        "type": "virtualpath",
         "values": "FILE_JSON"
     },
-    "from_repo": {
+    "from_bin": {
         "args": "pkg_name",
         "required": "pkg_name",
+        "info": "Transfer package from default binaries repository or from selected binaries repository",
         "nested": true,
-        "info": "Direpa source comes from repository,",
         "nvalues": "?",
-        "values": "direpa_repo"
+        "type": "directory",
+        "values": "DIREPA_REPO_BIN"
+    },
+    "from_pkg": {
+        "args": "conf_from_rel,filenpa_conf,no_conf,not_git",
+        "info": "Transfer package from current directory or from selected directory. If --version is specified then package is considered a git package.",
+        "nested": true,
+        "nvalues": "?",
+        "type": "directory",
+        "values": "DIREPA_PKG"
+    },
+    "from_rel": {
+        "args": "no_deps",
+        "info": "Transfer package from default releases repository or from selected releases repository",
+        "nested": true,
+        "nvalues": "?",
+        "type": "directory",
+        "values": "DIREPA_REPO_REL"
+    },
+    "from_src": {
+        "info": "Transfer package from default sources repository or from selected sources repository",
+        "nested": true,
+        "nvalues": "?",
+        "type": "directory",
+        "values": "DIREPA_REPO_SRC"
+    },
+    "from_wrk": {
+        "args": "pkg_name",
+        "required": "pkg_name",
+        "info": "Transfer package from default work repository or from selected work repository",
+        "nested": true,
+        "nvalues": "?",
+        "type": "directory",
+        "values": "DIREPA_REPO_WRK"
     },
     "generate_db": {
+        "args": "path_rel",
         "aliases": "-g,--generate-db,--gen,--gd",
         "info": "list all folders in repository and generate the db.json."
     },
     "import_pkgs": {
         "aliases": "-i,--import",
-        "args": "filenpa_conf,packages,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_repo,keys",
-        "required": "packages",
+        "args": "filenpa_conf,package_filters,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_rel,keys",
+        "required": "package_filters",
         "info": "import packages in a git project with a folder gpkgs."
     },
     "increment": {
@@ -79,10 +111,14 @@
         "nvalues": "1,*",
         "values": "MIT|None"
     },
-    "ls_repo": {
-        "aliases": "-l,--ls,--ls-repo",
-        "args": "add_deps,packages,path_repo",
-        "info": "List all packages in the repo. You can add name(s) to filter by names."
+    "ls_rel": {
+        "aliases": "-l,--ls,--ls-rel",
+        "args": "add_deps,package_filters,path_rel",
+        "info": "List all packages in the release repository. You can add name(s) to filter by names."
+    },
+    "no_conf": {
+        "info": "Allow to process the command without having a configuration file.",
+        "nested": true
     },
     "no_conf_dst": {
         "info": "Do not import the conf file with the imported package",
@@ -115,41 +151,43 @@
         "nvalues": "+",
         "values": "PATH"
     },
+    "overwrite": {
+        "nested": true
+    },
     "packages": {
         "aliases": "-p,--pkgs,--packages",
-        "info": "Packages are identified with the following syntax uuid4,name,version,pkg_bound . Generally you just select the name, but you can also use the uuid4, and the version. To import a package you have to name the packages. if only name, latest version of the package is selected and package bound is going to be gpm. if name,version then version is a filter and several options are possible: major.minor.patch each element can be a number, the letter L for latest or the letter A for any . It allows advanced filters to display and select packages.",
         "nested": true,
         "nvalues": "*",
-        "values": "PGK_FILTER"
+        "values": "PKG_NAMES"
+    },
+    "package_filters": {
+        "aliases": "--pfs,--pkg-filters",
+        "info": "Package filters are comma separated string. The fields are bound, name, version, uuid4. Fields order does not matter and not all fields need to be present",
+        "nested": true,
+        "nvalues": "+",
+        "values": "PKG_FILTERS"
     },
     "path_bin": {
         "info": "Select Bin Path (can be relative or absolute).",
         "nested": true,
+        "type": "directory",
         "values": "PATH"
     },
     "path_deps": {
-        "info": "Select directory destination path for dependencies (can be relative or absolute). If path is omitted, current directory is selected",
+        "info": "Select directory destination path for dependencies (can be relative or absolute). If path is omitted, --path-pkg or current directory is selected.",
         "nested": true,
         "nvalues": "?",
-        "values": "PATH"
-    },
-    "path_dst": {
-        "info": "Select directory destination path (can be relative or absolute).",
-        "nested": true,
+        "type": "virtualpath",
         "values": "PATH"
     },
     "path_pkg": {
         "info": "Select directory package path (can be relative or absolute).",
         "nested": true,
+        "type": "directory",
         "values": "PATH"
     },
-    "path_repo": {
+    "path_rel": {
         "info": "Select Repository Path (can be relative or absolute).",
-        "nested": true,
-        "values": "PATH"
-    },
-    "path_src": {
-        "info": "Select directory source path (can be relative or absolute).",
         "nested": true,
         "values": "PATH"
     },
@@ -158,6 +196,12 @@
         "info": "package name",
         "nested": true,
         "values": "PKG_NAME"
+    },
+    "path_project": {
+        "nested": true,
+        "type": "directory",
+        "nvalues": "?",
+        "values": "PATH"
     },
     "pkg_version": {
         "aliases": "--pversion,--pv,--pkg-version,--rversion",
@@ -170,8 +214,8 @@
         "aliases": "-r,--remove",
         "info": "Remove packages installed in directory"
     },
-    "repo_strip": {
-        "args": "path_repo",
+    "rel_strip": {
+        "args": "path_rel",
         "info": "Remove all versions of a package except the latest. Select specific packages or no packages to run the function on all packages",
         "nvalues": "*",
         "values": "PKG_NAMES"
@@ -185,6 +229,7 @@
         "info": "create a config file for a new project."
     },
     "set_launcher": {
+        "args": "overwrite,path_project",
         "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening.",
         "nvalues": "?",
         "values": "APP_NAME"
@@ -195,19 +240,56 @@
         "info": "Given an application name and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available",
         "required": "pkg_name,pkg_version"
     },
-    "to_repo": {
-        "info": "Send Package from repo to another",
+    "to_bin": {
+        "args": "beta,filen_main,no_symlink",
+        "info": "Transfer package to default binaries repository or to selected binaries repository",
         "nested": true,
-        "values": "direpa_repo"
+        "nvalues": "?",
+        "type": "virtualpath",
+        "values": "DIREPA_REPO_BIN"
+    },
+    "to_pkg": {
+        "info": "Transfer package to current directory or to selected directory.",
+        "nested": true,
+        "nvalues": "?",
+        "type": "virtualpath",
+        "values": "DIREPA_PKG"
+    },
+    "to_rel": {
+        "args": "no_deps",
+        "info": "Transfer package to default releases repository or to selected releases repository",
+        "nested": true,
+        "nvalues": "?",
+        "type": "virtualpath",
+        "values": "DIREPA_REPO_REL"
+    },
+    "to_src": {
+        "info": "Transfer package to default sources repository or to selected sources repository",
+        "nested": true,
+        "nvalues": "?",
+        "type": "virtualpath",
+        "values": "DIREPA_REPO_SRC"
+    },
+    "to_wrk": {
+        "info": "Transfer package to default work repository or to selected work repository",
+        "nested": true,
+        "nvalues": "?",
+        "type": "virtualpath",
+        "values": "DIREPA_REPO_WRK"
+    },
+    "transfer": {
+        "aliases": "-t,--transfer",
+        "args": "from_bin,from_pkg,from_rel,from_src,from_wrk,only_paths,package_filters,to_bin,to_pkg,to_rel,to_src,to_wrk",
+        "info": "Package is selected from one location and transfered to another. If the 'from location type' and the 'to location type' does not match then package is converted at destination type if supported."
     },
     "update": {
-        "args": "filenpa_conf,not_git,path_deps,path_pkg,path_repo",
+        "args": "not_git,path_deps,path_pkg,path_rel",
         "aliases": "-u,--update",
         "nvalues": "*",
         "values": "PKG_NAMES"
     },
     "upgrade": {
-        "args": "filenpa_conf,not_git,path_deps,path_pkg,path_repo",
+        "args": "not_git,path_deps,path_pkg,path_rel",
         "aliases": "--upgrade,--ug",
         "nvalues": "*",
         "values": "PKG_NAMES"

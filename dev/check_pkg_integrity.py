@@ -6,7 +6,7 @@ import shutil
 import sys
 
 from .search import search
-from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
+from .helpers import get_pkg_id
 
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
@@ -14,7 +14,7 @@ from ..gpkgs.prompt import prompt_boolean
 
 # deps packages all still needs to have a least a gpm.json at their root
 def check_pkg_integrity(
-    filen_json_default, #  dy_app["filen_json_app"]
+    filen_json_default, 
     conf_pkg,
     direpa_deps,
     restore,
