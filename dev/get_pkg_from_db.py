@@ -41,7 +41,7 @@ def get_pkg_from_db(
     chosen_pkg={}
     if not selected_pkgs:
         if not_found_error is True:
-            msg.error("In '{}' db.json with filter '{}' pkg not found.".format(direpa_rel, pkg_filter))
+            msg.error("In '{}' db.json with filter '{}' pkg not found.".format(direpa_rel, pkg_name))
         if not_found_exit is True:
             sys.exit(1)
         return None
