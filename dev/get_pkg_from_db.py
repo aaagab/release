@@ -13,38 +13,46 @@ from ..gpkgs.prompt import prompt_multiple
 # ./__init__.py -i message,a.a.a prompt
 
 def get_pkg_from_db(
-    db_data, 
-    direpa_repo,
-    filen_json_default, 
-    pkg_filter
+    db_data=None, 
+    direpa_rel=None,
+    filen_json_default=None, 
+    not_found_error=False,
+    not_found_exit=False,
+    pkg_bound=None,
+    pkg_name=None,
+    pkg_version=None,
+    pkg_uuid4=None,
 ):
-    components=pkg_filter.split(",")
-    name=components[0]
-    version=""
-    bound=""
-    if len(components) == 2:
-        version=components[1]
-    elif len(components) == 3:
-        bound=components[2]
-
-    tmp_filter="n:{}".format(name)
-    if version:
-        tmp_filter+=",v:{}".format(version)
+    tmp_filters=[]
+    if pkg_bound is not None:
+        tmp_filters.append("b:{}".format(pkg_bound))
+    if pkg_name is not None:
+        tmp_filters.append("n:{}".format(pkg_name))
+    if pkg_uuid4 is not None:
+        tmp_filters.append("u:{}".format(pkg_uuid4))
+    if pkg_version is None:
+        tmp_filters.append("v:L.L.L")
     else:
-        tmp_filter+=",v:L.L.L"
+        tmp_filters.append("v:{}".format(pkg_version))
+
+    tmp_filter=",".join(tmp_filters)
 
     selected_pkgs=search(db_data["pkgs"], tmp_filter)
     chosen_pkg={}
     if not selected_pkgs:
-        msg.error("\nNo package found with filter '{}' in  db.json from repository".format(pkg_filter))
+        if not_found_error is True:
+            msg.error("In '{}' db.json with filter '{}' pkg not found.".format(direpa_rel, pkg_filter))
+        if not_found_exit is True:
+            sys.exit(1)
         return None
     elif len(selected_pkgs) == 1:
         chosen_pkg={
-            "name": name,
+            "name": selected_pkgs[0]["name"],
             "uuid4": selected_pkgs[0]["uuid4"],
             "version": selected_pkgs[0]["version"]
         }
     else:
+        name=selected_pkgs[0]["name"]
         uuid4s=[]
         for pkg in selected_pkgs:
             if pkg["uuid4"] not in uuid4s:
@@ -57,7 +65,7 @@ def get_pkg_from_db(
             items=[]
             for uuid4 in uuid4s:
                 pkg_version=[pkg["version"] for pkg in selected_pkgs if pkg["uuid4"] == uuid4][-1]
-                filenpa_description=os.path.join(direpa_repo, name, pkg_version, name, filen_json_default)
+                filenpa_description=os.path.join(direpa_rel, name, pkg_version, name, filen_json_default)
                 description=""
                 if os.path.exists(filenpa_description):
                     description=Json_config(filenpa_description).data["description"]
@@ -94,13 +102,13 @@ def get_pkg_from_db(
                 "version": chosen_version
             }
             
-    if bound:
+    if pkg_bound:
         bounds=["gpm", "sys"]
-        if bound not in bounds:
-            msg.error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, bound, "', '".join(bounds)))
+        if pkg_bound not in bounds:
+            msg.error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, pkg_bound, "', '".join(bounds)))
             sys.exit(1)
     else:
-        bound="gpm"
+        pkg_bound="gpm"
 
-    chosen_pkg.update(dict(bound=bound))
+    chosen_pkg.update(dict(bound=pkg_bound))
     return chosen_pkg

@@ -10,15 +10,14 @@ import sys
 
 from . import regex_obj as ro
 from .filter_version import filter_version
-from .helpers import get_direpa_root, to_be_coded, create_symlink
+from .helpers import to_be_coded, create_symlink
 
 
 
 from ..gpkgs.json_config import Json_config
 from ..gpkgs import message as msg
 
-def switch_bin(dy_app, pkg_name, pkg_version):
-    direpa_bin=dy_app["direpa_bin"]
+def switch_bin(direpa_bin, pkg_name, pkg_version, system):
     direpa_package=os.path.join(direpa_bin, pkg_name+"_data")
     if not os.path.exists(direpa_package):
         msg.error("Not found '{}'".format(direpa_package), exit=1)
@@ -47,7 +46,7 @@ def switch_bin(dy_app, pkg_name, pkg_version):
         filenpa_exec=os.path.join(os.path.dirname(filenpa_pkg_json), dy_pkg["filen_main"])
         filenpa_symlink=os.path.join(direpa_bin, dy_pkg["name"])
 
-        create_symlink(dy_app["platform"], filenpa_exec, filenpa_symlink )
+        create_symlink(system, filenpa_exec, filenpa_symlink )
         msg.success("Bin '{}' switched to '{}'".format(pkg_name, pkg_version))
     else:
         msg.error("Not found '{}'".format(filenpa_pkg_json))
