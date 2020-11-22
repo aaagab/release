@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 12.1.0
+# version: 12.2.0
 # name: release
 # license: MIT
 
@@ -206,6 +206,13 @@ if __name__ == "__main__":
 
     if args.bump_version.here is True:
         check_rel()
+        increment_type=None
+        if args.major.here:
+            increment_type="major"
+        if args.minor.here:
+            increment_type="minor"
+        if args.patch.here:
+            increment_type="patch"
         pkg.bump_version(
             db_data=pkg.Json_config(os.path.join(get_direpa_rel(), dy_app["filen_json_rel"])).data,
             diren_pkgs=dy_app["diren_pkgs"],
@@ -213,6 +220,7 @@ if __name__ == "__main__":
             filen_json_app=dy_app["filen_json_app"], 
             filenpa_conf=args.filenpa_conf.value,
             increment=args.increment.here,
+            increment_type=increment_type,
             is_git=not args.not_git.here,
             only_paths=[],
             pkg_name=args.pkg_name.value,

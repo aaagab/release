@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from lxml import etree
 from pprint import pprint
 import os
 import re
@@ -37,8 +38,8 @@ def get_increment_type(regex_curr_tag):
 
         Choose an increment type for tag '{tag}' or 'q' to quit: """.format(tag=regex_curr_tag.text)
 
-    user_choice=""
-    while not user_choice:
+    user_choice=None
+    while user_choice is None:
         user_choice = input(menu)
         if user_choice == "1":
             return increment_version_value("major", regex_curr_tag)
@@ -51,9 +52,33 @@ def get_increment_type(regex_curr_tag):
         else:
             msg.warning("Wrong input")
             input("  Press Enter To Continue...")
-            user_choice=""
+            user_choice=None
             # clear terminal 
             # ft.clear_screen()
+
+def get_filenpa_conf(direpa_pkg, filen_json_app, filenpa_conf=None):
+    if filenpa_conf is None:
+        filenpa_conf=os.path.join(direpa_pkg, filen_json_app)
+        if not os.path.exists(filenpa_conf):
+            filenpa_conf=os.path.join(direpa_pkg, "web.config")
+    if not os.path.exists(filenpa_conf):
+        return None
+    else:
+        return filenpa_conf
+
+def get_version_from_conf(filenpa_conf):
+    filer, ext =os.path.splitext(filenpa_conf)
+    if os.path.basename(filenpa_conf).lower() == "web.config":
+        xml_elem=etree.parse(filenpa_conf).getroot().find("./appSettings/add[@key='VERSION']")
+        if xml_elem is None:
+            msg.error("VERSION attribute not found in appsettings '{}'.".format(filenpa_conf), exit=1)
+        version=xml_elem.attrib["value"]
+    elif ext == ".json":
+        data=Json_config(filenpa_conf).data
+        if not "version" in data:
+            msg.error("version attribute not found in '{}'".format(filenpa_conf), exit=1)
+        version=data["version"]
+    return version            
 
 def bump_version(
     db_data,
@@ -62,6 +87,7 @@ def bump_version(
     filen_json_app,
     filenpa_conf,
     increment,
+    increment_type,
     is_git,
     only_paths,
     pkg_name,
@@ -71,11 +97,11 @@ def bump_version(
 ):
     if direpa_pkg is None:
         if is_git is True:
-          
             direpa_pkg=get_direpa_root()
         else:
             direpa_pkg=os.getcwd()
 
+    filenpa_conf=get_filenpa_conf(direpa_pkg, filen_json_app, filenpa_conf)
     if increment is True:
         if version is not None:
             msg.error(
@@ -85,12 +111,9 @@ def bump_version(
             sys.exit(1)
         if filenpa_conf is None:
             if pkg_name is None:
-                filenpa_conf=os.path.join(direpa_pkg, filen_json_app)
-                if os.path.exists(filenpa_conf):
-                    version=Json_config(filenpa_conf).data["version"]
-                else:
-                    msg.error("You need to provide either a version with either --filenpa-conf or --pkg-name")
-                    sys.exit(1)
+                msg.error("conf file for version not found '{}'".format(filenpa_conf))
+                msg.error("Provide either a version with either --filenpa-conf or --pkg-name")
+                sys.exit(1)
             else:
                 chosen_pkg=get_pkg_from_db(
                     db_data=db_data,
@@ -102,14 +125,12 @@ def bump_version(
                 )
                 version=chosen_pkg["version"]
         else:
-            data=Json_config(filenpa_conf).data
-            if not "version" in data:
-                msg.error("Not found 'version' key in '{}'".format(filenpa_conf))
-                sys.exit(1)
-        
-            version=data["version"]
+            version=get_version_from_conf(filenpa_conf)
         version_regex=ro.Version_regex(version)
-        version=(get_increment_type(version_regex))
+        if increment_type is None:
+            version=(get_increment_type(version_regex))
+        else:
+            version=increment_version_value(increment_type, version_regex)
 
     if version is None:
         msg.error("No version to bump")
@@ -130,7 +151,8 @@ def bump_version(
             ".gitignore",
         ]
         ignore_exts=[
-            ".db"
+            ".db",
+            ".ico",
         ]
         conf_elems=[
             "config/config.json",
@@ -158,10 +180,17 @@ def bump_version(
             else:
                 filenpa_conf_elem=os.path.join(direpa_pkg, elem)
             if os.path.exists(filenpa_conf_elem):
-                conf=Json_config(filenpa_conf_elem)
-                if "version" in conf.data:
-                    conf.data["version"]=version
-                    conf.save()
+                filer, ext =os.path.splitext(filenpa_conf_elem)
+
+                if os.path.basename(filenpa_conf_elem).lower() == "web.config":
+                    xml_tree=etree.parse(filenpa_conf_elem)
+                    xml_tree.getroot().find("./appSettings/add[@key='VERSION']").attrib["value"]=version
+                    xml_tree.write(filenpa_conf_elem)
+                elif ext == ".json":
+                    conf=Json_config(filenpa_conf_elem)
+                    if "version" in conf.data:
+                        conf.data["version"]=version
+                        conf.save()
 
     for path in paths:
         if os.path.isfile(path):
