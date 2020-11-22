@@ -4,9 +4,6 @@ from pprint import pprint
 import shutil
 import sys
 
-from .helpers import is_pkg_git, get_direpa_root
-from .check_pkg_integrity import check_pkg_integrity
-
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
 from ..gpkgs.prompt import prompt_boolean
@@ -24,7 +21,7 @@ def remove(
 
     if no_conf_src is True:
         msg.info("Removing a package that has been installed without a conf still needs to be coded")
-        msg.info("Conf from the package needs to be retrieved from a repo, and then version must be chosen")
+        msg.info("Conf from the package needs to be retrieved from a release repository, and then version must be chosen")
         msg.info("Then all the files from the packages are listed, and they are searched on the destination and removed if any")
         sys.exit(1)
 

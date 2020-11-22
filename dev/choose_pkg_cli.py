@@ -13,13 +13,13 @@ from ..gpkgs.prompt import prompt_multiple
 # ./__init__.py -i message,a.a.a prompt
 
 def choose_pkg_cli(
-    direpa_repo,
-    filen_json_repo,
+    direpa_rel,
+    filen_json_rel,
     filen_json_app, 
     pkg_filter
 ):
-    filenpa_json_repo=os.path.join(direpa_repo, filen_json_repo)
-    db=Json_config(filenpa_json_repo).data
+    filenpa_json_rel=os.path.join(direpa_rel, filen_json_rel)
+    db=Json_config(filenpa_json_rel).data
     
     components=pkg_filter.split(",")
     name=components[0]
@@ -57,7 +57,7 @@ def choose_pkg_cli(
             items=[]
             for uuid4 in uuid4s:
                 pkg_version=[pkg["version"] for pkg in selected_pkgs if pkg["uuid4"] == uuid4][-1]
-                filenpa_description=os.path.join(direpa_repo, name, pkg_version, name, filen_json_app)
+                filenpa_description=os.path.join(direpa_rel, name, pkg_version, name, filen_json_app)
                 description=""
                 if os.path.exists(filenpa_description):
                     description=Json_config(filenpa_description).data["description"]

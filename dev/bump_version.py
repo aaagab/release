@@ -5,7 +5,7 @@ import re
 import sys
 
 from . import regex_obj as ro
-from .helpers import get_direpa_root, is_pkg_git
+from .helpers import get_direpa_root
 from .get_pkg_from_db import get_pkg_from_db
 
 
@@ -57,30 +57,24 @@ def get_increment_type(regex_curr_tag):
 
 def bump_version(
     db_data,
-    direpa_repo,
-    dy_app,
+    diren_pkgs,
+    direpa_rel,
     filen_json_app,
     filenpa_conf,
     increment,
     is_git,
     only_paths,
     pkg_name,
-    direpa_deps,
     direpa_pkg,
     save_filenpa_conf,
     version,
 ):
     if direpa_pkg is None:
         if is_git is True:
-            if not is_pkg_git():
-                msg.error("'{}' is not a git repository".format(os.getcwd()))
-                sys.exit(1)
+          
             direpa_pkg=get_direpa_root()
         else:
             direpa_pkg=os.getcwd()
-
-    if direpa_deps is None:
-        direpa_deps=os.path.join(direpa_pkg, dy_app["diren_pkgs"])
 
     if increment is True:
         if version is not None:
@@ -100,9 +94,11 @@ def bump_version(
             else:
                 chosen_pkg=get_pkg_from_db(
                     db_data=db_data,
-                    direpa_repo=direpa_repo,
+                    direpa_rel=direpa_rel,
                     filen_json_default=filen_json_app, 
-                    pkg_filter=pkg_name,
+                    not_found_error=True,
+                    not_found_exit=True,
+                    pkg_name=pkg_name,
                 )
                 version=chosen_pkg["version"]
         else:

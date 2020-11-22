@@ -16,13 +16,12 @@ from . import regex_obj as ro
 from ..gpkgs import message as msg
 from ..gpkgs.prompt import prompt_boolean, prompt
 
-# ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def set_conf(default_filen, 
+def set_conf(
+	default_filen, 
     authors=[],
     description=None,
     filen_main=None,
 	filenpa_conf=None,
-	# get_uuid4=False,
     licenses=[],
     pkg_name=None,
     pkg_version=None,
