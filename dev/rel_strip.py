@@ -12,20 +12,15 @@ from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
 from ..gpkgs.sort_separated import sort_separated
 
-
-# ./main.py --to-repo "/mnt/utrgv/rel/" --pkgs message
-def repo_strip(dy_app, pkg_names):
-
-    # pprint(dy_app)
-    # print(pkg_names)
+def rel_strip(direpa_rel, filen_json_rel, pkg_names):
     if pkg_names:
         pkg_names=pkg_names
     else:
-        pkg_names=os.listdir(dy_app["direpa_repo"])
+        pkg_names=os.listdir(direpa_rel)
 
     packagesRemoved=False
     for pkg_name in sorted(pkg_names):
-        direpa_pkg=os.path.join(dy_app["direpa_repo"], pkg_name)
+        direpa_pkg=os.path.join(direpa_rel, pkg_name)
         if os.path.exists(direpa_pkg) and os.path.isdir(direpa_pkg):
             versions=os.listdir(direpa_pkg)
             if len(versions) > 1:
@@ -38,4 +33,7 @@ def repo_strip(dy_app, pkg_names):
                     msg.success("package removed {} {}".format(pkg_name, version))
 
     if packagesRemoved is True:
-        generate_db(dy_app)
+        generate_db(
+            direpa_rel,
+            filen_json_rel,
+        )

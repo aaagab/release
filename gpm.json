@@ -7,7 +7,7 @@
         "44878e31-5356-49d9-af95-d9d24f2d5310|json_config|2.0.0|gpm",
         "cf09346e-b436-4259-b6dd-e56516b508a5|message|5.0.7|gpm",
         "ca72f0a9-8a9b-4ff6-a013-e5d0974cb1e5|options|8.6.0|gpm",
-        "b1a980c3-6e1c-4072-a16c-81df61f2f898|prompt|1.2.3|gpm",
+        "b1a980c3-6e1c-4072-a16c-81df61f2f898|prompt|3.0.2|gpm",
         "9aaed767-ea75-499c-ac4c-6524d720ff10|refine|0.1.1|gpm",
         "df328dbe-54ab-4a6d-b7a2-932b0eaee30a|shell_helpers|2.1.5|gpm",
         "2bc6fae5-9e7a-4181-9b6a-3ae35409f8e2|sort_separated|0.1.0|gpm"
@@ -15,7 +15,7 @@
     "description": "This is a small package manager that is developped on the side for my current needs until I finish coding the 'Generic Package Manager'",
     "diren_pkgs": "gpkgs",
     "filen_json_app": "gpm.json",
-    "filen_json_repo": "db.json",
+    "filen_json_rel": "db.json",
     "filen_main": "main.py",
     "gpm_version": "0.2.0",
     "installer": "gpm",
@@ -24,5 +24,5 @@
     ],
     "name": "release",
     "uuid4": "76dda070-6616-4716-808e-52921203da9d",
-    "version": "11.3.0"
+    "version": "12.0.0"
 }

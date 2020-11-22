@@ -6,9 +6,9 @@ import shutil
 import sys
 import tempfile
 
-from .check_pkg_integrity import check_pkg_integrity
 from .get_pkg_from_db import get_pkg_from_db
-from .helpers import is_pkg_git, get_direpa_root, get_pkg_id
+from .helpers import get_pkg_id
+from .get_dy_pkg_filter import get_dy_pkg_filter
 
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
@@ -22,7 +22,7 @@ def import_pkgs(
     conf_pkg,
     conf_db,
     direpa_deps,
-    direpa_repo,
+    direpa_rel,
     direpa_pkg,
     filen_json_default,
     keys,
@@ -32,16 +32,24 @@ def import_pkgs(
     no_root_dir,
     pkg_filters,
 ):
-    for pkg_filter in pkg_filters:
+    for pfilter in pkg_filters:
+        dy_pkg_filter=get_dy_pkg_filter(pfilter)
         chosen_pkg=get_pkg_from_db(
             db_data=conf_db.data, 
-            direpa_repo=direpa_repo,
+            direpa_rel=direpa_rel,
             filen_json_default=filen_json_default, 
-            pkg_filter=pkg_filter,
+            not_found_error=True,
+            not_found_exit=False,
+            pkg_bound=dy_pkg_filter["bound"],
+            pkg_name=dy_pkg_filter["name"],
+            pkg_version=dy_pkg_filter["version"],
+            pkg_uuid4=dy_pkg_filter["uuid4"],
+
         )
+
         if chosen_pkg is None:
             continue         
-        direpa_src=os.path.join(direpa_repo, chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
+        direpa_src=os.path.join(direpa_rel, chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
         if no_root_dir is True:
             direpa_dst=os.path.join(direpa_deps)
         else:
@@ -54,7 +62,7 @@ def import_pkgs(
                 ex_uuid4, ex_name, ex_version, ex_bound = dep.split("|")
                 if chosen_pkg["name"] == ex_name:
                     msg.warning(
-                        "\n'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
+                        "'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
                         "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
                         "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
                     if prompt_boolean("Do you want to replace it", "Y"):
