@@ -15,7 +15,7 @@
         "values": "Full Name"
     },
     "bump_version": {
-        "args": "filenpa_conf,increment,not_git,pkg_name,path_pkg",
+        "args": "filenpa_conf,increment,major,minor,not_git,patch,path_pkg,pkg_name",
         "info": "Increment package version",
         "nvalues": "?",
         "values": "VERSION"
@@ -116,6 +116,12 @@
         "args": "add_deps,package_filters,path_rel",
         "info": "List all packages in the release repository. You can add name(s) to filter by names."
     },
+    "major": {
+        "nested": true
+    },
+    "minor": {
+        "nested": true
+    },
     "no_conf": {
         "info": "Allow to process the command without having a configuration file.",
         "nested": true
@@ -166,6 +172,9 @@
         "nested": true,
         "nvalues": "+",
         "values": "PKG_FILTERS"
+    },
+    "patch": {
+        "nested": true
     },
     "path_bin": {
         "info": "Select Bin Path (can be relative or absolute).",
