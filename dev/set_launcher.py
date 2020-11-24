@@ -10,7 +10,7 @@ from ..dev.helpers import is_pkg_git, create_symlink, get_direpa_root
 
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
-from ..gpkgs.prompt import prompt_boolean
+from ..gpkgs.prompt import prompt_boolean, prompt
 from ..gpkgs.json_config import Json_config
 
 def set_launcher(
