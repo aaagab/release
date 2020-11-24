@@ -78,6 +78,10 @@ def get_version_from_conf(filenpa_conf):
         if not "version" in data:
             msg.error("version attribute not found in '{}'".format(filenpa_conf), exit=1)
         version=data["version"]
+    else:
+        with open(filenpa_conf, "r") as f:
+            version=f.read().strip()
+
     return version            
 
 def bump_version(
@@ -191,6 +195,9 @@ def bump_version(
                     if "version" in conf.data:
                         conf.data["version"]=version
                         conf.save()
+                else:
+                    with open(filenpa_conf_elem, "w") as f:
+                        f.write("{}\n".format(version))
 
     for path in paths:
         if os.path.isfile(path):
