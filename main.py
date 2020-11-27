@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 12.3.0
+# version: 12.4.0
 # name: release
 # license: MIT
 
@@ -98,6 +98,7 @@ if __name__ == "__main__":
             direpa_pkg=direpa_pkg,
             direpa_rel=direpa_rel,
             filen_json_default=dy_app["filen_json_app"],
+            filter_rules=args.filter_rules.values,
             is_template=args.keys.here,
             no_conf_src=args.no_conf_src.here,
             no_conf_dst=args.no_conf_dst.here,
