@@ -32,6 +32,12 @@
         "values": "Package Description"
     },
     "examples": {},
+    "filter_rules": {
+        "info": "gitignore like rules to filter source path",
+        "nested": true,
+        "nvalues": "+",
+        "values": "RULE"
+    },
     "filen_main": {
         "nested": true,
         "info": "Package main file if any, just the full name",
@@ -91,7 +97,7 @@
     },
     "import_pkgs": {
         "aliases": "-i,--import",
-        "args": "filenpa_conf,package_filters,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_rel,keys",
+        "args": "filenpa_conf,filter_rules,package_filters,no_conf_dst,no_conf_src,no_root_dir,not_git,path_deps,path_pkg,path_rel,keys",
         "required": "package_filters",
         "info": "import packages in a git project with a folder gpkgs."
     },
