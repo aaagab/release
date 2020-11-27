@@ -25,6 +25,7 @@ def import_pkgs(
     direpa_rel,
     direpa_pkg,
     filen_json_default,
+    filter_rules,
     keys,
     is_template,
     no_conf_src,
@@ -87,30 +88,39 @@ def import_pkgs(
                 conf_pkg.save()
 
             if chosen_pkg["bound"] == "gpm":
-                added_rules=[]
                 if no_conf_dst:
-                    added_rules=["/gpm.json", "/.refine"]
-                paths=get_paths_to_copy(direpa_src, added_rules=added_rules)
+                    filter_rules.extend(["/gpm.json", "/.refine"])
+
+                paths=get_paths_to_copy(direpa_src, added_rules=filter_rules)
 
                 if is_template:
                     direpa_tmp = tempfile.mkdtemp()
                     copy_to_destination(paths, direpa_src, direpa_tmp)
                     tmp_paths=get_paths_to_copy(direpa_tmp)
+
                     for t, tmp_path in enumerate(tmp_paths):
                         new_path=re.sub(r"{{([a-zA-Z0-9-_ ]+?)}}", lambda m: replace_key(m, keys), tmp_path)
+                        tmp_path_changed=None
                         if new_path != tmp_path:
                             os.rename(tmp_path, new_path)
+                            tmp_path_changed=tmp_path
                             tmp_path=new_path
                             tmp_paths[t]=new_path
 
-                        if os.path.isfile(tmp_path):
+                        if os.path.isdir(tmp_path):
+                            if tmp_path_changed is not None:
+                                if t+1 < len(tmp_paths):
+                                    for u, update_path in enumerate(tmp_paths[t+1:]):
+                                        if update_path[:len(tmp_path_changed)] == tmp_path_changed:
+                                            tmp_paths[u+t+1]=new_path+update_path[len(tmp_path_changed):]
+                        elif os.path.isfile(tmp_path):
                             data=None
                             with open(tmp_path, "r") as f:
                                 data=f.read()
                                 data=re.sub(r"{{([a-zA-Z0-9-_ ]+?)}}", lambda m: replace_key(m, keys), data)
                             with open(tmp_path, "w") as f:
                                 f.write(data)
-                                
+
                     copy_to_destination(tmp_paths, direpa_tmp, direpa_dst)
                     shutil.rmtree(direpa_tmp)
                 else:
