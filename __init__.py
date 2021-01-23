@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 12.4.4
+# version: 12.4.5
 # name: release
 # license: MIT
 
-__version__ = "12.4.4"
+__version__ = "12.4.5"
 
 from .dev.bump_version import bump_version
 from .dev.check_pkg_integrity import check_pkg_integrity
