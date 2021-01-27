@@ -66,25 +66,27 @@ def get_pkg_name(pkg_name):
 def get_authors(authors):
 	if not authors:
 		authors=[]
-		authors.append(prompt("Author"))
-		while True:
-			if prompt_boolean("Do you want to add another author"):
-				authors.append(prompt("Author"))
-			else:
-				break
-
+		author=prompt("Author", default="")
+		if author.strip() != "":
+			authors.append(author)
+			while True:
+				if prompt_boolean("Do you want to add another author"):
+					authors.append(prompt("Author"))
+				else:
+					break
 	return authors
 
 def get_licenses(licenses):
 	if not licenses:
 		licenses=[]
-		licenses.append(prompt("License"))
-
-		while True:
-			if prompt_boolean("Do you want to add another license"):
-				licenses.append(prompt("License"))
-			else:
-				break
+		_license=prompt("License", default="")
+		if _license.strip() != "":
+			licenses.append(_license)
+			while True:
+				if prompt_boolean("Do you want to add another license"):
+					licenses.append(prompt("License"))
+				else:
+					break
 	else:
 		if licenses[0] == "":
 			return []
@@ -99,14 +101,14 @@ def get_description(description):
 
 def get_filen_main(filen_main):
 	if filen_main is None:
-		filen_main=prompt("Package Main File", allow_empty=True)
+		filen_main=prompt("Package Main File", default="")
 
 	return filen_main
 
 def get_pkg_version(pkg_version):
-	prompt_text="Package Version ex:0.0.0"
+	prompt_text="Package Version"
 	if pkg_version is None:
-		pkg_version=prompt(prompt_text)
+		pkg_version=prompt(prompt_text, default="1.0.0")
 	
 	while ro.Version_regex(pkg_version).match is False:
 		pkg_version=prompt(prompt_text)
