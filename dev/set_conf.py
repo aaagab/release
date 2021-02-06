@@ -23,6 +23,7 @@ def set_conf(
     filen_main=None,
 	filenpa_conf=None,
     licenses=[],
+	pkg_alias=None,
     pkg_name=None,
     pkg_version=None,
 	uuid4=None,
@@ -37,6 +38,7 @@ def set_conf(
 	if uuid4 is None:
 		uuid4=str(uuid.uuid4())
 	dct_gpm=dict(
+		alias=get_pkg_alias(pkg_alias),
 		name=get_pkg_name(pkg_name),
 		authors=get_authors(authors),
 		licenses=get_licenses(licenses),
@@ -62,6 +64,15 @@ def get_pkg_name(pkg_name):
 		pkg_name=prompt("Package Name")
 
 	return pkg_name
+
+def get_pkg_alias(pkg_alias):
+	if pkg_alias is None:
+		pkg_alias=prompt("Package Alias")
+	
+	while ro.Package_alias_regex(pkg_alias).match is False:
+		pkg_alias=prompt("Package Alias")
+
+	return pkg_alias
 
 def get_authors(authors):
 	if not authors:

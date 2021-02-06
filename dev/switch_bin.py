@@ -17,8 +17,8 @@ from .helpers import to_be_coded, create_symlink
 from ..gpkgs.json_config import Json_config
 from ..gpkgs import message as msg
 
-def switch_bin(direpa_bin, pkg_name, pkg_version, system):
-    direpa_package=os.path.join(direpa_bin, pkg_name+"_data")
+def switch_bin(direpa_bin, pkg_alias, pkg_version, system):
+    direpa_package=os.path.join(direpa_bin, pkg_alias+"_data")
     if not os.path.exists(direpa_package):
         msg.error("Not found '{}'".format(direpa_package), exit=1)
 
@@ -30,24 +30,28 @@ def switch_bin(direpa_bin, pkg_name, pkg_version, system):
                 versions.append(version)
 
         if not versions:
-            msg.error("No versions are available for '{}' in '{}'".format(pkg_name, direpa_package), exit=1)
+            msg.error("No versions are available for '{}' in '{}'".format(pkg_alias, direpa_package), exit=1)
         pkg_version=filter_version(versions, "l.l.l")[0]
 
-        # filenpa_pkg_json=os.path.join(direpa_package, pkg_version, pkg_name, "gpm.json")
+        # filenpa_pkg_json=os.path.join(direpa_package, pkg_version, pkg_alias, "gpm.json")
     # elif pkg_version == "beta":
         # filenpa_pkg_json=os.path.join(direpa_package, "beta", "gpm.json")
     # else:
     
-    filenpa_pkg_json=os.path.join(direpa_package, pkg_version, pkg_name, "gpm.json")
+    filenpa_pkg_json=os.path.join(direpa_package, pkg_version, pkg_alias, "gpm.json")
 
     if os.path.exists(filenpa_pkg_json):
         dy_pkg=Json_config(filenpa_pkg_json).data
+        if "alias" in pkg_alias:
+            pkg_alias=dy_pkg["alias"]
+        else:
+            pkg_alias=dy_pkg["name"]
 
         filenpa_exec=os.path.join(os.path.dirname(filenpa_pkg_json), dy_pkg["filen_main"])
-        filenpa_symlink=os.path.join(direpa_bin, dy_pkg["name"])
+        filenpa_symlink=os.path.join(direpa_bin, pkg_alias)
 
         create_symlink(system, filenpa_exec, filenpa_symlink )
-        msg.success("Bin '{}' switched to '{}'".format(pkg_name, pkg_version))
+        msg.success("Bin '{}' switched to '{}'".format(pkg_alias, pkg_version))
     else:
         msg.error("Not found '{}'".format(filenpa_pkg_json))
         sys.exit(1)

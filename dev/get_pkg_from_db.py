@@ -19,15 +19,15 @@ def get_pkg_from_db(
     not_found_error=False,
     not_found_exit=False,
     pkg_bound=None,
-    pkg_name=None,
+    pkg_alias=None,
     pkg_version=None,
     pkg_uuid4=None,
 ):
     tmp_filters=[]
     if pkg_bound is not None:
         tmp_filters.append("b:{}".format(pkg_bound))
-    if pkg_name is not None:
-        tmp_filters.append("n:{}".format(pkg_name))
+    if pkg_alias is not None:
+        tmp_filters.append("a:{}".format(pkg_alias))
     if pkg_uuid4 is not None:
         tmp_filters.append("u:{}".format(pkg_uuid4))
     if pkg_version is None:
@@ -47,12 +47,12 @@ def get_pkg_from_db(
         return None
     elif len(selected_pkgs) == 1:
         chosen_pkg={
-            "name": selected_pkgs[0]["name"],
+            "alias": selected_pkgs[0]["alias"],
             "uuid4": selected_pkgs[0]["uuid4"],
             "version": selected_pkgs[0]["version"]
         }
     else:
-        name=selected_pkgs[0]["name"]
+        alias=selected_pkgs[0]["alias"]
         uuid4s=[]
         for pkg in selected_pkgs:
             if pkg["uuid4"] not in uuid4s:
@@ -65,7 +65,7 @@ def get_pkg_from_db(
             items=[]
             for uuid4 in uuid4s:
                 pkg_version=[pkg["version"] for pkg in selected_pkgs if pkg["uuid4"] == uuid4][-1]
-                filenpa_description=os.path.join(direpa_rel, name, pkg_version, name, filen_json_default)
+                filenpa_description=os.path.join(direpa_rel, alias, pkg_version, alias, filen_json_default)
                 description=""
                 if os.path.exists(filenpa_description):
                     description=Json_config(filenpa_description).data["description"]
@@ -87,17 +87,17 @@ def get_pkg_from_db(
         else:
             items=[]
             for version in versions:
-                items.append("{} {}".format(name, version))
+                items.append("{} {}".format(alias, version))
 
             chosen_version=prompt_multiple(
                 dict(
                     items=items,
-                    title="Select a version for pkg '{}'".format(name),
+                    title="Select a version for pkg '{}'".format(alias),
                     values=versions
                 ))
 
             chosen_pkg={
-                "name": name,
+                "alias": alias,
                 "uuid4": chosen_uuid4,
                 "version": chosen_version
             }

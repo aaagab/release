@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 12.5.0
+# version: 13.0.0
 # name: release
 # license: MIT
 
@@ -139,10 +139,10 @@ if __name__ == "__main__":
         check_pkg_integrity(conf_pkg, direpa_deps, dy_app["filen_json_app"])
 
         arg_str="upgrade"
-        pkg_names=args.upgrade.values
+        pkg_aliases=args.upgrade.values
         if args.update.here:
             arg_str="update"
-            pkg_names=args.update.values
+            pkg_aliases=args.update.values
 
         pkg.update_upgrade(
             arg_str=arg_str,
@@ -152,7 +152,7 @@ if __name__ == "__main__":
             direpa_rel=get_direpa_rel(),
             filen_json_app=dy_app["filen_json_app"],
             filen_json_rel=dy_app["filen_json_rel"],
-            pkg_names=pkg_names,
+            pkg_aliases=pkg_aliases,
         )
 
         sys.exit(0)
@@ -165,6 +165,7 @@ if __name__ == "__main__":
             filen_main=args.filen_main.value,
             filenpa_conf=args.filenpa_conf.value,
             licenses=args.licenses.values,
+            pkg_alias=args.pkg_alias.value,
             pkg_name=args.pkg_name.value,
             pkg_version=args.pkg_version.value,
             uuid4=args.uuid4.value,
@@ -198,7 +199,7 @@ if __name__ == "__main__":
                 direpa_project=args.path_project.value
 
         pkg.set_launcher(
-            app_name=args.set_launcher.value,
+            pkg_alias=args.set_launcher.value,
             direpa_project=direpa_project,
             overwrite=args.overwrite.here,
             system=dy_app["platform"],
@@ -224,7 +225,7 @@ if __name__ == "__main__":
             increment_type=increment_type,
             is_git=not args.not_git.here,
             only_paths=[],
-            pkg_name=args.pkg_name.value,
+            pkg_alias=args.pkg_alias.value,
             direpa_pkg=args.path_pkg.value,
             save_filenpa_conf=True,
             version=args.bump_version.value,
@@ -237,7 +238,7 @@ if __name__ == "__main__":
             direpa_bin=args.path_bin.value
         pkg.switch_bin(
             direpa_bin=direpa_bin,
-            pkg_name=args.pkg_name.value, 
+            pkg_alias=args.pkg_alias.value, 
             pkg_version=args.pkg_version.value, 
             system=dy_app["platform"],
         )
@@ -318,7 +319,7 @@ if __name__ == "__main__":
         pkg.rel_strip(
             direpa_rel=get_direpa_rel(),
             filen_json_rel=dy_app["filen_json_rel"],
-            pkg_names=args.rel_strip.values,
+            pkg_aliases=args.rel_strip.values,
         )
         sys.exit(0)
 
