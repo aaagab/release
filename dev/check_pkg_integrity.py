@@ -25,11 +25,10 @@ def check_pkg_integrity(
     # check for duplicate in data_root["deps"]
     pkg_deps={}
     for dep in conf_pkg.data["deps"]:
-        uuid4, name, version, bound = dep.split("|")
-        # tmp_id="{}|{}".format(uuid4, name)
-        if not name in pkg_deps:
+        uuid4, alias, version, bound = dep.split("|")
+        if not alias in pkg_deps:
             pkg_deps.update({
-                name:{
+                alias:{
                     "version": version,
                     "uuid4": uuid4,
                     "bound": bound
@@ -58,11 +57,15 @@ def check_pkg_integrity(
                     conf_dep=Json_config(os.path.join(direpa_dep, filen_json_default))
                     filen_conf_dep=os.path.basename(conf_dep.filenpa)
                     check_minimum_data(conf_dep)
-                    dep_name=conf_dep.data["name"]
+                    dep_alias=None
+                    if "alias" in conf_dep.data:
+                        dep_alias=conf_dep.data["alias"]
+                    else:
+                        dep_alias=conf_dep.data["name"]
 
-                    if not dep_name in pkg_deps:
+                    if not dep_alias in pkg_deps:
                         msg.error(
-                            "At location '{}' for package '{}'".format(direpa_deps, dep_name), 
+                            "At location '{}' for package '{}'".format(direpa_deps, dep_alias), 
                             "Package id '{}'".format(get_pkg_id(conf_dep.data)),
                             "found in '{}' but not found in '{}'".format(diren_deps, conf_pkg.filenpa)
                         )
@@ -70,17 +73,17 @@ def check_pkg_integrity(
 
                     for field in ["uuid4", "version"]:
                         value=conf_dep.data[field]
-                        if value != pkg_deps[dep_name][field]:
+                        if value != pkg_deps[dep_alias][field]:
                             msg.error(
-                                "At location '{}' for package '{}'".format(direpa_deps, dep_name), 
+                                "At location '{}' for package '{}'".format(direpa_deps, dep_alias), 
                                 "Non matching values for field '{}'".format(field),
                                 "Value = '{}' in '{}'".format(value, os.path.join(conf_dep.filenpa)),
-                                "Value = '{}' in '{}' deps".format(pkg_deps[dep_name][field], conf_pkg.filenpa))
+                                "Value = '{}' in '{}' deps".format(pkg_deps[dep_alias][field], conf_pkg.filenpa))
                             sys.exit(1)
 
-                    if pkg_deps[dep_name]["bound"] == "sys":
+                    if pkg_deps[dep_alias]["bound"] == "sys":
                         msg.error(
-                            "At location '{}' for package '{}'".format(direpa_deps, dep_name),
+                            "At location '{}' for package '{}'".format(direpa_deps, dep_alias),
                             "Package is present in '{}'".format(diren_deps),
                             "However it has a 'sys' bound in '{}'".format(conf_pkg.filenpa),
                             "Package should be removed from '{}' or bound should be 'gpm' in '{}'".format(diren_deps, conf_pkg.filenpa)
@@ -88,7 +91,7 @@ def check_pkg_integrity(
                         sys.exit(1)
                     
                     dir_pkgs.update({
-                        dep_name: {
+                        dep_alias: {
                             "version": conf_dep.data["version"],
                             "uuid4": conf_dep.data["uuid4"],
                             "bound": "gpm"
@@ -101,15 +104,15 @@ def check_pkg_integrity(
                     sys.exit(1)
         
             # check that all pkg_deps with bound gpm have a match in dir_pkgs
-            dir_names=set([ name for name in dir_pkgs])
-            db_names=set([ name for name in pkg_deps])
-            remaining_names=db_names - dir_names
+            dir_aliases=set([ alias for alias in dir_pkgs])
+            db_aliases=set([ alias for alias in pkg_deps])
+            remaining_aliases=db_aliases - dir_aliases
 
-            for name in remaining_names:
-                if pkg_deps[name]["bound"] == "gpm":
-                    pkg_id=get_pkg_id(pkg_deps[name], name=name)
+            for alias in remaining_aliases:
+                if pkg_deps[alias]["bound"] == "gpm":
+                    pkg_id=get_pkg_id(pkg_deps[alias], alias=alias)
                     msg.error(
-                        "At location '{}' for package '{}'".format(direpa_deps, name),
+                        "At location '{}' for package '{}'".format(direpa_deps, alias),
                         "Package id = '{}'".format(pkg_id),
                         "Package is present in '{}' with bound 'gpm'".format(filen_json_default),
                         "However package is not present in '{}'".format(diren_deps)
@@ -117,13 +120,18 @@ def check_pkg_integrity(
                     sys.exit(1)
 
 def check_minimum_data(conf):
-    for field in ["name", "version", "uuid4", "deps"]:
+    for field in ["alias", "name", "version", "uuid4", "deps"]:
         if not field in conf.data:
+            if field == "alias":
+                if "name" not in conf.data:
+                    msg.warning("Name not found either")
+                else:
+                    continue
             msg.error("Field '{}' not found in '{}'".format(field, filenpa_json))
             sys.exit(1)
 
         if field != "deps":
-            if not conf.data[field]:
+            if field in conf.data and not conf.data[field]:
                 msg.error("Field '{}' is empty in '{}'".format(field, filenpa_json))
                 sys.exit(1)
 

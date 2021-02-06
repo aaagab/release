@@ -94,7 +94,7 @@ def bump_version(
     increment_type,
     is_git,
     only_paths,
-    pkg_name,
+    pkg_alias,
     direpa_pkg,
     save_filenpa_conf,
     version,
@@ -110,13 +110,13 @@ def bump_version(
         if version is not None:
             msg.error(
                 "When using --increment version must be none",
-                "Version must be given from --filenpa-conf or from pkg_name searched in the db"
+                "Version must be given from --filenpa-conf or from pkg_alias searched in the db"
             )
             sys.exit(1)
         if filenpa_conf is None:
-            if pkg_name is None:
+            if pkg_alias is None:
                 msg.error("conf file for version not found '{}'".format(filenpa_conf))
-                msg.error("Provide either a version with either --filenpa-conf or --pkg-name")
+                msg.error("Provide either a version with either --filenpa-conf or --pkg-alias")
                 sys.exit(1)
             else:
                 chosen_pkg=get_pkg_from_db(
@@ -125,7 +125,7 @@ def bump_version(
                     filen_json_default=filen_json_app, 
                     not_found_error=True,
                     not_found_exit=True,
-                    pkg_name=pkg_name,
+                    pkg_alias=pkg_alias,
                 )
                 version=chosen_pkg["version"]
         else:

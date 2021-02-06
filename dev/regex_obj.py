@@ -144,9 +144,45 @@ class Version_minor_regex(Regex_obj):
         else:
             return False
 
+class Package_alias_regex(Regex_obj):
+    def __init__(self, txt=""):
+        Regex_obj.__init__(self, r"^[a-z][a-z0-9_\-]*$")
+        self.set_text(txt)
+
+    def set_text(self, txt):
+        if txt != "":
+            self.text=txt
+            self.matching_obj=re.match(self.group_string, txt)
+            self.match=False
+            if not self.matching_obj:
+                msg.warning(
+                    "Package alias '{}' syntax error".format(self.text),
+                    "Authorized syntax is '{}'".format(self.string)
+                )
+            else:
+                self.match=True
+                if len(self.text) > 128:
+                    self.match=False
+                    msg.warning(
+                        "Package alias '{}' syntax error, length is '{}'".format(self.text, len(self.text)),
+                        "Minimum length is '1' character",
+                        "Maximum length is '128' characters",
+                    )
+                
+                reg_uuid4=Uuid4_regex(self.text)
+                if reg_uuid4.match:
+                    self.match=False
+                    msg.warning(
+                        "Package alias '{}' syntax error".format(self.text),
+                        "Format can't be similar to uuid format.",
+                        "'{}'".format(reg_uuid4.string)
+                    )
+
+        return self
+
 class Package_name_regex(Regex_obj):
     def __init__(self, txt=""):
-        Regex_obj.__init__(self, r"^[A-Za-z][A-Za-z0-9_-]*$")
+        Regex_obj.__init__(self, r"^[A-Za-z][A-Za-z0-9_\- ]*$")
         self.set_text(txt)
 
     def set_text(self, txt):

@@ -6,7 +6,6 @@ import subprocess
 import sys
 
 from . import regex_obj as ro
-from .set_conf import set_conf
 
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
@@ -85,61 +84,14 @@ def create_symlink(system, filenpa_exec, filenpa_symlink ):
     os.chdir(curdir)
     msg.success("symlink '{}' set.".format(filenpa_symlink))
 
-
-def get_app_meta_data(default_filen, filenpa_conf):
-    keys=["name", "filen_main", "version", "uuid4"]
-    if not os.path.exists(filenpa_conf):
-        msg.warning("'{}' not found".format(filenpa_conf))
-        if prompt_boolean("Do you want to create it", "N"):
-            set_conf(default_filen, 
-                filenpa_conf=filenpa_conf,
-            )
-        else:
-            msg.error("Run 'release --set-conf'")
-            sys.exit(1)   
-
-    data=Json_config(filenpa_conf).data
-    all_key_found=True
-    for key in keys:
-        if not key in data:
-            msg.warning("Missing '{}' in '{}'".format(key, filenpa_conf))
-            all_key_found=False
-
-    if all_key_found:
-        if "options" in data:
-            del data["options"]
-        return data
-    else:
-        sys.exit(1)
-
-        
-
 def get_pkg_id(dy_pkg, **added):
     if added:
         dy_pkg.update(added)
 
-    return "{}|{}|{}".format(dy_pkg["uuid4"], dy_pkg["name"], dy_pkg["version"])
+    alias=None
+    if "alias" in dy_pkg:
+        alias=dy_pkg["alias"]
+    else:
+        alias=dy_pkg["name"]
 
-# def identify_package_filters(pkg_filter):
-#     components=pkg_filter.split(",")
-#     name=components[0]
-#     version=""
-#     bound=""
-#     if len(components) == 2:
-#         version=components[1]
-#     elif len(components) == 3:
-#         bound=components[2]
-
-#     tmp_filter="n:{}".format(name)
-#     if version:
-#         tmp_filter+=",v:{}".format(version)
-#     else:
-
-
-
-# if ro.Version_regex(ftr_component).match:
-#     return dict(version_ftr=ftr_component)
-# if ro.Package_name_regex(ftr_component).match:
-#     return dict(name=ftr_component)
-# if ro.Uuid4_regex(ftr_component).match:
-#     return dict(uuid4=ftr_component)
+    return "{}|{}|{}".format(dy_pkg["uuid4"], alias, dy_pkg["version"])
