@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 13.0.0
+# version: 13.0.1
 # name: release
 # license: MIT
 
@@ -88,8 +88,8 @@ if __name__ == "__main__":
         pkg_filters=args.package_filters.values
         if args.restore.here:
             for dep in conf_pkg.data["deps"]:
-                uuid4, name, version, bound = dep.split("|")
-                pkg_filters.append("{},{}".format(name,version))
+                uuid4, alias, version, bound = dep.split("|")
+                pkg_filters.append("{},{}".format(alias,version))
         
         pkg.import_pkgs(
             conf_db=pkg.Json_config(os.path.join(direpa_rel, dy_app["filen_json_rel"])),
@@ -322,82 +322,3 @@ if __name__ == "__main__":
             pkg_aliases=args.rel_strip.values,
         )
         sys.exit(0)
-
-
-
-#  for arg_str in ["export_bin", "export_rel"]:
-
-#         # "export_bin": {
-#         # "aliases": "--export-bin",
-#         # "args": "beta,from_rel,filenpa_conf,not_git,no_symlink,only_paths,from_pkg,pkg_name,pkg_version,to_bin",
-#         # "info": "Send refined project 'current state' or 'selected version' to {user_profile}/data/bin and create symlink or send to path."
-#         # },
-#         # "export_rel": {
-#         # "aliases": "--export-rel",
-#         # "args": "no_deps,filenpa_conf,from_rel,not_git,pkg_name,only_paths,from_pkg,pkg_version,to_bin,to_rel",
-#         # "info": "Send refined project 'selected version' to /$project_path/rel or path."
-#         # },
-#         check_rel()
-#         arg=dy_app["args"][arg_str]
-#         if arg.here:
-#             if args.from_pkg.here is False and args.from_rel.here is False:
-#                 pkg.msg.error("--from-pkg or --from-rel missing", exit=1)
-
-#             options=dict(
-#                 direpa_pkg=args.from_pkg.value,
-#                 diren_pkgs=dy_app["diren_pkgs"],
-#                 filen_json_app=dy_app["filen_json_app"],
-#                 filen_json_rel=dy_app["filen_json_rel"],
-#                 filenpa_conf=args.filenpa_conf.value,
-#                 from_pkg=args.from_pkg.here,
-#                 is_git=not args.not_git.here,
-#                 only_paths=args.only_paths.values,
-#                 pkg_name=args.pkg_name.value,
-#                 pkg_version=args.pkg_version.value,
-#                 system=dy_app["platform"],
-#             )
-
-#             direpa_rel_src=dy_default_direpas["rel"]
-#             if args.from_rel.here is True:
-#                 if args.from_rel.value is not None:
-#                     direpa_rel_src=args.from_rel.value
-
-#             if arg_str == "export_bin":
-#                 # --export-bin
-#                 #     --from-rel|--from-pkg
-#                 #     --to-bin
-
-#                 direpa_bin_dst=dy_default_direpas["bin"]
-#                 if args.to_bin.here is True:
-#                     if args.to_bin.value is None:
-#                         direpa_bin_dst=dy_default_direpas["bin"]
-#                     else:
-#                         direpa_bin_dst=args.to_bin.value
-
-#                 pkg.export(
-#                     "export_bin",
-#                     direpa_bin_dst=direpa_bin_dst,
-#                     direpa_rel_src=direpa_rel_src,
-#                     is_beta=args.beta.here,
-#                     no_symlink=args.no_symlink.here,
-#                     **options,
-#                 )
-                
-#             elif arg_str == "export_rel":
-#                 # --export-rel
-#                 #     --from-rel|--from-pkg
-#                 #     --to-rel
-
-#                 direpa_rel_dst=dy_default_direpas["rel"]
-#                 if args.to_rel.here is True:
-#                     if args.to_rel.value is not None:
-#                         direpa_rel_dst=args.to_rel.value
-#                         check_rel(direpa_rel_dst)
-#                 pkg.export( 
-#                     "export_rel",
-#                     add_deps=not args.no_deps.here,
-#                     direpa_rel_src=direpa_rel_src,
-#                     direpa_rel_dst=direpa_rel_dst,
-#                     **options,
-#                 )
-#             sys.exit(0)
