@@ -13,7 +13,7 @@ from . import regex_obj as ro
 from .bump_version import bump_version
 from .check_rel import check_rel
 from .get_pkg_from_db import get_pkg_from_db
-from .helpers import get_direpa_root, to_be_coded, get_app_meta_data, create_symlink
+from .helpers import get_direpa_root, to_be_coded, create_symlink
 from .get_filenpa_conf_from_rel import get_filenpa_conf_from_rel
 from .transfer_to import transfer_to_bin, transfer_to_rel
 
@@ -77,7 +77,7 @@ def transfer(
             if conf_from_rel is not None:
                 if conf_from_rel is True:
                     conf_from_rel=dy_default_direpas["rel"]
-                filenpa_conf=get_filenpa_conf_from_rel(dy_pkg_filter["name"], dy_pkg_filter["version"], conf_from_rel, filen_json_rel, filen_json_app)
+                filenpa_conf=get_filenpa_conf_from_rel(dy_pkg_filter["alias"], dy_pkg_filter["version"], conf_from_rel, filen_json_rel, filen_json_app)
             elif filenpa_conf is None:
                 filenpa_conf=os.path.join(direpa_from, filen_json_app)
         
@@ -99,7 +99,7 @@ def transfer(
                 is_git,
                 no_conf,
                 no_symlink,
-                dy_pkg_filter["name"],
+                dy_pkg_filter["alias"],
                 dy_pkg_filter["version"],
                 system,
             )
@@ -114,7 +114,7 @@ def transfer(
                 filen_json_rel,
                 filenpa_conf,
                 is_git,
-                dy_pkg_filter["name"],
+                dy_pkg_filter["alias"],
                 dy_pkg_filter["version"],
             )
         else:
@@ -126,8 +126,8 @@ def transfer(
             direpa_to=dy_default_direpas[to_]
         exit_on_same_location(direpa_from, direpa_to)
 
-        if dy_pkg_filter["name"] is None:
-            msg.error("package name needs to be provided", exit=1)
+        if dy_pkg_filter["alias"] is None:
+            msg.error("package alias needs to be provided", exit=1)
 
         direpa_rel=direpa_from
 
@@ -137,12 +137,12 @@ def transfer(
             filen_json_default=filen_json_app,
             not_found_error=True,
             not_found_exit=True,
-            pkg_name=dy_pkg_filter["name"],
+            pkg_alias=dy_pkg_filter["alias"],
             pkg_version=dy_pkg_filter["version"],
         )
 
         pkg_version=chosen_pkg["version"]
-        direpa_from=os.path.join(direpa_rel, dy_pkg_filter["name"], pkg_version, dy_pkg_filter["name"])
+        direpa_from=os.path.join(direpa_rel, dy_pkg_filter["alias"], pkg_version, dy_pkg_filter["alias"])
         filenpa_conf=os.path.join(direpa_from, filen_json_app)
         
         is_git=False
@@ -157,7 +157,7 @@ def transfer(
                 is_git,
                 no_conf,
                 no_symlink,
-                dy_pkg_filter["name"],
+                dy_pkg_filter["alias"],
                 pkg_version,
                 system,
             )
@@ -170,7 +170,7 @@ def transfer(
                 filen_json_rel,
                 filenpa_conf,
                 is_git,
-                dy_pkg_filter["name"],
+                dy_pkg_filter["alias"],
                 pkg_version,
             )
         else:

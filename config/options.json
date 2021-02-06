@@ -15,7 +15,7 @@
         "values": "Full Name"
     },
     "bump_version": {
-        "args": "filenpa_conf,increment,major,minor,not_git,patch,path_pkg,pkg_name",
+        "args": "filenpa_conf,increment,major,minor,not_git,patch,path_pkg,pkg_alias",
         "info": "Increment package version",
         "nvalues": "?",
         "values": "VERSION"
@@ -50,8 +50,8 @@
         "values": "FILE_JSON"
     },
     "from_bin": {
-        "args": "pkg_name",
-        "required": "pkg_name",
+        "args": "pkg_alias",
+        "required": "pkg_alias",
         "info": "Transfer package from default binaries repository or from selected binaries repository",
         "nested": true,
         "nvalues": "?",
@@ -82,8 +82,8 @@
         "values": "DIREPA_REPO_SRC"
     },
     "from_wrk": {
-        "args": "pkg_name",
-        "required": "pkg_name",
+        "args": "pkg_alias",
+        "required": "pkg_alias",
         "info": "Transfer package from default work repository or from selected work repository",
         "nested": true,
         "nvalues": "?",
@@ -120,7 +120,7 @@
     "ls_rel": {
         "aliases": "-l,--ls,--ls-rel",
         "args": "add_deps,package_filters,path_rel",
-        "info": "List all packages in the release repository. You can add name(s) to filter by names."
+        "info": "List all packages in the release repository. You can add alias(es) to filter by aliases."
     },
     "major": {
         "nested": true
@@ -150,7 +150,7 @@
         "nested": true
     },
     "no_root_dir": {
-        "info": "Package content is copied without the package name root directory.",
+        "info": "Package content is copied without the package alias root directory.",
         "nested": true
     },
     "not_git": {
@@ -170,11 +170,11 @@
         "aliases": "-p,--pkgs,--packages",
         "nested": true,
         "nvalues": "*",
-        "values": "PKG_NAMES"
+        "values": "PKG_ALIASES"
     },
     "package_filters": {
         "aliases": "--pfs,--pkg-filters",
-        "info": "Package filters are comma separated string. The fields are bound, name, version, uuid4. Fields order does not matter and not all fields need to be present",
+        "info": "Package filters are comma separated string. The fields are bound, alias, version, uuid4. Fields order does not matter and not all fields need to be present",
         "nested": true,
         "nvalues": "+",
         "values": "PKG_FILTERS"
@@ -206,9 +206,15 @@
         "nested": true,
         "values": "PATH"
     },
+    "pkg_alias": {
+        "aliases": "--pkg-alias,--palias",
+        "info": "package alias, or package name if alias has not been set.",
+        "nested": true,
+        "values": "PKG_ALIAS"
+    },
     "pkg_name": {
         "aliases": "--pkg-name,--pname",
-        "info": "package name",
+        "info": "package alias, or package name if alias has not been set.",
         "nested": true,
         "values": "PKG_NAME"
     },
@@ -233,27 +239,27 @@
         "args": "path_rel",
         "info": "Remove all versions of a package except the latest. Select specific packages or no packages to run the function on all packages",
         "nvalues": "*",
-        "values": "PKG_NAMES"
+        "values": "PKG_ALIASES"
     },
     "restore": {
         "args": "filenpa_conf,not_git,path_deps,path_pkg",
         "info": "Reinstall all dependencies from gpm.json"
     },
     "set_conf": {
-        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_name,pkg_version,uuid4",
+        "args": "authors,description,filen_main,filenpa_conf,licenses,pkg_alias,pkg_name,pkg_version,uuid4",
         "info": "create a config file for a new project."
     },
     "set_launcher": {
         "args": "overwrite,path_project",
         "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening.",
         "nvalues": "?",
-        "values": "APP_NAME"
+        "values": "PKG_ALIAS"
     },
     "switch_bin": {
         "aliases": "--switch-bin,--sb",
-        "args": "path_bin,pkg_name,pkg_version",
-        "info": "Given an application name and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available",
-        "required": "pkg_name,pkg_version"
+        "args": "path_bin,pkg_alias,pkg_version",
+        "info": "Given an application alias and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available",
+        "required": "pkg_alias,pkg_version"
     },
     "to_bin": {
         "args": "beta,filen_main,no_symlink",
@@ -301,13 +307,13 @@
         "args": "not_git,path_deps,path_pkg,path_rel",
         "aliases": "-u,--update",
         "nvalues": "*",
-        "values": "PKG_NAMES"
+        "values": "PKG_ALIASES"
     },
     "upgrade": {
         "args": "not_git,path_deps,path_pkg,path_rel",
         "aliases": "--upgrade,--ug",
         "nvalues": "*",
-        "values": "PKG_NAMES"
+        "values": "PKG_ALIASES"
     },
     "uuid4": {
         "nested": true,

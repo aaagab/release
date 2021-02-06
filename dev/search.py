@@ -27,14 +27,14 @@ def search(pkgs, pkg_filter="",identify=False):
 
     # pkg_filter=[
     #     # "u:259d7ae3-d03e-4e5a-96d4-32259ff55a07,v:0.A.L",
-    #     # "n:mockpackage,v:0.A.L"
-    #     # "n:mockpackage,v:0.A.L",
-    #     # "n:mockpackage,v:0.2.3",
-    #     # "n:mockpackage,v:L.L.A",
-    #     # "n:mockpackage,v:L.L.L",
-    #     "n:mockpackage",
+    #     # "a:mockpackage,v:0.A.L"
+    #     # "a:mockpackage,v:0.A.L",
+    #     # "a:mockpackage,v:0.2.3",
+    #     # "a:mockpackage,v:L.L.A",
+    #     # "a:mockpackage,v:L.L.L",
+    #     "a:mockpackage",
     #     # "v:3.A.X",
-    #     # "v:3.A.X,n:mike"
+    #     # "v:3.A.X,a:mike"
     #     # "3.L.A",
     # ]
 
@@ -43,8 +43,8 @@ def search(pkgs, pkg_filter="",identify=False):
     selected_pkgs=[]
     if not pkg_filter:
         for pkg in pkgs:
-            uuid4, name, version, *bound = pkg.split('|')
-            tmp_pkg={ "uuid4": uuid4, "name": name, "version": version, "bound": bound}
+            uuid4, alias, version, *bound = pkg.split('|')
+            tmp_pkg={ "uuid4": uuid4, "alias": alias, "version": version, "bound": bound}
             tmp_pkg.update({ "id": get_pkg_id(tmp_pkg) })
             selected_pkgs.append(tmp_pkg)
     else:
@@ -55,9 +55,9 @@ def search(pkgs, pkg_filter="",identify=False):
         if len(ftr_split) == 1:
             ftr_component=ftr_split[0]
             dy_filter=get_dy_filter_part(ftr_component, identify)
-            if not "name" in dy_filter and not "uuid4" in dy_filter:
+            if not "alias" in dy_filter and not "uuid4" in dy_filter:
                 msg.error("Search Filter incomplete for '{}'".format(ftr_component),
-                    "Please provide at least a name or a uuid4.")
+                    "Please provide at least a alias or a uuid4.")
                 sys.exit(1)
         elif len(ftr_split) < 5:
             for ftr_component in ftr_split:
@@ -73,7 +73,7 @@ def search(pkgs, pkg_filter="",identify=False):
 
         pre_selected_pkgs=[]
         for pkg in pkgs:
-            uuid4, name, version, *bound = pkg.split('|')
+            uuid4, alias, version, *bound = pkg.split('|')
             if bound != []:
                 bound=bound[0]
             else:
@@ -86,8 +86,8 @@ def search(pkgs, pkg_filter="",identify=False):
                     match=False
 
             if match is True:
-                if "name" in dy_filter:
-                    if dy_filter["name"] != name:
+                if "alias" in dy_filter:
+                    if dy_filter["alias"] != alias:
                         match=False
             
             if match is True:
@@ -96,7 +96,7 @@ def search(pkgs, pkg_filter="",identify=False):
                         match=False
 
             if match is True:
-                tmp_pkg={ "uuid4": uuid4, "name": name, "version": version, "bound": bound}
+                tmp_pkg={ "uuid4": uuid4, "alias": alias, "version": version, "bound": bound}
                 tmp_pkg.update({ "id": get_pkg_id(tmp_pkg) })
 
                 if "version_ftr" in dy_filter:
@@ -114,7 +114,7 @@ def search(pkgs, pkg_filter="",identify=False):
                 selected_pkgs.extend([pkg for pkg in pre_selected_pkgs if pkg["version"] in selected_versions])
     
     if selected_pkgs:
-        # sort by name, uuid, and version (reg and non reg)
+        # sort by alias, uuid, and version (reg and non reg)
         package_ids=[pkg["id"] for pkg in selected_pkgs]
         # pprint(package_ids)
         presort_ids=sort_separated(package_ids, separator="|", sort_order=[1,0,2], keep_sort_order=False)
@@ -160,7 +160,7 @@ def search(pkgs, pkg_filter="",identify=False):
         return []
 
 def get_dy_filter_part(ftr_component, identify):
-    identifiers=["b", "n", "u", "v"]
+    identifiers=["b", "a", "u", "v"]
     reg_identifier=re.match(r"^(["+"{}".format("|".join(identifiers))+r"]):(.*)$", ftr_component)
     if reg_identifier:
         id_letter=reg_identifier.group(1)
@@ -173,12 +173,12 @@ def get_dy_filter_part(ftr_component, identify):
                 sys.exit(1)
             else:
                 return dict(bound=search_elem)
-        elif id_letter == "n":
-            reg_name=ro.Package_name_regex(search_elem)
-            if not reg_name.match:
+        elif id_letter == "a":
+            reg_alias=ro.Package_alias_regex(search_elem)
+            if not reg_alias.match:
                 sys.exit(1)
             else:
-                return dict(name=search_elem)
+                return dict(alias=search_elem)
         elif id_letter == "u":
             reg_uuid4=ro.Uuid4_regex(search_elem)
             if reg_uuid4.match:
@@ -193,7 +193,7 @@ def get_dy_filter_part(ftr_component, identify):
         # if identify is False:
         msg.error("'{}' has not identifier".format(ftr_component),
             "identifiers are '{}'".format(identifiers),
-            "Use them like that 'n:name,v:2.3.4,u:2b20ffd7-d9bf-4a23-b8cf-354b6063a26b,b:gpm'",
+            "Use them like that 'a:alias,v:2.3.4,u:2b20ffd7-d9bf-4a23-b8cf-354b6063a26b,b:gpm'",
         exit=1)
         # else:
             

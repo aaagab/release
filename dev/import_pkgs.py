@@ -42,7 +42,7 @@ def import_pkgs(
             not_found_error=True,
             not_found_exit=False,
             pkg_bound=dy_pkg_filter["bound"],
-            pkg_name=dy_pkg_filter["name"],
+            pkg_alias=dy_pkg_filter["alias"],
             pkg_version=dy_pkg_filter["version"],
             pkg_uuid4=dy_pkg_filter["uuid4"],
 
@@ -50,20 +50,20 @@ def import_pkgs(
 
         if chosen_pkg is None:
             continue         
-        direpa_src=os.path.join(direpa_rel, chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
+        direpa_src=os.path.join(direpa_rel, chosen_pkg["alias"], chosen_pkg["version"], chosen_pkg["alias"])
         if no_root_dir is True:
             direpa_dst=os.path.join(direpa_deps)
         else:
-            direpa_dst=os.path.join(direpa_deps, chosen_pkg["name"])
+            direpa_dst=os.path.join(direpa_deps, chosen_pkg["alias"])
         to_install=True
 
         delete_index=""
         if no_conf_src is False:
             for d, dep in enumerate(conf_pkg.data["deps"]):
-                ex_uuid4, ex_name, ex_version, ex_bound = dep.split("|")
-                if chosen_pkg["name"] == ex_name:
+                ex_uuid4, ex_alias, ex_version, ex_bound = dep.split("|")
+                if chosen_pkg["alias"] == ex_alias:
                     msg.warning(
-                        "'{}' already exists in destination '{}'.".format(chosen_pkg["name"], filen_json_default),
+                        "'{}' already exists in destination '{}'.".format(chosen_pkg["alias"], filen_json_default),
                         "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
                         "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
                     if prompt_boolean("Do you want to replace it", "Y"):
@@ -126,7 +126,7 @@ def import_pkgs(
                 else:
                     copy_to_destination(paths, direpa_src, direpa_dst)
 
-            msg.success("Package '{}' '{}' installed in '{}'".format(chosen_pkg["name"], chosen_pkg["version"], os.path.dirname(direpa_dst)))
+            msg.success("Package '{}' '{}' installed in '{}'".format(chosen_pkg["alias"], chosen_pkg["version"], os.path.dirname(direpa_dst)))
     
     
 def replace_key(reg, keys):
