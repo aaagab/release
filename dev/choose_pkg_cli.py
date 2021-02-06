@@ -22,7 +22,7 @@ def choose_pkg_cli(
     db=Json_config(filenpa_json_rel).data
     
     components=pkg_filter.split(",")
-    name=components[0]
+    alias=components[0]
     version=""
     bound=""
     if len(components) == 2:
@@ -30,7 +30,7 @@ def choose_pkg_cli(
     elif len(components) == 3:
         bound=components[2]
 
-    tmp_filter="n:{}".format(name)
+    tmp_filter="a:{}".format(alias)
     if version:
         tmp_filter+=",v:{}".format(version)
     else:
@@ -40,7 +40,7 @@ def choose_pkg_cli(
     chosen_pkg={}
     if len(selected_pkgs) == 1:
         chosen_pkg={
-            "name": name,
+            "alias": alias,
             "uuid4": selected_pkgs[0]["uuid4"],
             "version": selected_pkgs[0]["version"]
         }
@@ -57,7 +57,7 @@ def choose_pkg_cli(
             items=[]
             for uuid4 in uuid4s:
                 pkg_version=[pkg["version"] for pkg in selected_pkgs if pkg["uuid4"] == uuid4][-1]
-                filenpa_description=os.path.join(direpa_rel, name, pkg_version, name, filen_json_app)
+                filenpa_description=os.path.join(direpa_rel, alias, pkg_version, alias, filen_json_app)
                 description=""
                 if os.path.exists(filenpa_description):
                     description=Json_config(filenpa_description).data["description"]
@@ -79,17 +79,17 @@ def choose_pkg_cli(
         else:
             items=[]
             for version in versions:
-                items.append("{} {}".format(name, version))
+                items.append("{} {}".format(alias, version))
 
             chosen_version=prompt_multiple(
                 dict(
                     items=items,
-                    title="Select a version for pkg '{}'".format(name),
+                    title="Select a version for pkg '{}'".format(alias),
                     values=versions
                 ))
 
             chosen_pkg={
-                "name": name,
+                "alias": alias,
                 "uuid4": chosen_uuid4,
                 "version": chosen_version
             }

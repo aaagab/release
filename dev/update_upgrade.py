@@ -23,15 +23,15 @@ def update_upgrade(
     direpa_rel,
     filen_json_app,
     filen_json_rel,
-    pkg_names,
+    pkg_aliases,
 ):
     dep_pkgs={}
-    dep_pkg_names=[]
+    dep_pkg_aliases=[]
     for dep in conf_pkg.data["deps"]:
-        uuid4, name, version, bound = dep.split("|")
-        dep_pkg_names.append(name)
+        uuid4, alias, version, bound = dep.split("|")
+        dep_pkg_aliases.append(alias)
         dep_pkgs.update({
-            name:{
+            alias:{
                 "bound": bound,
                 "version": version,
                 "uuid4": uuid4,
@@ -39,23 +39,23 @@ def update_upgrade(
             }
         })
 
-    if pkg_names is True:
-        pkg_names=sorted([name for name in dep_pkgs])
+    if pkg_aliases is True:
+        pkg_aliases=sorted([alias for alias in dep_pkgs])
         msg.warning("Waiting confirmation to update all dependencies for '{}'".format(direpa_pkg))
         if not prompt_boolean("Do you want to continue" , 'N'):
             sys.exit(1)
     else:
-        pkg_names=sorted(pkg_names)
+        pkg_aliases=sorted(pkg_aliases)
 
-    if len(pkg_names) == 0:
-        pkg_names=sorted(dep_pkgs)
-    for pkg_name in pkg_names:
-        direpa_dep=os.path.join(direpa_deps, pkg_name)
-        if not pkg_name in dep_pkg_names:
-            msg.warning("Package '{}' not found in '{}'".format(pkg_name, os.path.dirname(direpa_dep)))
+    if len(pkg_aliases) == 0:
+        pkg_aliases=sorted(dep_pkgs)
+    for pkg_alias in pkg_aliases:
+        direpa_dep=os.path.join(direpa_deps, pkg_alias)
+        if not pkg_alias in dep_pkg_aliases:
+            msg.warning("Package '{}' not found in '{}'".format(pkg_alias, os.path.dirname(direpa_dep)))
             continue
         else:
-            reg_version_dep=dep_pkgs[pkg_name]["regex"]
+            reg_version_dep=dep_pkgs[pkg_alias]["regex"]
             version_filter=""
             if reg_version_dep.match:
                 if arg_str == "update":
@@ -69,19 +69,19 @@ def update_upgrade(
                 direpa_rel,
                 filen_json_rel,
                 filen_json_app, 
-                "{},{}".format(pkg_name, version_filter),
+                "{},{}".format(pkg_alias, version_filter),
             )
             if reg_version_dep.match:
                 reg_version_chosen_pkg=ro.Version_regex(chosen_pkg["version"])
                 compare_status=reg_version_chosen_pkg.compare(reg_version_dep)
                 if compare_status == "smaller":
-                    msg.warning("For '{}' {} not needed".format(pkg_name, arg_str),
+                    msg.warning("For '{}' {} not needed".format(pkg_alias, arg_str),
                         "Version '{}' from '{}' is smaller than".format(chosen_pkg["version"], direpa_rel),
-                        "Version '{}' from '{}'".format(dep_pkgs[pkg_name]["version"], direpa_pkg)
+                        "Version '{}' from '{}'".format(dep_pkgs[pkg_alias]["version"], direpa_pkg)
                         )
                     continue
                 elif compare_status == "equals":
-                    msg.warning("For '{}' {} not needed".format(pkg_name, arg_str),
+                    msg.warning("For '{}' {} not needed".format(pkg_alias, arg_str),
                         "Version '{}' is already the latest {}".format(chosen_pkg["version"], arg_str, direpa_rel)
                         )
                     continue
@@ -91,20 +91,20 @@ def update_upgrade(
             else:
                 pass # package is going to be updated|upgraded with chosen
 
-            delete_index=dep_pkg_names.index(pkg_name)
+            delete_index=dep_pkg_aliases.index(pkg_alias)
             del conf_pkg.data["deps"][delete_index]
 
             if os.path.exists(direpa_dep):
                 shutil.rmtree(direpa_dep)
 
-            dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), dep_pkgs[pkg_name]["bound"])
+            dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), dep_pkgs[pkg_alias]["bound"])
             conf_pkg.data["deps"].append(dep_to_insert)
             conf_pkg.data["deps"]=sort_separated(conf_pkg.data["deps"], sort_order=[1,0,2,3], keep_sort_order=False, separator="|")
             conf_pkg.save()
 
-            if dep_pkgs[pkg_name]["bound"] == "gpm":
-                direpa_src=os.path.join(direpa_rel, chosen_pkg["name"], chosen_pkg["version"], chosen_pkg["name"])
+            if dep_pkgs[pkg_alias]["bound"] == "gpm":
+                direpa_src=os.path.join(direpa_rel, chosen_pkg["alias"], chosen_pkg["version"], chosen_pkg["alias"])
                 paths=get_paths_to_copy(direpa_src)
                 copy_to_destination(paths, direpa_src, direpa_dep)
 
-            msg.success("Package '{}' {}d from '{}' to '{}' in '{}'".format(chosen_pkg["name"], arg_str, reg_version_dep.text, reg_version_chosen_pkg.text, os.path.dirname(direpa_dep)))
+            msg.success("Package '{}' {}d from '{}' to '{}' in '{}'".format(chosen_pkg["alias"], arg_str, reg_version_dep.text, reg_version_chosen_pkg.text, os.path.dirname(direpa_dep)))

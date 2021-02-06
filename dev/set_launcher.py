@@ -14,7 +14,7 @@ from ..gpkgs.prompt import prompt_boolean, prompt
 from ..gpkgs.json_config import Json_config
 
 def set_launcher(
-    app_name=None,
+    pkg_alias=None,
     direpa_project=None,
     overwrite=False,
     system=None,
@@ -49,15 +49,18 @@ def set_launcher(
     if not os.path.exists(direpa_project):
         msg.error("Project path not found '{}'".format(direpa_project), exit=1)
 
-    if app_name is None:
+    if pkg_alias is None:
         if direpa_src is None:
-            app_name=prompt("app_name")
+            pkg_alias=prompt("package alias")
         else:
             filenpa_gpm=os.path.join(direpa_src, "gpm.json")
             if os.path.exists(filenpa_gpm):
-                app_name=Json_config(filenpa_gpm).data["name"]
+                json_data=Json_config(filenpa_gpm).data
+                pkg_alias=json_data["name"]
+                if "alias" in json_data:
+                    pkg_alias=json_data["alias"]
             else:
-                app_name=prompt("app_name")
+                pkg_alias=prompt("package alias")
 
     filenpa_launcher=os.path.join(direpa_project, filen)
 
@@ -68,9 +71,9 @@ def set_launcher(
                 sys.exit(1)
 
     if filen == "scriptjob_save.json":
-        data=get_default_scriptjob_save_json_file(direpa_project, app_name)
+        data=get_default_scriptjob_save_json_file(direpa_project, pkg_alias)
     elif filen == "launch.pyw":
-        data=get_default_launch_pyw(app_name)      
+        data=get_default_launch_pyw(pkg_alias)      
 
     with open(filenpa_launcher, "w") as f:
         if filen == "scriptjob_save.json":
@@ -91,7 +94,7 @@ def set_launcher(
     msg.success("'{}' created.".format(filenpa_launcher))
         
 
-def get_default_launch_pyw(app_name):
+def get_default_launch_pyw(pkg_alias):
     return """
         #/usr/bin/env python3
         import platform
@@ -109,19 +112,19 @@ def get_default_launch_pyw(app_name):
         # recognized as an internal or external command, operable program or batch file.
         system32 = os.path.join(os.environ['SystemRoot'], 'SysNative' if platform.architecture()[0] == '32bit' else 'System32')
 
-        os.system('start {{}} /K "title {app_name} & cd /d {{}}"'.format(
+        os.system('start {{}} /K "title {pkg_alias} & cd /d {{}}"'.format(
             os.path.join(system32, "cmd.exe"),
             direpa_project_src))
         subprocess.call('code "{{}}"'.format(direpa_project), shell=True)
-    """.format(app_name=app_name)
+    """.format(pkg_alias=pkg_alias)
 
-def get_default_scriptjob_save_json_file(direpa_app, app_name):
+def get_default_scriptjob_save_json_file(direpa_app, pkg_alias):
     return """
         {{
             "diren": "src",
             "groups": [
                 {{
-                    "name": "{app_name}",
+                    "name": "{pkg_alias}",
                     "windows": [
                         {{
                             "actions": [
@@ -156,11 +159,11 @@ def get_default_scriptjob_save_json_file(direpa_app, app_name):
                     "exe": "code",
                     "filenpa_exe": "/usr/share/code/code",
                     "groups": [
-                        "{app_name}"
+                        "{pkg_alias}"
                     ],
                     "id": "co_0",
                     "monitor": 1,
-                    "name": "{app_name}",
+                    "name": "{pkg_alias}",
                     "paths": [
                         "{direpa_app}"
                     ],
@@ -168,15 +171,15 @@ def get_default_scriptjob_save_json_file(direpa_app, app_name):
                 }},
                 {{
                     "_class": "konsole",
-                    "cmd_parameters": "-p tabtitle={app_name}",
+                    "cmd_parameters": "-p tabtitle={pkg_alias}",
                     "exe": "konsole",
                     "filenpa_exe": "/usr/bin/konsole",
                     "groups": [
-                        "{app_name}"
+                        "{pkg_alias}"
                     ],
                     "id": "ko_1",
                     "monitor": 0,
-                    "name": "{app_name} \u2014 Konsole",
+                    "name": "{pkg_alias} \u2014 Konsole",
                     "paths": [],
                     "rcfile_cmds": [
                         "cd {direpa_app}/src"
@@ -185,4 +188,4 @@ def get_default_scriptjob_save_json_file(direpa_app, app_name):
                 }}
             ]
         }}
-    """.format(app_name=app_name, direpa_app=direpa_app)
+    """.format(pkg_alias=pkg_alias, direpa_app=direpa_app)

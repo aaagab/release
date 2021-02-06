@@ -19,7 +19,7 @@ def get_dy_pkg_filter(
 ):
     dy_pkg=dict(
         bound=None,
-        name=None,
+        alias=None,
         uuid4=None,
         version=None,
         version_regex=None,
@@ -36,8 +36,8 @@ def get_dy_pkg_filter(
             elif elem in ["gpm", "sys"]:
                 dy_pkg["bound"]=elem
             else:
-                if ro.Package_name_regex(elem).match:
-                    dy_pkg["name"]=elem
+                if ro.Package_alias_regex(elem).match:
+                    dy_pkg["alias"]=elem
                 else:
                     msg.error("In pkg filter value unknown '{}'".format(elem), exit=1)
     

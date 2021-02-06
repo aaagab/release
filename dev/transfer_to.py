@@ -12,9 +12,7 @@ import sys
 from . import regex_obj as ro
 from .bump_version import bump_version
 from .check_rel import check_rel
-from .helpers import get_direpa_root, to_be_coded, get_app_meta_data, create_symlink
-from .get_filenpa_conf_from_rel import get_filenpa_conf_from_rel
-
+from .helpers import get_direpa_root, to_be_coded, create_symlink
 
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
@@ -34,19 +32,23 @@ def transfer_to_bin(
     is_git,
     no_conf,
     no_symlink,
-    pkg_name,
+    pkg_alias,
     pkg_version,
     system,
 ):
     conf_data=None
     if no_conf is True:
-        if pkg_name is None:
-            pkg_name=prompt("package name")
+        if pkg_alias is None:
+            pkg_alias=prompt("package alias")
         if pkg_version is None:
             pkg_version=prompt("package version", default="beta")
     else:
-        conf_data=Json_config(filenpa_conf).data  
-        pkg_name=conf_data["name"]
+        conf_data=Json_config(filenpa_conf).data
+        pkg_alias=None
+        if "alias" in conf_data:
+            pkg_alias=conf_data["alias"]
+        else:
+            pkg_alias=conf_data["name"]
         if pkg_version is None and is_beta is False:
             pkg_version=conf_data["version"]
 
@@ -59,9 +61,9 @@ def transfer_to_bin(
     direpa_bin=direpa_to
     direpa_to=os.path.join(
         direpa_to, 
-        "{}_data".format(pkg_name),
+        "{}_data".format(pkg_alias),
         diren_bin,
-        pkg_name
+        pkg_alias
     )
 
     if filen_main is None:
@@ -88,7 +90,7 @@ def transfer_to_bin(
     
     if no_symlink is False:
         filenpa_exec=os.path.join(direpa_to, filen_main)
-        filenpa_symlink=os.path.join(direpa_bin, pkg_name)
+        filenpa_symlink=os.path.join(direpa_bin, pkg_alias)
         create_symlink(system, filenpa_exec, filenpa_symlink )
 
     if previous_branch is not None:
@@ -102,17 +104,21 @@ def transfer_to_rel(
     filen_json_rel,
     filenpa_conf,
     is_git,
-    pkg_name,
+    pkg_alias,
     pkg_version,
 ):
 
     conf_data=Json_config(filenpa_conf).data
-    pkg_name=conf_data["name"]
+    pkg_alias=None
+    if "alias" in conf_data:
+        pkg_alias=conf_data["alias"]
+    else:
+        pkg_alias=conf_data["name"]
     if pkg_version is None:
         pkg_version=conf_data["version"]
 
     direpa_rel=direpa_to
-    direpa_to=os.path.join(direpa_to, pkg_name, pkg_version, pkg_name)
+    direpa_to=os.path.join(direpa_to, pkg_alias, pkg_version, pkg_alias)
 
     previous_branch=None
     if is_git is True:
@@ -126,19 +132,26 @@ def transfer_to_rel(
     conf_db=Json_config(os.path.join(direpa_rel, filen_json_rel))
     
     dy_pkg_src=conf_data
+    pkg_alias=None
+    if "alias" in dy_pkg_src:
+        pkg_alias=dy_pkg_src["alias"]
+    else:
+        pkg_alias=dy_pkg_src["name"]
+
+    dy_pkg_src["alias"]
     if dy_pkg_src["uuid4"] in conf_db.data["uuid4s"]:
-        if dy_pkg_src["name"] != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
+        if pkg_alias != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
             if previous_branch:
                 shell.cmd_prompt("git checkout "+previous_branch)
             msg.error("Failed Insert '{}' with uuid4 '{}' ".format(
-                dy_pkg_src["name"], dy_pkg_src["uuid4"]),
-                "In db[uuid4s] same uuid4 has name '{}'".format(conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]),
-                "You can't have same uuid for different names.")
+                pkg_alias, dy_pkg_src["uuid4"]),
+                "In db[uuid4s] same uuid4 has alias '{}'".format(conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]),
+                "You can't have same uuid for different aliases.")
             sys.exit(1)
 
-    conf_db.data["uuid4s"].update({dy_pkg_src["uuid4"]: dy_pkg_src["name"]})
+    conf_db.data["uuid4s"].update({dy_pkg_src["uuid4"]: pkg_alias})
     conf_db.data["pkgs"].update({
-        "{}|{}|{}".format(dy_pkg_src["uuid4"], dy_pkg_src["name"], dy_pkg_src["version"]
+        "{}|{}|{}".format(dy_pkg_src["uuid4"], pkg_alias, dy_pkg_src["version"]
             ): dy_pkg_src["deps"]
     })
 

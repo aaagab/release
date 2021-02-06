@@ -23,5 +23,3 @@ to delete a package in a release repository, delete the folder manually and run 
 To select a package you use a package filter:  
 use one value:
   uuid4|name|version|bound
-
-name,version,
