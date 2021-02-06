@@ -138,7 +138,6 @@ def transfer_to_rel(
     else:
         pkg_alias=dy_pkg_src["name"]
 
-    dy_pkg_src["alias"]
     if dy_pkg_src["uuid4"] in conf_db.data["uuid4s"]:
         if pkg_alias != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
             if previous_branch:
