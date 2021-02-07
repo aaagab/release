@@ -257,7 +257,7 @@
     },
     "switch_bin": {
         "aliases": "--switch-bin,--sb",
-        "args": "path_bin,pkg_alias,pkg_version",
+        "args": "path_bin,pkg_alias,pkg_version,uuid4",
         "info": "Given an application alias and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available",
         "required": "pkg_alias,pkg_version"
     },

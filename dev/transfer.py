@@ -101,6 +101,7 @@ def transfer(
                 no_symlink,
                 dy_pkg_filter["alias"],
                 dy_pkg_filter["version"],
+                dy_pkg_filter["uuid4"],
                 system,
             )
         elif to_ == "rel":
@@ -159,6 +160,7 @@ def transfer(
                 no_symlink,
                 dy_pkg_filter["alias"],
                 pkg_version,
+                dy_pkg_filter["uuid4"],
                 system,
             )
         elif to_ == "rel":
