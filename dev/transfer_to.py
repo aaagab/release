@@ -34,6 +34,7 @@ def transfer_to_bin(
     no_symlink,
     pkg_alias,
     pkg_version,
+    pkg_uuid4,
     system,
 ):
     conf_data=None
@@ -51,6 +52,8 @@ def transfer_to_bin(
             pkg_alias=conf_data["name"]
         if pkg_version is None and is_beta is False:
             pkg_version=conf_data["version"]
+        if pkg_uuid4 is None:
+            pkg_uuid4=conf_data["uuid4"]
 
     diren_bin=None
     if is_beta is True:
@@ -59,12 +62,21 @@ def transfer_to_bin(
         diren_bin=pkg_version
 
     direpa_bin=direpa_to
-    direpa_to=os.path.join(
+
+    path_elems=[
         direpa_to, 
         "{}_data".format(pkg_alias),
+    ]
+
+    if pkg_uuid4 is not None:
+        path_elems.append(pkg_uuid4.lower().replace("-", ""))
+
+    path_elems.extend([
         diren_bin,
         pkg_alias
-    )
+    ])
+
+    direpa_to=os.path.join(*path_elems)
 
     if filen_main is None:
         if no_conf is True:
