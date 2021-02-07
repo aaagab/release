@@ -22,14 +22,17 @@ def switch_bin(direpa_bin, pkg_alias, pkg_uuid4, pkg_version, system):
     if not os.path.exists(direpa_package):
         msg.error("Not found '{}'".format(direpa_package), exit=1)
 
+    short_uuid4=None
     if pkg_uuid4 is None:
         uuid4s=sorted(os.listdir(direpa_package))
         if len(uuid4s) == 1:
-            pkg_uuid4=uuid4s[0]
+            short_uuid4=uuid4s[0]
         elif len(uuid4s) > 1:
-            pkg_uuid4=prompt_multiple(uuid4s, title="Choose uuid4 for '{}'.".format(pkg_alias))
+            short_uuid4=prompt_multiple(uuid4s, title="Choose uuid4 for '{}'.".format(pkg_alias))
+    else:
+        short_uuid4=pkg_uuid4.lower().replace("-", "")
 
-    direpa_uuid4=os.path.join(direpa_package, pkg_uuid4)
+    direpa_uuid4=os.path.join(direpa_package, short_uuid4)
 
     filenpa_pkg_json=""
     if pkg_version == "latest":
