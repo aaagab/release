@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 13.0.3
+# version: 13.1.0
 # name: release
 # license: MIT
 
@@ -238,7 +238,8 @@ if __name__ == "__main__":
             direpa_bin=args.path_bin.value
         pkg.switch_bin(
             direpa_bin=direpa_bin,
-            pkg_alias=args.pkg_alias.value, 
+            pkg_alias=args.pkg_alias.value,
+            pkg_uuid4=args.uuid4.value, 
             pkg_version=args.pkg_version.value, 
             system=dy_app["platform"],
         )
