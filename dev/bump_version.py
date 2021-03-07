@@ -4,6 +4,7 @@ from pprint import pprint
 import os
 import re
 import sys
+import time
 
 from . import regex_obj as ro
 from .helpers import get_direpa_root
@@ -142,6 +143,7 @@ def bump_version(
 
     paths=[]
     ignore=[]
+    timestamp=time.time()
     if len(only_paths) > 0:
         paths=only_paths
     else:
@@ -194,6 +196,7 @@ def bump_version(
                     conf=Json_config(filenpa_conf_elem)
                     if "version" in conf.data:
                         conf.data["version"]=version
+                        conf.data["timestamp"]=timestamp
                         conf.save()
                 else:
                     with open(filenpa_conf_elem, "w") as f:
