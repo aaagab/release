@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 13.2.0
+# version: 13.3.0
 # name: release
 # license: MIT
 
@@ -229,6 +229,7 @@ if __name__ == "__main__":
             direpa_pkg=args.path_pkg.value,
             save_filenpa_conf=True,
             version=args.bump_version.value,
+            filenpas_update=args.update_files.values,
         )
         sys.exit(0)
 

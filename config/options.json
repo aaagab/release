@@ -15,7 +15,7 @@
         "values": "Full Name"
     },
     "bump_version": {
-        "args": "filenpa_conf,increment,major,minor,not_git,patch,path_pkg,pkg_alias",
+        "args": "filenpa_conf,increment,major,minor,not_git,patch,path_pkg,pkg_alias,update_files",
         "info": "Increment package version",
         "nvalues": "?",
         "values": "VERSION"
@@ -308,6 +308,13 @@
         "aliases": "-u,--update",
         "nvalues": "*",
         "values": "PKG_ALIASES"
+    },
+    "update_files": {
+        "nested": true,
+        "info": "provide path to side files where version needs to be updated. Files paths can be relative or absolute.",
+        "nvalues": "+",
+        "type": "file",
+        "values": "FILE_PATH"
     },
     "upgrade": {
         "args": "not_git,path_deps,path_pkg,path_rel",

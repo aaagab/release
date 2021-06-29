@@ -99,6 +99,7 @@ def bump_version(
     direpa_pkg,
     save_filenpa_conf,
     version,
+    filenpas_update,
 ):
     if direpa_pkg is None:
         if is_git is True:
@@ -150,6 +151,7 @@ def bump_version(
         # paths=get_paths_to_copy(direpa_pkg, added_rules=)
         ignore_files=[   
             "config.json",
+            ".keep",
             "gpm.json",
             "modules.json",
             "upacks.json",
@@ -159,6 +161,7 @@ def bump_version(
         ignore_exts=[
             ".db",
             ".ico",
+            ".md",
         ]
         conf_elems=[
             "config/config.json",
@@ -202,41 +205,85 @@ def bump_version(
                     with open(filenpa_conf_elem, "w") as f:
                         f.write("{}\n".format(version))
 
-    for path in paths:
-        if os.path.isfile(path):
-            header_version_found=False
-            init_version_found=False
-            data=""
-            try:
-                with open(path, "r") as f:
-                    line_num=1
-                    for line in f.read().splitlines():
-                        
-                        if header_version_found is False:
-                            if line_num <= 15:
-                                text=re.match(r"^#\s+version:.*$", line)
-                                if text:
-                                    header_version_found=True
-                                    data+="# version: {}\n".format(version)
-                                    continue
+    for elem_path in paths:
+        update_file_version(elem_path, version)
 
-                        if init_version_found is False:
-                            if os.path.basename(path) == "__init__.py":
-                                text=re.match(r"^__version__\s*=.*$", line)
-                                if text:
-                                    init_version_found=True
-                                    data+="__version__ = \"{}\"\n".format(version)
-                                    continue
-
-                        data+=line+"\n"
-                        line_num+=1
-
-                if header_version_found is True or init_version_found is True:
-                    with open(path, "w") as f:
-                        f.writelines(data)
-            except:
-                msg.warning("file '{}' is not readable.".format(path))
+    for elem_path in filenpas_update:
+        update_file_version(elem_path, version, pkg_alias=pkg_alias, insert_version=True)
     
     msg.success("Bumped to version v{}".format(version))
     return version
 
+def update_file_version(elem_path, version, pkg_alias=None, insert_version=False):
+    if os.path.isfile(elem_path):
+        header_version_found=False
+        init_version_found=False
+        filer, ext=os.path.splitext(elem_path)
+        data=""
+        updated=False
+        
+        if ext in [".js", ".py"]:
+            is_init_file=(os.path.basename(elem_path) == "__init__.py")
+            f=None
+            try:
+                f=open(elem_path, "r")
+            except:
+                msg.warning("file '{}' is not readable.".format(elem_path))
+
+            try:
+                if f is not None:
+                    line_num=1
+                    for line in f.read().splitlines():
+                        reg_matched=False
+                        if line_num <= 15:
+                            regex_strs=[]
+                            if ext == ".py":
+                                regex_strs.append(r"^\s*(?P<comment>#)\s+(?P<version_label_1>version)\s*(?P<version_label_2>:).*$")
+                                if is_init_file is True:
+                                    regex_strs.append(r"^\s*(?P<version_label_1>__version__)\s*(?P<version_label_2>=).*$")
+
+                            elif ext == ".js":
+                                regex_strs.append(r"^\s*(?P<comment>//)\s+(?P<version_label_1>version)\s*(?P<version_label_2>:).*$")
+
+                            for regex_str in regex_strs:
+                                reg=re.match(regex_str, line)
+                                if reg:
+                                    reg_matched=True
+                                    updated=True
+                                    dy=reg.groupdict()
+                                    text=""
+                                    if "comment" in dy:
+                                        text+="{} ".format(dy["comment"])
+
+                                    text+="{}{} {}\n".format(
+                                        dy["version_label_1"],
+                                        dy["version_label_2"],
+                                        version,
+                                    )
+                                    data+=text
+                                    break
+                            
+                        else:
+                            if updated is False and insert_version is False:
+                                break
+
+                        if reg_matched is False:
+                            data+=line+"\n"
+
+                        line_num+=1
+
+                if updated is True:
+                    with open(elem_path, "w") as f:
+                        f.writelines(data)
+                elif insert_version is True:
+                    if ext == ".js":
+                        tmp_data=""
+                        if pkg_alias is not None:
+                            tmp_data+="// module: {}\n".format(pkg_alias)
+                        tmp_data+="// version: {}\n\n".format(version)
+                        data="{}{}".format(tmp_data, data)
+                        with open(elem_path, "w") as f:
+                            f.writelines(data)
+            finally:
+                f.close()
+            
