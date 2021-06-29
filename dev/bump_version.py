@@ -235,12 +235,14 @@ def update_file_version(elem_path, version, pkg_alias=None, insert_version=False
                     line_num=1
                     for line in f.read().splitlines():
                         reg_matched=False
+                        has_quote=False
                         if line_num <= 15:
                             regex_strs=[]
                             if ext == ".py":
                                 regex_strs.append(r"^\s*(?P<comment>#)\s+(?P<version_label_1>version)\s*(?P<version_label_2>:).*$")
                                 if is_init_file is True:
                                     regex_strs.append(r"^\s*(?P<version_label_1>__version__)\s*(?P<version_label_2>=).*$")
+                                    has_quote=True
 
                             elif ext == ".js":
                                 regex_strs.append(r"^\s*(?P<comment>//)\s+(?P<version_label_1>version)\s*(?P<version_label_2>:).*$")
@@ -255,11 +257,18 @@ def update_file_version(elem_path, version, pkg_alias=None, insert_version=False
                                     if "comment" in dy:
                                         text+="{} ".format(dy["comment"])
 
-                                    text+="{}{} {}\n".format(
+                                    text+="{}{} ".format(
                                         dy["version_label_1"],
                                         dy["version_label_2"],
-                                        version,
                                     )
+
+                                    if has_quote is True:
+                                        text+="\""
+                                    text+=version
+                                    if has_quote is True:
+                                        text+="\""
+                                    text+="\n"
+
                                     data+=text
                                     break
                             
