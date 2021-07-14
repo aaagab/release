@@ -157,7 +157,7 @@ def get_default_scriptjob_save_json_file(direpa_app, pkg_alias):
                     "_class": "code",
                     "cmd_parameters": "--new-window {direpa_app}",
                     "exe": "code",
-                    "filenpa_exe": "/usr/share/code/code",
+                    "filenpa_exe": "/usr/bin/codium",
                     "groups": [
                         "{pkg_alias}"
                     ],
