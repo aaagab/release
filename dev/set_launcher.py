@@ -22,64 +22,58 @@ def set_launcher(
     filen="scriptjob_save.json"
     if system is None:
         system=platform.system()
+    system="Windows"
     if system == "Windows":
         filen="launch.pyw"
 
-    direpa_current=os.getcwd()
-    direpa_project=None
-    direpa_src=None
+        direpa_current=os.getcwd()
+        direpa_project=None
+        direpa_src=None
 
-    if direpa_project is None:
-        if is_pkg_git(direpa_current):
-            direpa_root=get_direpa_root(direpa_current)
-            if os.path.basename(direpa_root) == "src":
-                direpa_project=os.path.dirname(direpa_root)
-                direpa_src=direpa_root
-        else:
-            if os.path.basename(direpa_current) == "src":
-                direpa_project=os.path.dirname(direpa_current)
-                direpa_src=direpa_current
-            elif "src" in os.listdir(direpa_current):
-                direpa_project=direpa_current
-                direpa_src=os.path.join(direpa_project, "src")
-    else:
-        if "src" in os.listdir(direpa_project):
-            direpa_src=os.path.join(direpa_project, "src")
-
-    if not os.path.exists(direpa_project):
-        msg.error("Project path not found '{}'".format(direpa_project), exit=1)
-
-    if pkg_alias is None:
-        if direpa_src is None:
-            pkg_alias=prompt("package alias")
-        else:
-            filenpa_gpm=os.path.join(direpa_src, "gpm.json")
-            if os.path.exists(filenpa_gpm):
-                json_data=Json_config(filenpa_gpm).data
-                pkg_alias=json_data["name"]
-                if "alias" in json_data:
-                    pkg_alias=json_data["alias"]
+        if direpa_project is None:
+            if is_pkg_git(direpa_current):
+                direpa_root=get_direpa_root(direpa_current)
+                if os.path.basename(direpa_root) == "src":
+                    direpa_project=os.path.dirname(direpa_root)
+                    direpa_src=direpa_root
             else:
+                if os.path.basename(direpa_current) == "src":
+                    direpa_project=os.path.dirname(direpa_current)
+                    direpa_src=direpa_current
+                elif "src" in os.listdir(direpa_current):
+                    direpa_project=direpa_current
+                    direpa_src=os.path.join(direpa_project, "src")
+        else:
+            if "src" in os.listdir(direpa_project):
+                direpa_src=os.path.join(direpa_project, "src")
+
+        if not os.path.exists(direpa_project):
+            msg.error("Project path not found '{}'".format(direpa_project), exit=1)
+
+        if pkg_alias is None:
+            if direpa_src is None:
                 pkg_alias=prompt("package alias")
+            else:
+                filenpa_gpm=os.path.join(direpa_src, "gpm.json")
+                if os.path.exists(filenpa_gpm):
+                    json_data=Json_config(filenpa_gpm).data
+                    pkg_alias=json_data["name"]
+                    if "alias" in json_data:
+                        pkg_alias=json_data["alias"]
+                else:
+                    pkg_alias=prompt("package alias")
 
-    filenpa_launcher=os.path.join(direpa_project, filen)
+        filenpa_launcher=os.path.join(direpa_project, filen)
 
-    if overwrite is False:
-        if os.path.exists(filenpa_launcher):
-            msg.warning("'{}' already exists.".format(filenpa_launcher))
-            if not prompt_boolean("Do you want to overwrite it with default values"):
-                sys.exit(1)
+        if overwrite is False:
+            if os.path.exists(filenpa_launcher):
+                msg.warning("'{}' already exists.".format(filenpa_launcher))
+                if not prompt_boolean("Do you want to overwrite it with default values"):
+                    sys.exit(1)
 
-    if filen == "scriptjob_save.json":
-        data=get_default_scriptjob_save_json_file(direpa_project, pkg_alias)
-    elif filen == "launch.pyw":
         data=get_default_launch_pyw(pkg_alias)      
 
-    with open(filenpa_launcher, "w") as f:
-        if filen == "scriptjob_save.json":
-            data=re.sub(r"\n\s+","\n", data)[1:-1]
-            f.write(json.dumps(json.loads(data),sort_keys=True, indent=4))
-        else:
+        with open(filenpa_launcher, "w") as f:
             indent=None
             for line in data.splitlines()[1:-1]:
                 if line.strip():
@@ -91,7 +85,11 @@ def set_launcher(
                     f.write(line[len(indent):]+"\n")
                 else:
                     f.write(line+"\n")
-    msg.success("'{}' created.".format(filenpa_launcher))
+        msg.success("'{}' created.".format(filenpa_launcher))
+    elif system == "Linux":
+        msg.warning("launchers are not needed for '{}'.".format(system))
+    else:
+        msg.warning("launchers are not set for '{}'.".format(system))
         
 
 def get_default_launch_pyw(pkg_alias):
