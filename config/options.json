@@ -251,7 +251,7 @@
     },
     "set_launcher": {
         "args": "overwrite,path_project",
-        "info": "Generate scriptjob_save.json file or launch.pyw for windows for quick project opening.",
+        "info": "Generate launch.pyw for windows for quick project opening.",
         "nvalues": "?",
         "values": "PKG_ALIAS"
     },
