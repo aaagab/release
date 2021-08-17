@@ -72,13 +72,13 @@ def get_pkg_from_db(
 
                 items.append("{} {}\n\t{}".format(db_data["uuid4s"][uuid4], uuid4, description))
 
+
             chosen_uuid4=prompt_multiple(
-                dict(
-                    items=items,
-                    title="Select a package",
-                    values=uuid4s
-                ))
-                                
+                names=items,
+                title="Select a package",
+                values=uuid4s,
+            )
+
         versions=[pkg["version"] for pkg in selected_pkgs if pkg["uuid4"] == chosen_uuid4]
         chosen_version=""
 
@@ -90,17 +90,16 @@ def get_pkg_from_db(
                 items.append("{} {}".format(alias, version))
 
             chosen_version=prompt_multiple(
-                dict(
-                    items=items,
-                    title="Select a version for pkg '{}'".format(alias),
-                    values=versions
-                ))
-
-            chosen_pkg={
-                "alias": alias,
-                "uuid4": chosen_uuid4,
-                "version": chosen_version
-            }
+                names=items,
+                title="Select a version for pkg '{}'".format(alias),
+                values=versions,
+            )
+        
+        chosen_pkg={
+            "alias": alias,
+            "uuid4": chosen_uuid4,
+            "version": chosen_version,
+        }
             
     if pkg_bound:
         bounds=["gpm", "sys"]
