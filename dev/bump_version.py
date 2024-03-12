@@ -208,6 +208,7 @@ def bump_version(
     for elem_path in paths:
         update_file_version(elem_path, version)
 
+
     for elem_path in filenpas_update:
         update_file_version(elem_path, version, pkg_alias=pkg_alias, insert_version=True)
     
@@ -292,7 +293,34 @@ def update_file_version(elem_path, version, pkg_alias=None, insert_version=False
                         tmp_data+="// version: {}\n\n".format(version)
                         data="{}{}".format(tmp_data, data)
                         with open(elem_path, "w") as f:
-                            f.writelines(data)
+                            f.writelines(data)        
             finally:
                 f.close()
-            
+        elif ext == ".gradle":
+            process_file=False
+            try:
+                process_file=os.path.basename(os.path.dirname(elem_path)) == "app"
+            except:
+                pass
+            if process_file is True:
+                lines=[]
+                modified=False
+                with open(elem_path, "r") as f:
+                    reg_text=r"^(?P<before>\s*versionName\s+[\"\'])(?P<version>.+)(?P<after>[\"\']\s*)$"
+                    for line in f.read().splitlines():
+                        if modified is False:
+                            reg=re.match(reg_text, line)
+                            if reg is None:
+                                lines.append(line)
+                            else:
+                                modified=True
+                                before=reg.groupdict()["before"]
+                                after=reg.groupdict()["after"]
+                                newline=f"{before}{version}{after}"
+                                lines.append(newline)
+                        else:
+                            lines.append(line)
+
+                if modified is True:
+                    with open(elem_path, "w") as f:
+                        f.write("\n".join(lines)+"\n")
