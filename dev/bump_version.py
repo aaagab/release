@@ -10,8 +10,6 @@ from . import regex_obj as ro
 from .helpers import get_direpa_root
 from .get_pkg_from_db import get_pkg_from_db
 
-
-
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
