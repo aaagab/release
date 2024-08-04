@@ -2,6 +2,7 @@
 import re
 import sys
 import textwrap
+from pprint import pprint
 
 from ..gpkgs import message as msg
 
@@ -47,21 +48,21 @@ class Version_regex(Regex_obj):
             return False
 
     def compare(self, reg_pkg):
-        if self.major < reg_pkg.major:
+        if int(self.major) < int(reg_pkg.major):
             return "smaller"
-        elif self.major == reg_pkg.major:
-            if self.minor < reg_pkg.minor:
+        elif int(self.major) == int(reg_pkg.major):
+            if int(self.minor) < int(reg_pkg.minor):
                 return "smaller"
-            elif self.minor == reg_pkg.minor:
-                if self.patch < reg_pkg.patch:
+            elif int(self.minor) == int(reg_pkg.minor):
+                if int(self.patch) < int(reg_pkg.patch):
                     return "smaller"
-                elif self.patch == reg_pkg.patch:
+                elif int(self.patch) == int(reg_pkg.patch):
                     return "equals"
-                elif self.patch > reg_pkg.patch:
+                elif int(self.patch) > int(reg_pkg.patch):
                     return "bigger"
-            elif self.minor > reg_pkg.minor:
+            elif int(self.minor) > int(reg_pkg.minor):
                 return "bigger"
-        elif self.major > reg_pkg.major:
+        elif int(self.major) > int(reg_pkg.major):
             return "bigger"
 
     def print_error(self):
