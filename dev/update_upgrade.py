@@ -61,7 +61,7 @@ def update_upgrade(
                 if arg_str == "update":
                     version_filter="{}.L.L".format(reg_version_dep.major)
                 elif arg_str == "upgrade":
-                    version_filter="L.L.L".format(reg_version_dep.major)
+                    version_filter="L.L.L"
             else:
                 version_filter="A.A.A"
 
@@ -71,6 +71,7 @@ def update_upgrade(
                 filen_json_app, 
                 "{},{}".format(pkg_alias, version_filter),
             )
+
             if reg_version_dep.match:
                 reg_version_chosen_pkg=ro.Version_regex(chosen_pkg["version"])
                 compare_status=reg_version_chosen_pkg.compare(reg_version_dep)
@@ -82,7 +83,7 @@ def update_upgrade(
                     continue
                 elif compare_status == "equals":
                     msg.warning("For '{}' {} not needed".format(pkg_alias, arg_str),
-                        "Version '{}' is already the latest {}".format(chosen_pkg["version"], arg_str, direpa_rel)
+                        "Version '{}' is already the latest {}".format(chosen_pkg["version"], arg_str)
                         )
                     continue
                 elif compare_status == "bigger":
@@ -90,7 +91,7 @@ def update_upgrade(
                     
             else:
                 pass # package is going to be updated|upgraded with chosen
-
+            
             delete_index=dep_pkg_aliases.index(pkg_alias)
             del conf_pkg.data["deps"][delete_index]
 
