@@ -72,6 +72,8 @@ def search(pkgs, pkg_filter="",identify=False):
             sys.exit(1)
 
         pre_selected_pkgs=[]
+        # print(pkg_filter)
+        # pprint(dy_filter)
         for pkg in pkgs:
             uuid4, alias, version, *bound = pkg.split('|')
             if bound != []:
@@ -112,7 +114,7 @@ def search(pkgs, pkg_filter="",identify=False):
                 versions=[pkg["version"] for pkg in pre_pkgs if pkg["uuid4"] == uuid4]
                 selected_versions=filter_version(versions, dy_filter["version_ftr"])
                 selected_pkgs.extend([pkg for pkg in pre_selected_pkgs if pkg["version"] in selected_versions])
-    
+
     if selected_pkgs:
         # sort by alias, uuid, and version (reg and non reg)
         package_ids=[pkg["id"] for pkg in selected_pkgs]

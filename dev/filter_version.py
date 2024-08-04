@@ -14,7 +14,7 @@ from ..gpkgs.sort_separated import sort_separated
 def get_preselected(reg_versions, version_component, reg_version_ftr ):
     if version_component == "major":
         if reg_version_ftr.major in  ["l", "L"]:
-            latest=sorted([reg_version.major for reg_version in reg_versions])[-1]
+            latest=str(sorted([int(reg_version.major) for reg_version in reg_versions])[-1])
             return [reg_version for reg_version in reg_versions if reg_version.major == latest]
         elif reg_version_ftr.major in  ["a", "A"]:
             return reg_versions
@@ -22,7 +22,7 @@ def get_preselected(reg_versions, version_component, reg_version_ftr ):
             return [reg_version for reg_version in reg_versions if reg_version.major == reg_version_ftr.major]
     elif version_component == "minor":
         if reg_version_ftr.minor in  ["l", "L"]:
-            latest=sorted([reg_version.minor for reg_version in reg_versions])[-1]
+            latest=str(sorted([int(reg_version.minor) for reg_version in reg_versions])[-1])
             return [reg_version for reg_version in reg_versions if reg_version.minor == latest]
         elif reg_version_ftr.minor in  ["a", "A"]:
             return reg_versions
@@ -30,7 +30,7 @@ def get_preselected(reg_versions, version_component, reg_version_ftr ):
             return [reg_version for reg_version in reg_versions if reg_version.minor == reg_version_ftr.minor]
     elif version_component == "patch":
         if reg_version_ftr.patch in  ["l", "L"]:
-            latest=sorted([reg_version.patch for reg_version in reg_versions])[-1]
+            latest=str(sorted([int(reg_version.patch) for reg_version in reg_versions])[-1])
             return [reg_version for reg_version in reg_versions if reg_version.patch == latest]
         elif reg_version_ftr.patch in  ["a", "A"]:
             return reg_versions
@@ -48,7 +48,8 @@ def filter_version(versions, version_ftr):
             reg_versions.append(reg_version)
         else:
             non_reg_versions.append(version)
-    
+
+
     reg_version_ftr=ro.Version_filter_regex(version_ftr)
     if reg_version_ftr.match:
         if reg_versions:
