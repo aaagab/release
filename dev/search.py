@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
 import os
-from pprint import pprint
 import re
 import sys
 
@@ -56,8 +55,10 @@ def search(pkgs, pkg_filter="",identify=False):
             ftr_component=ftr_split[0]
             dy_filter=get_dy_filter_part(ftr_component, identify)
             if not "alias" in dy_filter and not "uuid4" in dy_filter:
-                msg.error("Search Filter incomplete for '{}'".format(ftr_component),
-                    "Please provide at least a alias or a uuid4.")
+                msg.error([
+                    "Search Filter incomplete for '{}'".format(ftr_component),
+                    "Please provide at least a alias or a uuid4.",
+                ])
                 sys.exit(1)
         elif len(ftr_split) < 5:
             for ftr_component in ftr_split:
@@ -193,9 +194,12 @@ def get_dy_filter_part(ftr_component, identify):
             return dict(version_ftr=search_elem)
     else:
         # if identify is False:
-        msg.error("'{}' has not identifier".format(ftr_component),
-            "identifiers are '{}'".format(identifiers),
-            "Use them like that 'a:alias,v:2.3.4,u:2b20ffd7-d9bf-4a23-b8cf-354b6063a26b,b:gpm'",
+        msg.error(
+            [
+                "'{}' has not identifier".format(ftr_component),
+                "identifiers are '{}'".format(identifiers),
+                "Use them like that 'a:alias,v:2.3.4,u:2b20ffd7-d9bf-4a23-b8cf-354b6063a26b,b:gpm'",
+            ],
         exit=1)
         # else:
             

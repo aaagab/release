@@ -7,13 +7,13 @@ import sys
 from . import regex_obj as ro
 from .choose_pkg_cli import choose_pkg_cli
 from .helpers import get_pkg_id
-from .search import search
 
 from ..gpkgs import message as msg
 from ..gpkgs.json_config import Json_config
 from ..gpkgs.prompt import prompt_boolean
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..gpkgs.sort_separated import sort_separated
+from ..gpkgs import shell_helpers as shell
 
 def update_upgrade(
     arg_str,
@@ -76,15 +76,17 @@ def update_upgrade(
                 reg_version_chosen_pkg=ro.Version_regex(chosen_pkg["version"])
                 compare_status=reg_version_chosen_pkg.compare(reg_version_dep)
                 if compare_status == "smaller":
-                    msg.warning("For '{}' {} not needed".format(pkg_alias, arg_str),
+                    msg.warning([
+                        "For '{}' {} not needed".format(pkg_alias, arg_str),
                         "Version '{}' from '{}' is smaller than".format(chosen_pkg["version"], direpa_rel),
-                        "Version '{}' from '{}'".format(dep_pkgs[pkg_alias]["version"], direpa_pkg)
-                        )
+                        "Version '{}' from '{}'".format(dep_pkgs[pkg_alias]["version"], direpa_pkg),
+                    ])
                     continue
                 elif compare_status == "equals":
-                    msg.warning("For '{}' {} not needed".format(pkg_alias, arg_str),
-                        "Version '{}' is already the latest {}".format(chosen_pkg["version"], arg_str)
-                        )
+                    msg.warning([
+                        "For '{}' {} not needed".format(pkg_alias, arg_str),
+                        "Version '{}' is already the latest {}".format(chosen_pkg["version"], arg_str),
+                    ])
                     continue
                 elif compare_status == "bigger":
                     pass # package is going to be updated|upgraded with chosen
@@ -96,7 +98,7 @@ def update_upgrade(
             del conf_pkg.data["deps"][delete_index]
 
             if os.path.exists(direpa_dep):
-                shutil.rmtree(direpa_dep)
+                shell.rmtree(direpa_dep)
 
             dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), dep_pkgs[pkg_alias]["bound"])
             conf_pkg.data["deps"].append(dep_to_insert)

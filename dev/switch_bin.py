@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
-import contextlib
 import os
 from pprint import pprint
-import re
-import shlex
-import shutil
-import subprocess
 import sys
 
 from . import regex_obj as ro
 from .filter_version import filter_version
-from .helpers import to_be_coded, create_symlink
+from .helpers import create_symlink
 
 
 from ..gpkgs.prompt import prompt_multiple
@@ -49,14 +44,8 @@ def switch_bin(direpa_bin, pkg_alias, pkg_uuid4, pkg_version, system):
 
     if os.path.exists(filenpa_pkg_json):
         dy_pkg=Json_config(filenpa_pkg_json).data
-        if "alias" in pkg_alias:
-            pkg_alias=dy_pkg["alias"]
-        else:
-            pkg_alias=dy_pkg["name"]
-
         filenpa_exec=os.path.join(os.path.dirname(filenpa_pkg_json), dy_pkg["filen_main"])
         filenpa_symlink=os.path.join(direpa_bin, pkg_alias)
-
         create_symlink(system, filenpa_exec, filenpa_symlink )
         msg.success("Bin '{}' switched to '{}'".format(pkg_alias, pkg_version))
     else:
