@@ -2,14 +2,10 @@
 from pprint import pprint
 import os
 import sys
-import shutil
 
-from .search import search
 from . import regex_obj as ro
 
 from ..gpkgs import message as msg
-from ..gpkgs.json_config import Json_config
-from ..gpkgs.prompt import prompt_multiple
 
 # ./__init__.py -i message,a.a.a prompt
 

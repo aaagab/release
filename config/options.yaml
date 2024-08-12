@@ -1,0 +1,409 @@
+args:
+  _examples: |
+    release --generate-db --path-rel /tmp/test
+    release --import -p message
+    release --ls -p message
+    release --rel-strip mockpkg
+    release --transfer --from-pkg --to-rel
+    release --remove -p message
+    release --restore
+    release --set-conf
+    release --set-launcher
+    release --switch-bin --alias bump_version --version 1.1.1
+    release --update message
+    release --upgrade message
+    release --transfer --from-rel --to-bin ~/mnt/bin --pkgs guidelines --no-symlink
+    release --transfer --from-rel --to-rel ~/mnt/rel --pkgs guidelines
+
+  generate_db:
+    _info: list all folders in repository and generate the db.json.
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+  import_pkgs:
+    _aliases: --import,-i
+    _info: import packages in a git project with a folder gpkgs.
+
+    filenpa_conf:
+      _info: package JSON config file path. It can be relative or absolute.
+      _type: vpath
+      _label: FILE_JSON
+
+    filter_rules:
+      _info: gitignore like rules to filter source path
+      _values: +
+      _label: RULE
+
+    package_filters:
+      _aliases: --pkgs,-p
+      _info: Package filters are comma separated string. The fields are bound, alias, version, uuid4. Fields order does not matter and not all fields need to be present
+      _required: true
+      _values: +
+      _label: PKG_FILTERS
+
+    no_conf_dst:
+      _info: Do not import the conf file with the imported package
+
+    no_conf_src:
+      _info: Allow to process the command without having a configuration file.
+
+    no_root_dir:
+      _info: Package content is copied without the package alias root directory.
+
+    not_git:
+      _info: Allow working with packages that does not have a .git folder
+
+    path_deps:
+      _info: Select directory destination path for dependencies (can be relative or absolute). If path is omitted, --path-pkg or current directory is selected.
+      _values: "?"
+      _type: vpath
+      _label: PATH
+
+    path_pkg:
+      _info: Select directory package path (can be relative or absolute).
+      _type: dir
+      _label: PATH
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+    keys:
+      _info: If keys is present, the imported package is considered a template and its files are going to be copied first in a tmp directory. Then the files are going to be scanned for {{placeholders}}. If keys json values are provided then they are going to autofill the related {{placeholders}} else for each found values not provided the user is going to be prompted to enter the value. regex syntax for placeholders {{([a-zA-Z0-9-_ ]+?)}}
+      _type: json
+      _values: "?"
+      _label: JSON
+
+  ls_rel:
+    _aliases: --ls,-l
+    _info: List all packages in the release repository. You can add alias(es) to filter by aliases.
+    add_deps:
+      _info: Add dependencies
+
+    package_filters:
+      _aliases: --pkgs,-p
+      _info: Package filters are comma separated string. The fields are bound, alias, version, uuid4. Fields order does not matter and not all fields need to be present
+      _values: +
+      _label: PKG_FILTERS
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+  remove:
+    _info: Remove packages installed in directory
+
+    filenpa_conf:
+      _info: package JSON config file path. It can be relative or absolute.
+      _type: vpath
+      _label: FILE_JSON
+
+    packages:
+      _aliases: --pkgs,-p
+      _values: "*"
+      _label: PKG_ALIASES
+
+    no_conf_src:
+      _info: Allow to process the command without having a configuration file.
+
+    no_root_dir:
+      _info: Package content is copied without the package alias root directory.
+
+    not_git:
+      _info: Allow working with packages that does not have a .git folder
+
+    path_deps:
+      _info: Select directory destination path for dependencies (can be relative or absolute). If path is omitted, --path-pkg or current directory is selected.
+      _values: "?"
+      _type: vpath
+      _label: PATH
+
+    path_pkg:
+      _info: Select directory package path (can be relative or absolute).
+      _type: dir
+      _label: PATH
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+  rel_strip:
+    _info: Remove all versions of a package except the latest. Select specific packages or no packages to run the function on all packages
+    _values: "*"
+    _label: PKG_ALIASES
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+  restore:
+    _info: Reinstall all dependencies from gpm.json
+    filenpa_conf:
+      _info: package JSON config file path. It can be relative or absolute.
+      _type: vpath
+      _label: FILE_JSON
+
+    not_git:
+      _info: Allow working with packages that does not have a .git folder
+
+    path_deps:
+      _info: Select directory destination path for dependencies (can be relative or absolute). If path is omitted, --path-pkg or current directory is selected.
+      _values: "?"
+      _type: vpath
+      _label: PATH
+
+    path_pkg:
+      _info: Select directory package path (can be relative or absolute).
+      _type: dir
+      _label: PATH
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+  set_conf:
+    _info: create a config file for a new project.
+    authors:
+      _values: +
+      _label: Full Name
+
+    description:
+      _label: Package Description
+
+    filen_main:
+      _info: Package main file if any, just the full name
+      _label: main_file
+
+    filenpa_conf:
+      _info: package JSON config file path. It can be relative or absolute.
+      _type: vpath
+      _label: FILE_JSON
+
+    licenses:
+      _values: "+"
+      _label: MIT|None
+
+    pkg_alias:
+      _aliases: --alias
+      _info: package alias, or package name if alias has not been set.
+      _label: PKG_ALIAS
+
+    pkg_name:
+      _aliases: --name
+      _info: package alias, or package name if alias has not been set.
+      _label: PKG_NAME
+
+    pkg_version:
+      _aliases: --version
+      _info: Select version.
+      _label: VERSION
+
+    uuid4:
+      _label: UUID4
+
+
+  set_launcher:
+    _info: Generate launch.pyw for windows for quick project opening.
+    _values: "?"
+    _label: PKG_ALIAS
+
+    overwrite:
+
+    path_project:
+      _type: dir
+      _values: "?"
+      _label: PATH
+
+
+  switch_bin:
+    _info: Given an application alias and a version, then current executable in the path is switched to that version. For pkg_version choose 'latest' to get the latest version available from bin. You can also choose 'beta' if available
+    path_bin:
+      _info: Select Bin Path (can be relative or absolute).
+      _type: dir
+      _label: PATH
+
+    pkg_alias:
+      _aliases: --alias
+      _info: package alias, or package name if alias has not been set.
+      _label: PKG_ALIAS
+      _required: true
+
+    pkg_version:
+      _aliases: --version
+      _info: Select version.
+      _label: VERSION
+      _required: true
+
+    uuid4:
+      _label: UUID4
+
+
+  transfer:
+    _info: Package is selected from one location and transfered to another. If the 'from location type' and the 'to location type' does not match then package is converted at destination type if supported.
+
+    from_bin:
+      _info: Transfer package from default binaries repository or from selected binaries repository
+      _values: "?"
+      _type: dir
+      _label: DIREPA_REPO_BIN
+
+      pkg_alias:
+        _aliases: --alias
+        _required: true
+        _info: package alias, or package name if alias has not been set.
+        _label: PKG_ALIAS
+
+    from_pkg:
+      _info: Transfer package from current directory or from selected directory. If --version is specified then package is considered a git package.
+      _values: "?"
+      _type: dir
+      _label: DIREPA_PKG
+
+      conf_from_rel:
+        _info: package configuration can be retrieved from a release repository
+        _type: dir
+        _values: "?"
+        _label: DIREPA_REPO_REL
+
+      filenpa_conf:
+        _info: package JSON config file path. It can be relative or absolute.
+        _type: vpath
+        _label: FILE_JSON
+
+      no_conf:
+        _info: Allow to process the command without having a configuration file.
+
+      not_git:
+        _info: Allow working with packages that does not have a .git folder
+
+    from_rel:
+      _info: Transfer package from default releases repository or from selected releases repository
+      _values: "?"
+      _type: dir
+      _label: DIREPA_REPO_REL
+
+      no_deps:
+        _info: Do not add dependencies
+
+    from_src:
+      _info: Transfer package from default sources repository or from selected sources repository
+      _values: "?"
+      _type: dir
+      _label: DIREPA_REPO_SRC
+
+    from_wrk:
+      _info: Transfer package from default work repository or from selected work repository
+      _values: "?"
+      _type: dir
+      _label: DIREPA_REPO_WRK
+
+      pkg_alias:
+        _aliases: --alias
+        _required: true
+        _info: package alias, or package name if alias has not been set.
+        _label: PKG_ALIAS
+
+    only_paths:
+      _info: Select directories or files that are going to be selected for the package
+      _values: +
+      _label: PATH
+
+    package_filters:
+      _aliases: --pkgs,-p
+      _info: Package filters are comma separated string. The fields are bound, alias, version, uuid4. Fields order does not matter and not all fields need to be present
+      _values: +
+      _label: PKG_FILTERS
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+    to_bin:
+      _info: Transfer package to default binaries repository or to selected binaries repository
+      _values: "?"
+      _type: vpath
+      _label: DIREPA_REPO_BIN
+
+      beta:
+        _info: Add this flag to send the current state to bin as beta.
+
+      filen_main:
+        _info: Package main file if any, just the full name
+        _label: main_file
+
+      no_symlink:
+        _info: When pushing a bin pkg to an sshfs mount bin from another system, like from linux to windows then use no symlink and use mlink on windows computer to restore the symlink.
+
+    to_pkg:
+      _info: Transfer package to current directory or to selected directory.
+      _values: "?"
+      _type: vpath
+      _label: DIREPA_PKG
+
+    to_rel:
+      _info: Transfer package to default releases repository or to selected releases repository
+      _values: "?"
+      _type: vpath
+      _label: DIREPA_REPO_REL
+      no_deps:
+        _info: Do not add dependencies
+
+    to_src:
+      _info: Transfer package to default sources repository or to selected sources repository
+      _values: "?"
+      _type: vpath
+      _label: DIREPA_REPO_SRC
+
+    to_wrk:
+      _info: Transfer package to default work repository or to selected work repository
+      _values: "?"
+      _type: vpath
+      _label: DIREPA_REPO_WRK
+
+
+  update:
+    _aliases: --update
+    _values: "*"
+    _label: PKG_ALIASES
+
+    not_git:
+      _info: Allow working with packages that does not have a .git folder
+
+    path_deps:
+      _info: Select directory destination path for dependencies (can be relative or absolute). If path is omitted, --path-pkg or current directory is selected.
+      _values: "?"
+      _type: vpath
+      _label: PATH
+
+    path_pkg:
+      _info: Select directory package path (can be relative or absolute).
+      _type: dir
+      _label: PATH
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH
+
+
+  upgrade:
+    _values: "*"
+    _label: PKG_ALIASES
+
+    not_git:
+      _info: Allow working with packages that does not have a .git folder
+
+    path_deps:
+      _info: Select directory destination path for dependencies (can be relative or absolute). If path is omitted, --path-pkg or current directory is selected.
+      _values: "?"
+      _type: vpath
+      _label: PATH
+
+    path_pkg:
+      _info: Select directory package path (can be relative or absolute).
+      _type: dir
+      _label: PATH
+
+    path_rel:
+      _info: Select Repository Path (can be relative or absolute).
+      _label: PATH

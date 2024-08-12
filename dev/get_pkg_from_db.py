@@ -2,7 +2,6 @@
 from pprint import pprint
 import os
 import sys
-import shutil
 
 from .search import search
 
@@ -104,7 +103,7 @@ def get_pkg_from_db(
     if pkg_bound:
         bounds=["gpm", "sys"]
         if pkg_bound not in bounds:
-            msg.error("For filter '{}' bound '{}' not in ['{}']".format(pkg_filter, pkg_bound, "', '".join(bounds)))
+            msg.error("For filter '{}' bound '{}' not in ['{}']".format(tmp_filter, pkg_bound, "', '".join(bounds)))
             sys.exit(1)
     else:
         pkg_bound="gpm"

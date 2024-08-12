@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import re
 import sys
-import textwrap
-from pprint import pprint
 
 from ..gpkgs import message as msg
 
@@ -156,28 +154,28 @@ class Package_alias_regex(Regex_obj):
             self.matching_obj=re.match(self.group_string, txt)
             self.match=False
             if not self.matching_obj:
-                msg.warning(
+                msg.warning([
                     "Package alias '{}' syntax error".format(self.text),
-                    "Authorized syntax is '{}'".format(self.string)
-                )
+                    "Authorized syntax is '{}'".format(self.string),
+                ])
             else:
                 self.match=True
                 if len(self.text) > 128:
                     self.match=False
-                    msg.warning(
+                    msg.warning([
                         "Package alias '{}' syntax error, length is '{}'".format(self.text, len(self.text)),
                         "Minimum length is '1' character",
                         "Maximum length is '128' characters",
-                    )
+                    ])
                 
                 reg_uuid4=Uuid4_regex(self.text)
                 if reg_uuid4.match:
                     self.match=False
-                    msg.warning(
+                    msg.warning([
                         "Package alias '{}' syntax error".format(self.text),
                         "Format can't be similar to uuid format.",
-                        "'{}'".format(reg_uuid4.string)
-                    )
+                        "'{}'".format(reg_uuid4.string),
+                    ])
 
         return self
 
@@ -192,28 +190,28 @@ class Package_name_regex(Regex_obj):
             self.matching_obj=re.match(self.group_string, txt)
             self.match=False
             if not self.matching_obj:
-                msg.warning(
+                msg.warning([
                     "Package name '{}' syntax error".format(self.text),
                     "Authorized syntax is '{}'".format(self.string)
-                )
+                ])
             else:
                 self.match=True
                 if len(self.text) > 128:
                     self.match=False
-                    msg.warning(
+                    msg.warning([
                         "Package name '{}' syntax error, length is '{}'".format(self.text, len(self.text)),
                         "Minimum length is '1' character",
                         "Maximum length is '128' characters",
-                    )
+                    ])
                 
                 reg_uuid4=Uuid4_regex(self.text)
                 if reg_uuid4.match:
                     self.match=False
-                    msg.warning(
+                    msg.warning([
                         "Package name '{}' syntax error".format(self.text),
                         "Format can't be similar to uuid format.",
-                        "'{}'".format(reg_uuid4.string)
-                    )
+                        "'{}'".format(reg_uuid4.string),
+                    ])
 
         return self
 

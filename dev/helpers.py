@@ -5,12 +5,8 @@ import shlex
 import subprocess
 import sys
 
-from . import regex_obj as ro
-
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
-from ..gpkgs.json_config import Json_config
-from ..gpkgs.prompt import prompt_boolean
 
 def get_direpa_root(direpa_pkg=None):
     direpa_current=None

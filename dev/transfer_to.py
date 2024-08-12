@@ -1,24 +1,14 @@
 #!/usr/bin/env python3
-import contextlib
-from pprint import pprint
-import json
 import os
-import re
-import shlex
-import shutil
-import subprocess
 import sys
 
-from . import regex_obj as ro
-from .bump_version import bump_version
-from .check_rel import check_rel
-from .helpers import get_direpa_root, to_be_coded, create_symlink
+from .helpers import create_symlink
 
 from ..gpkgs import message as msg
 from ..gpkgs import shell_helpers as shell
 from ..gpkgs.json_config import Json_config
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
-from ..gpkgs.prompt import prompt_boolean, prompt
+from ..gpkgs.prompt import prompt
 
 from .helpers_transfer import checkout_version, prompt_for_replace, checkout
 
@@ -92,7 +82,7 @@ def transfer_to_bin(
     
     if diren_bin == "beta":
         if os.path.exists(direpa_to):
-            shutil.rmtree(direpa_to)
+            shell.rmtree(direpa_to)
         os.makedirs(direpa_to, exist_ok=True)
     else:
         prompt_for_replace(direpa_to, previous_branch, direpa_from)
@@ -154,10 +144,12 @@ def transfer_to_rel(
         if pkg_alias != conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]:
             if previous_branch:
                 shell.cmd_prompt("git checkout "+previous_branch)
-            msg.error("Failed Insert '{}' with uuid4 '{}' ".format(
+            msg.error([
+                "Failed Insert '{}' with uuid4 '{}' ".format(
                 pkg_alias, dy_pkg_src["uuid4"]),
                 "In db[uuid4s] same uuid4 has alias '{}'".format(conf_db.data["uuid4s"][dy_pkg_src["uuid4"]]),
-                "You can't have same uuid for different aliases.")
+                "You can't have same uuid for different aliases."
+            ])
             sys.exit(1)
 
     conf_db.data["uuid4s"].update({dy_pkg_src["uuid4"]: pkg_alias})
@@ -166,8 +158,8 @@ def transfer_to_rel(
             ): dy_pkg_src["deps"]
     })
 
-    if add_deps is False:
-        added_refine_rules=refine_rules
+    # if add_deps is False:
+        # added_refine_rules=refine_rules
     paths=get_paths_to_copy(direpa_from, added_rules=added_refine_rules)
 
     prompt_for_replace(direpa_to, previous_branch, direpa_from)

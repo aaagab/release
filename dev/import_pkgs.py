@@ -2,8 +2,6 @@
 import os
 from pprint import pprint
 import re
-import shutil
-import sys
 import tempfile
 
 from .get_pkg_from_db import get_pkg_from_db
@@ -11,10 +9,10 @@ from .helpers import get_pkg_id
 from .get_dy_pkg_filter import get_dy_pkg_filter
 
 from ..gpkgs import message as msg
-from ..gpkgs.json_config import Json_config
 from ..gpkgs.prompt import prompt_boolean, prompt
 from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
 from ..gpkgs.sort_separated import sort_separated
+from ..gpkgs import shell_helpers as shell
 
 # ./__init__.py -i message,a.a.a prompt
 
@@ -62,10 +60,11 @@ def import_pkgs(
             for d, dep in enumerate(conf_pkg.data["deps"]):
                 ex_uuid4, ex_alias, ex_version, ex_bound = dep.split("|")
                 if chosen_pkg["alias"] == ex_alias:
-                    msg.warning(
+                    msg.warning([
                         "'{}' already exists in destination '{}'.".format(chosen_pkg["alias"], filen_json_default),
                         "-  existing 'v{}' with bound '{}' and uuid4 '{}'".format(ex_version, ex_bound, ex_uuid4),
-                        "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]))
+                        "- to import 'v{}' with bound '{}' and uuid4 '{}'".format(chosen_pkg["version"], chosen_pkg["bound"], chosen_pkg["uuid4"]),
+                    ])
                     if prompt_boolean("Do you want to replace it", "Y"):
                         delete_index=d
                         break
@@ -79,7 +78,7 @@ def import_pkgs(
             if delete_index != "":
                 del conf_pkg.data["deps"][delete_index]
                 if os.path.exists(direpa_dst):
-                    shutil.rmtree(direpa_dst)
+                    shell.rmtree(direpa_dst)
 
             if no_conf_src is False:
                 dep_to_insert="{}|{}".format(get_pkg_id(chosen_pkg), chosen_pkg["bound"])
@@ -122,7 +121,7 @@ def import_pkgs(
                                 f.write(data)
 
                     copy_to_destination(tmp_paths, direpa_tmp, direpa_dst)
-                    shutil.rmtree(direpa_tmp)
+                    shell.rmtree(direpa_tmp)
                 else:
                     copy_to_destination(paths, direpa_src, direpa_dst)
 
