@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from pprint import pprint
 import os
-import shutil
 import sys
 
 from .search import search

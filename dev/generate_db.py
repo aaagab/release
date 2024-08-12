@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-import contextlib
 from pprint import pprint
 import os
-import re
-import shlex
-import shutil
-import subprocess
 import sys
 
 from ..gpkgs import message as msg
@@ -39,10 +34,10 @@ def generate_db(
                                 pkg_alias=dy_pkg["name"]
                             if dy_pkg["uuid4"] in uuid4s:
                                 if pkg_alias != uuid4s[dy_pkg["uuid4"]]:
-                                    msg.error("Failed Insert '{}' with uuid4 '{}' ".format(
+                                    msg.error(["Failed Insert '{}' with uuid4 '{}' ".format(
                                         pkg_alias, dy_pkg["uuid4"]),
                                         "In db[uuid4s] same uuid4 has name '{}'".format(uuid4s[dy_pkg["uuid4"]]),
-                                        "You can't have same uuid for different names.")
+                                        "You can't have same uuid for different names."])
                                     sys.exit(1)
                             else:
                                 uuid4s.update({dy_pkg["uuid4"]: pkg_alias})

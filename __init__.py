@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: "13.5.2"
+# version: 14.0.0
 # name: release
 # license: MIT
 
-__version__= "13.5.2"
+__version__= "14.0.0"
 
-from .dev.bump_version import bump_version
 from .dev.check_pkg_integrity import check_pkg_integrity
 from .dev.check_rel import check_rel
 from .dev.transfer import transfer
-from .dev.get_examples import get_examples
 from .dev.generate_db import generate_db
 from .dev.import_pkgs import import_pkgs
 from .dev.helpers import get_direpa_root
@@ -26,3 +24,5 @@ from .dev.get_dy_pkg_filter import get_dy_pkg_filter
 from .gpkgs import message as msg
 from .gpkgs.json_config import Json_config
 from .gpkgs.options import Options
+from .gpkgs.nargs import Nargs
+
