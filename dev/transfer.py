@@ -1,28 +1,15 @@
 #!/usr/bin/env python3
-import contextlib
-from pprint import pprint
-import json
 import os
-import re
-import shlex
-import shutil
-import subprocess
-import sys
 
 from . import regex_obj as ro
-from .bump_version import bump_version
-from .check_rel import check_rel
 from .get_pkg_from_db import get_pkg_from_db
-from .helpers import get_direpa_root, to_be_coded, create_symlink
+from .helpers import get_direpa_root
 from .get_filenpa_conf_from_rel import get_filenpa_conf_from_rel
 from .transfer_to import transfer_to_bin, transfer_to_rel
 
 
 from ..gpkgs import message as msg
-from ..gpkgs import shell_helpers as shell
 from ..gpkgs.json_config import Json_config
-from ..gpkgs.refine import get_paths_to_copy, copy_to_destination
-from ..gpkgs.prompt import prompt_boolean, prompt
 
 def not_supported(direction, location):
     msg.error("Transfer not supported {}_{}".format(direction, location), exit=1)

@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-import inspect
-import json
 from pprint import pprint
 import os
-import re
 import sys
 
 from . import regex_obj as ro
 
-from ..gpkgs import message as msg
 from ..gpkgs.sort_separated import sort_separated
 
 def get_preselected(reg_versions, version_component, reg_version_ftr ):

@@ -6,10 +6,9 @@ import os
 import re
 import sys
 
-from ..dev.helpers import is_pkg_git, create_symlink, get_direpa_root
+from ..dev.helpers import is_pkg_git, get_direpa_root
 
 from ..gpkgs import message as msg
-from ..gpkgs import shell_helpers as shell
 from ..gpkgs.prompt import prompt_boolean, prompt
 from ..gpkgs.json_config import Json_config
 
@@ -46,6 +45,10 @@ def set_launcher(
         else:
             if "src" in os.listdir(direpa_project):
                 direpa_src=os.path.join(direpa_project, "src")
+
+        if direpa_project is None:
+            msg.error("Path project can't be set automatically please provide it manually")
+            sys.exit(1)
 
         if not os.path.exists(direpa_project):
             msg.error("Project path not found '{}'".format(direpa_project), exit=1)

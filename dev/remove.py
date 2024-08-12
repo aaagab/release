@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 import os
 from pprint import pprint
-import shutil
 import sys
 
 from ..gpkgs import message as msg
-from ..gpkgs.json_config import Json_config
 from ..gpkgs.prompt import prompt_boolean
-
-# ./__init__.py -i message,a.a.a prompt
+from ..gpkgs import shell_helpers as shell
 
 def remove(
     conf_pkg,
@@ -47,7 +44,6 @@ def remove(
             sys.exit(1)
 
     for pkg_alias in pkg_aliases:
-        print(pkg_alias)
         direpa_dep=os.path.join(direpa_deps, pkg_alias)
         if not pkg_alias in dep_pkg_aliases:
             msg.warning("Package '{}' not found in '{}'".format(pkg_alias, os.path.dirname(direpa_dep)))
@@ -57,7 +53,7 @@ def remove(
             delete_index=dep_pkg_aliases.index(pkg_alias)
             del conf_pkg.data["deps"][delete_index]
             if os.path.exists(direpa_dep):
-                shutil.rmtree(direpa_dep)
+                shell.rmtree(direpa_dep)
             conf_pkg.save()
             msg.success("Package '{}' removed from '{}'".format(pkg_alias, os.path.dirname(direpa_dep)))
        
