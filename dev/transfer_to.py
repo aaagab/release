@@ -92,6 +92,9 @@ def transfer_to_bin(
     
     if no_symlink is False:
         filenpa_exec=os.path.join(direpa_to, filen_main)
+        if system == "Linux":
+            os.chmod(filenpa_exec, 0o755)
+
         filenpa_symlink=os.path.join(direpa_bin, pkg_alias)
         create_symlink(system, filenpa_exec, filenpa_symlink )
 

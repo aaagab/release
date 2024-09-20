@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # author: Gabriel Auger
-# version: 14.0.0
+# version: 14.0.1
 # name: release
 # license: MIT
 
-__version__= "14.0.0"
+__version__= "14.0.1"
 
 from .dev.check_pkg_integrity import check_pkg_integrity
 from .dev.check_rel import check_rel
