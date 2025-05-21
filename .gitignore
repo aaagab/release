@@ -6,3 +6,4 @@ __pycache__/
 modules/
 gpkgs/
 /archives/
+nargs-cache.json
