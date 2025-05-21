@@ -1,4 +1,4 @@
-# Release Package Manager (GPM in disguise aka Generic Package Manager)
+# Release Package Manager
 
 There are five location types for packages:  
 - bin (binaries) packages repository
